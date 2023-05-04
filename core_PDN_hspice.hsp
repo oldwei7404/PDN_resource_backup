@@ -1,0 +1,287 @@
+* Top level spice file 
+
+.option post=1
+*.chkanode type=gate dv=0.5*pvdd report=active
+.option parhier = local 
+.option measform = 1
+.option lis_new
+.option post probe
+
+*************************************** User defined functions ****************
+.param V_meas(node, ref) = 'v(node) - v(ref)'
+
+*************************************** Input params **************************
+.param Vdd 	= 0.75
+.param Cdie_PA 	= 123n
+.param Cdie_MA 	= 96n
+.param Rdie_PA 	= 1.02m
+.param Rdie_MA 	= 1.3m
+.param Rleak 	= 0.84
+
+.param tStep	= 10.p
+.param tStop	= 1.u
+*************************************** Input files ***************************
+.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0426.txt				*** define load current source model 
+.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0426.txt				*** define load current source model
+.inc ./hspice_inc/model_die_NNE_PA.inc									*** define die model 
+.inc ./hspice_inc/model_die_NNE_MA.inc									*** define die model 
+.inc ./hspice_inc/andes_0407_cut_NNE_IdEM_wt0p5.cir							*** define pkg model 
+.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_VDD_GPU_v2_toHFSS3DLayout_IdEM3.cir				*** define PCB model 
+
+*** cap model ***
+.inc ../models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
+.inc ../models_cap/GCM155D70G475ME36_DC0V_125degC_0402_4p7uF.mod
+.inc ../models_cap/GCM155C71A105KE38_DC0V_125degC_0402_1uF.mod
+.inc ../models_cap/GCM31CD70G476ME02_DC0V_125degC_1206_47uF.mod
+.inc ../models_cap/GCM32ED70E107ME36_DC0V_125degC_1210_100uF.mod
+.inc ../models_cap/GCM033D70E105ME36_DC0V_125degC_0201_1uF.mod 
+.inc ../models_cap/NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF.mod
+
+*************************************** PMIC **********************************
+Vref_gnd 	ref_gnd		0			0			*** ideal PMIC w/o remote sense feedback
+VshortPMIC	pmic_pwr	ref_gnd		Vdd		*** can be switched to PMIC model 
+
+*************************************** Socket ********************************
+Rskt	bga_pcb		bga_pkg		0				*** can add socket model 
+
+*************************************** PCB ***********************************
+Xblk_PCB 
++ bga_pcb		ref_gnd
++ pmic_pwr		ref_gnd
++ pcbCap_1866	ref_gnd
++ pcbCap_1867	ref_gnd
++ pcbCap_1868	ref_gnd
++ pcbCap_1869	ref_gnd
++ pcbCap_1870	ref_gnd
++ pcbCap_1871	ref_gnd
++ pcbCap_1872	ref_gnd
++ pcbCap_1873	ref_gnd
++ pcbCap_1956	ref_gnd
++ pcbCap_1957	ref_gnd
++ pcbCap_1958	ref_gnd
++ pcbCap_1959	ref_gnd
++ pcbCap_1960	ref_gnd
++ pcbCap_1961	ref_gnd
++ pcbCap_1962	ref_gnd
++ pcbCap_1963	ref_gnd
++ pcbCap_2042	ref_gnd
++ pcbCap_2043	ref_gnd
++ pcbCap_2044	ref_gnd
++ pcbCap_2045	ref_gnd
++ pcbCap_2046	ref_gnd
++ pcbCap_2047	ref_gnd
++ pcbCap_2048	ref_gnd
++ pcbCap_2109	ref_gnd
++ pcbCap_2110	ref_gnd
++ pcbCap_2111	ref_gnd
++ pcbCap_2112	ref_gnd
++ pcbCap_2159	ref_gnd
++ pcbCap_2160	ref_gnd
++ pcbCap_2161	ref_gnd
++ pcbCap_2162	ref_gnd
++ pcbCap_2163	ref_gnd
++ pcbCap_2164	ref_gnd
++ pcbCap_2165	ref_gnd
++ pcbCap_2227	ref_gnd
++ pcbCap_2228	ref_gnd
++ pcbCap_2229	ref_gnd
++ pcbCap_2230	ref_gnd
++ pcbCap_2231	ref_gnd
++ pcbCap_2232	ref_gnd
++ pcbCap_2233	ref_gnd
++ pcbCap_2266	ref_gnd
++ pcbCap_2267	ref_gnd
++ pcbCap_2268	ref_gnd
++ pcbCap_2269	ref_gnd
++ pcbCap_2270	ref_gnd
++ pcbCap_2271	ref_gnd
++ pcbCap_2272	ref_gnd
++ pcbCap_2329	ref_gnd
++ pcbCap_2330	ref_gnd
++ pcbCap_2331	ref_gnd
++ pcbCap_2332	ref_gnd
++ pcbCap_2333	ref_gnd
++ pcbCap_2334	ref_gnd
++ pcbCap_2335	ref_gnd
++ pcbCap_2381	ref_gnd
++ pcbCap_2382	ref_gnd
++ ACM2_PT00547399_A_01_cut_VDD_GPU_v2_toHFSS3DLayout_IdEM3
+
+*** PCB cap ***
+XpcbCap_C_brd_1866		pcbCap_1866 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1867		pcbCap_1867 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1868		pcbCap_1868 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1869		pcbCap_1869 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1870		pcbCap_1870 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1871		pcbCap_1871 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_1872		pcbCap_1872 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1873		pcbCap_1873 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1956		pcbCap_1956 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1957		pcbCap_1957 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1958		pcbCap_1958 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1959		pcbCap_1959 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1960		pcbCap_1960 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1961		pcbCap_1961 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1962		pcbCap_1962 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1963		pcbCap_1963 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2042		pcbCap_2042 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2043		pcbCap_2043 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2044		pcbCap_2044 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2045		pcbCap_2045 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2046		pcbCap_2046 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2047		pcbCap_2047 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2048		pcbCap_2048 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2109		pcbCap_2109 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2110		pcbCap_2110 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2111		pcbCap_2111 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2112		pcbCap_2112 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2159		pcbCap_2159 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2160		pcbCap_2160 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2161		pcbCap_2161 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2162		pcbCap_2162 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2163		pcbCap_2163 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2164		pcbCap_2164 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2165		pcbCap_2165 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2227		pcbCap_2227 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2228		pcbCap_2228 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2229		pcbCap_2229 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2230		pcbCap_2230 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2231		pcbCap_2231 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2232		pcbCap_2232 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2233		pcbCap_2233 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2266		pcbCap_2266 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2267		pcbCap_2267 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2268		pcbCap_2268 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2269		pcbCap_2269 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2270		pcbCap_2270 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2271		pcbCap_2271 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2272		pcbCap_2272 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2329		pcbCap_2329 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2330		pcbCap_2330 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2331		pcbCap_2331 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2332		pcbCap_2332 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2333		pcbCap_2333 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2334		pcbCap_2334 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2335		pcbCap_2335 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2381		pcbCap_2381 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2382		pcbCap_2382 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+
+*** PCB cap, bulk superposition
+XpcbCap_C_brd_2381_B		pcbCap_2381 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+XpcbCap_C_brd_2382_B		pcbCap_2382 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+XpcbCap_C_brd_1873_B		pcbCap_1873 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+XpcbCap_C_brd_1866_B		pcbCap_1866 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+XpcbCap_C_brd_2042_B		pcbCap_2042 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_1963_B		pcbCap_1963 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2266_B		pcbCap_2266 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2112_B		pcbCap_2112 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2272_B		pcbCap_2272 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2335_B		pcbCap_2335 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2042_B2		pcbCap_2042 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_1963_B2		pcbCap_1963 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2266_B2		pcbCap_2266 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2112_B2		pcbCap_2112 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2272_B2		pcbCap_2272 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+XpcbCap_C_brd_2335_B2		pcbCap_2335 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+
+*************************************** Pkg ***********************************
+Xblk_pkg
++ bga_pkg		ref_gnd
++ pkg_bump_0_0	ref_gnd
++ pkg_bump_0_1	ref_gnd
++ pkg_bump_0_2	ref_gnd
++ pkg_bump_0_3	ref_gnd
++ pkg_bump_1_0	ref_gnd
++ pkg_bump_1_1	ref_gnd
++ pkg_bump_1_2	ref_gnd
++ pkg_bump_1_3	ref_gnd
++ pkgCap_1		ref_gnd	
++ pkgCap_2		ref_gnd	
++ pkgCap_3		ref_gnd	
++ pkgCap_4		ref_gnd	
++ pkgCap_5		ref_gnd	
++ pkgCap_6		ref_gnd	
++ pkgCap_7		ref_gnd	
++ pkgCap_8		ref_gnd	
++ pkgCap_9		ref_gnd	
++ pkgCap_10		ref_gnd	
++ pkgCap_11		ref_gnd	
++ pkgCap_12		ref_gnd	
++ pkgCap_13		ref_gnd	
++ pkgCap_14		ref_gnd	
++ pkgCap_15		ref_gnd	
++ pkgCap_16		ref_gnd	
++ pkgCap_17		ref_gnd	
++ pkgCap_18		ref_gnd	
++ andes_0407_cut_NNE_IdEM_wt0p5
+*** Pkg cap ***
+XpkgCap_1	pkgCap_1	ref_gnd		pkgCap_1 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF 
+XpkgCap_2	pkgCap_2	ref_gnd		pkgCap_2 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_3	pkgCap_3	ref_gnd		pkgCap_3 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_4	pkgCap_4	ref_gnd		pkgCap_4 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_5	pkgCap_5	ref_gnd		pkgCap_5 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_6	pkgCap_6	ref_gnd		pkgCap_6 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_7	pkgCap_7	ref_gnd		pkgCap_7 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_8	pkgCap_8	ref_gnd		pkgCap_8 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+XpkgCap_9	pkgCap_9	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpkgCap_10	pkgCap_10	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpkgCap_11	pkgCap_11	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpkgCap_12	pkgCap_12	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpkgCap_13	pkgCap_13	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpkgCap_14	pkgCap_14	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF 
+XpkgCap_15	pkgCap_15	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+XpkgCap_16	pkgCap_16	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+XpkgCap_17	pkgCap_17	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+XpkgCap_14_2	pkgCap_14	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF 
+XpkgCap_15_2	pkgCap_15	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpkgCap_16_2	pkgCap_16	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpkgCap_17_2	pkgCap_17	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpkgCap_18_2	pkgCap_18	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+
+*************************************** Die ***********************************
+Xblk_die_0_0	pkg_bump_0_0	ref_gnd	model_die_lumped_nne_ma	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 0	R_leak= 'Rleak'	
+Xblk_die_0_1	pkg_bump_0_1	ref_gnd	model_die_lumped_nne_ma	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 0	R_leak= 'Rleak'	
+Xblk_die_0_2	pkg_bump_0_2	ref_gnd	model_die_lumped_nne_ma	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 0	R_leak= 'Rleak'	
+Xblk_die_0_3	pkg_bump_0_3	ref_gnd	model_die_lumped_nne_ma	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 0	R_leak= 'Rleak'		
+Xblk_die_1_0	pkg_bump_1_0	ref_gnd	model_die_lumped_nne_pa	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 0	R_leak= 'Rleak'
+Xblk_die_1_1	pkg_bump_1_1	ref_gnd	model_die_lumped_nne_pa	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 0	R_leak= 'Rleak'		
+Xblk_die_1_2	pkg_bump_1_2	ref_gnd	model_die_lumped_nne_pa	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 0	R_leak= 'Rleak'		
+Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_pa	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 0	R_leak= 'Rleak'	
+
+*************************************** Analysis I: AC simulation *************
+.if ( 0 )
+	.if (0)
+	*** NOTE: DO not include port def if tran analysis later
+	P1 pkg_bump_0_0	ref_gnd	port=1	z0 = 0.1
+	P2 pkg_bump_0_1	ref_gnd	port=2	z0 = 0.1
+	P3 pkg_bump_0_2	ref_gnd	port=3	z0 = 0.1
+	P4 pkg_bump_0_3	ref_gnd	port=4	z0 = 0.1
+	P5 pkg_bump_1_0	ref_gnd	port=5	z0 = 0.1
+	P6 pkg_bump_1_1	ref_gnd	port=6	z0 = 0.1
+	P7 pkg_bump_1_2	ref_gnd	port=7	z0 = 0.1
+	P8 pkg_bump_1_3	ref_gnd	port=8	z0 = 0.1
+
+	
+	.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
+	**.probe  ac s11(db) s11(p) s21(db) s21(p) 
+	.probe ac zin(1)(m) zin(1)(p) zin(5)(m) zin(5)(p) 
+	.endif 
+
+	.ac 	dec 50 1. 1.G
+	*I_pkg_bump_1_0 		pkg_bump_1_0	ref_gnd		AC=1
+	*.probe AC v(pkg_bump_1_0)
+
+.endif 
+
+*************************************** Analysis II: Transient simulation *****
+.if (1)
+	.tran tStep tSTOP 
+
+	.probe tran v(pkg_bump_1_0) 
+	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
+
+
+	*.probe i(*)
+	*.probe x(*)
+
+.endif 
