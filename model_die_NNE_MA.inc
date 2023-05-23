@@ -2,7 +2,7 @@
 * this is model subcircuit for SoC Die, lumped 
 
 .subckt model_die_lumped_nne_ma 
-+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=0m R_leak=0.84     
++ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84     
 
 R_die_1_ 	pin_bump	2	R_die_1
 R_die_2_	2		3	R_die_2
