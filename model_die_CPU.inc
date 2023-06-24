@@ -1,0 +1,14 @@
+
+* this is model subcircuit for SoC Die, lumped 
+
+.subckt model_die_lumped_cpu 
++ pin_bump ref_gnd C_die=413n R_die_1=0.303m R_die_2=RESMIN R_leak=0.232
+
+R_die_1_ 	pin_bump	2	R_die_1
+R_die_2_	2		3	R_die_2
+C_die_		3		ref_gnd	C_die 
+
+R_leak_		pin_bump	ref_gnd	R_leak	
+XcurrSrc	pin_bump	ref_gnd	curr_src_CPU
+
+.ends

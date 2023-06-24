@@ -1,0 +1,925 @@
+* Top level spice file 
+
+.option post=1
+*.chkanode type=gate dv=0.5*pvdd report=active
+.option parhier = local 
+.option measform = 1
+.option lis_new
+.option post probe
+
+*************************************** User defined functions ****************
+.param V_meas(node, ref) = 'v(node) - v(ref)'
+
+
+*************************************** Input Models**************************
+	***** define load current source model used in die model *****
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0426.txt				 
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0426.txt				
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0510_100clk.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0510_100clk.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p1_0511_200clk_51002.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p1_0511_200clk_51002.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0511_200clk_25p_idle_clk_51003.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0511_200clk_25p_idle_clk_51003.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0511_200clk_0p1scale_510041.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0511_200clk_0p1scale_510041.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0511_200clk_0p2scale_510042.inc		** POR as of 0512
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0511_200clk_0p2scale_510042.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0512_200clk_50p_idle_clk_51203.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0512_200clk_50p_idle_clk_51203.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0512_200clk_50p_idle_clk_vdd0p796V_5120302.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0512_200clk_50p_idle_clk_vdd0p796V_5120302.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0512_200clk_100p_idle_clk_51204.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0512_200clk_100p_idle_clk_51204.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_act_0p3_0p2_0515_0clk_0scale_continue_idle_clk_51501.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_act_0p3_0p2_0515_0clk_0scale_continue_idle_clk_51501.inc
+
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
+	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
+
+.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc	*** POR as of 0622
+.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc
+
+	***** define die model *****
+
+.inc ./hspice_inc/model_die_NNE_PA.inc									
+.inc ./hspice_inc/model_die_NNE_MA.inc								 
+
+	***** define pkg model *****
+
+	*.inc ./hspice_inc/andes_0407_cut_NNE_IdEM_wt0p5.cir							
+	*.inc ./hspice_inc/pkge_230329_FCBGA_L12_mammoth_20230406_5_add0510_6_v2_IdEM.cir	*** 28 DSC
+.inc ./hspice_inc/nne_pkg_230329_FCBGA_L12_mammoth_20230525ate_a_IdEM.cir	***  0526 Andes pkg w/ 28 + 35 DSC
+
+	***** define PCB model *****
+
+	*.inc ./hspice_inc//ACM2_cut_GPU_CleanOtherNet_RmLF_IdEM_0p5.cir		*** ACM2 original VDD_GPU_A rail w/o stackup improvement
+	*.param PCB_model  = str('ACM2_cut_GPU_CleanOtherNet_RmLF_IdEM_0p5')
+
+	*.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_VDD_GPU_v2_toHFSS3DLayout_IdEM3.cir				 
+	*.param PCB_model = str('ACM2_PT00547399_A_01_cut_VDD_GPU_v2_toHFSS3DLayout_IdEM3')
+
+	*.inc ./hspice_inc/ACM2_PMIC_change_Cadera_17p2_stkManip_GPU_cut_RmLF_IdEM0p5.cir
+	*.param PCB_model = str('ACM2_PMIC_change_Cadera_17p2_stkManip_GPU_cut_RmLF_IdEM0p5')
+
+	*.inc ./hspice_inc/ACM2_Cadera_GPU_0505_cut_RmLF_IdEM_fixDC.cir		
+	*.param PCB_model = str('ACM2_Cadera_GPU_0505_cut_RmLF_IdEM_fixDC')
+
+.inc ./hspice_inc/ACM2_PT00547399_A_01_Layout_Study_20230518_ODB_step3_RmLF_IdEM_0p5.cir	
+.param PCB_model = str('ACM2_PT00547399_A_01_Layout_Study_20230518_ODB_step3_RmLF_IdEM_0p5')
+
+	*.inc ./hspice_inc/ACM2_PT00547399_A_01_Layout_Study_20230518_ODB_GPU_cut_v2_RmLF_IdEM_0p5.cir	
+	*.param PCB_model = str('ACM2_PT00547399_A_01_Layout_Study_20230518_ODB_GPU_cut_v2_RmLF_IdEM_0p5')
+
+
+*************************************** Input params **************************
+.param Vdd 	= 0.788
+
+.param NNE_die_PA = str('model_die_lumped_nne_pa')
+.param NNE_die_MA = str('model_die_lumped_nne_ma')
+
+.param Cdie_PA 	= '123.n'
+.param Cdie_MA 	= '96.n'
+.param Rdie_PA 	= '1.02m'
+.param Rdie_MA 	= '1.3m'
+.param Rleak 	= 0.84
+
+.param tStep	= 10.p
+.param tStop	= 50.u
+
+*************************************** cap model *****************************
+.inc ../models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
+.inc ../models_cap/GCM155D70G475ME36_DC0V_125degC_0402_4p7uF.mod
+.inc ../models_cap/GCM155C71A105KE38_DC0V_125degC_0402_1uF.mod
+.inc ../models_cap/GCM31CD70G476ME02_DC0V_125degC_1206_47uF.mod
+.inc ../models_cap/GCM32ED70E107ME36_DC0V_125degC_1210_100uF.mod
+.inc ../models_cap/GCM033D70E105ME36_DC0V_125degC_0201_1uF.mod 
+.inc ../models_cap/NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF.mod
+.inc ../models_cap/LLC152D70G105ME01_DC0V_125degC_0204_1uF.mod
+.inc ../models_cap/LLL153C70G104ME01_DC0V_125degC_0204_0.1uF.mod
+.inc ../models_cap/GRT033R70J103KE01_DC0V_125degC_0201_0p01uF.mod
+.inc ../models_cap/GCM155R71C104KA55_DC0V_125degC_0402_0.1uF.mod
+.inc ../models_cap/GCM21BD70G226ME36_DC0V_125degC_0805_22uF.mod
+.inc ../models_cap/GCM155R71E153KA55_DC0V_125degC_0402_0.015uF.mod
+.inc ../models_cap/GRT033C70J104KE01_DC0V_125degC_0201_0p1uF.mod
+.inc ../models_cap/mlcc_470uF_mockup_T598D477M2R5ATE009.mod
+.inc ../models_cap/open_circuit.mod
+
+.inc ../models_cap/EC1001.mod
+.inc ../models_cap/EC1002.mod
+.inc ../models_cap/EC1100_200nF.mod
+
+	***** define cap model strings for better ref ****
+.param mlcc_1uF_0402 		= str('GCM155C71A105KE38_DC0V_125degC_0402_1uF')
+.param mlcc_1uF_0204 		= str('LLC152D70G105ME01_DC0V_125degC_0204_1uF')
+.param mlcc_1uF_0201 		= str('GCM033D70E105ME36_DC0V_125degC_0201_1uF')
+.param mlcc_1uF_0402_3T		= str('NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF')
+.param mlcc_4p7uF_0402 		= str('GCM155D70G475ME36_DC0V_125degC_0402_4p7uF')
+.param mlcc_10uF_0402 		= str('GCM155D70E106ME36_DC0V_125degC_0402_10uF')
+.param mlcc_47uF_1206		= str('GCM31CD70G476ME02_DC0V_125degC_1206_47uF')
+.param mlcc_100uF_1210		= str('GCM32ED70E107ME36_DC0V_125degC_1210_100uF')
+.param mlcc_0p1uF_0402		= str('GCM155R71C104KA55_DC0V_125degC')
+.param mlcc_0p1uF_0201		= str('GRT033C70J104KE01_DC0V_125degC')
+.param mlcc_0p1uF_0204 		= str('LLL153C70G104ME01_DC0V_125degC')
+.param mlcc_0p015uF_0402	= str('GCM155R71E153KA55_DC0V_125degC')
+.param mlcc_0p01uF_0201		= str('GRT033R70J103KE01_DC0V_125degC')
+.param mlcc_22uF_0805		= str('GCM21BD70G226ME36_DC0V_125degC_0805_22uF')
+.param mlcc_470uF_mockup	= str('mlcc_470uF_mockup_T598D477M2R5ATE009') 
+
+.param siCap_empwr_EC1001 = str('EC1001')
+.param siCap_empwr_EC1002 = str('EC1002')
+.param siCap_empwr_EC1100_200nF = str('EC1100_200nF')
+
+*************************************** PMIC **********************************
+Vref_gnd 	ref_gnd		0	0.				*** opt 1/2 ideal PMIC w/o remote sense feedback
+	*E_fdbk	ref_gnd	0	VCVS DELAY pmic_pwr pkg_bump_1_0  td=50.n	*** opt 2/2 VCVS to model feedback
+
+VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
+
+*************************************** Socket ********************************
+Rskt	bga_pcb		bga_pkg		0.				*** can add socket model 
+
+*************************************** PCB ***********************************
+Xblk_PCB 
++ bga_pcb	ref_gnd
++ pmic_pwr	ref_gnd
+	*+ pcbCap_193	ref_gnd
+	*+ pcbCap_194	ref_gnd
+	*+ pcbCap_195	ref_gnd
+	*+ pcbCap_196	ref_gnd
+	*+ pcbCap_197	ref_gnd
+	*+ pcbCap_198	ref_gnd	
+	*+ pcbCap_199	ref_gnd	 
++ pcbCap_1067	ref_gnd
++ pcbCap_1068	ref_gnd
++ pcbCap_1069	ref_gnd
++ pcbCap_1070	ref_gnd
++ pcbCap_1071	ref_gnd
++ pcbCap_1072	ref_gnd
++ pcbCap_1073	ref_gnd
++ pcbCap_1074	ref_gnd
++ pcbCap_1075	ref_gnd
++ pcbCap_1076	ref_gnd
++ pcbCap_1076	ref_gnd
++ pcbCap_1078	ref_gnd		*** end of PMIC side caps
++ pcbCap_1866	ref_gnd
++ pcbCap_1867	ref_gnd
++ pcbCap_1868	ref_gnd
++ pcbCap_1869	ref_gnd
++ pcbCap_1870	ref_gnd
++ pcbCap_1871	ref_gnd
++ pcbCap_1872	ref_gnd
++ pcbCap_1873	ref_gnd
++ pcbCap_1956	ref_gnd
++ pcbCap_1957	ref_gnd
++ pcbCap_1958	ref_gnd
++ pcbCap_1959	ref_gnd
++ pcbCap_1960	ref_gnd
++ pcbCap_1961	ref_gnd
++ pcbCap_1962	ref_gnd
++ pcbCap_1963	ref_gnd
++ pcbCap_2042	ref_gnd
++ pcbCap_2043	ref_gnd
++ pcbCap_2044	ref_gnd
++ pcbCap_2045	ref_gnd
++ pcbCap_2046	ref_gnd
++ pcbCap_2047	ref_gnd
++ pcbCap_2048	ref_gnd
++ pcbCap_2109	ref_gnd
++ pcbCap_2110	ref_gnd
++ pcbCap_2111	ref_gnd
++ pcbCap_2112	ref_gnd
++ pcbCap_2159	ref_gnd
++ pcbCap_2160	ref_gnd
++ pcbCap_2161	ref_gnd
++ pcbCap_2162	ref_gnd
++ pcbCap_2163	ref_gnd
++ pcbCap_2164	ref_gnd
++ pcbCap_2165	ref_gnd
++ pcbCap_2227	ref_gnd
++ pcbCap_2228	ref_gnd
++ pcbCap_2229	ref_gnd
++ pcbCap_2230	ref_gnd
++ pcbCap_2231	ref_gnd
++ pcbCap_2232	ref_gnd
++ pcbCap_2233	ref_gnd
++ pcbCap_2266	ref_gnd
++ pcbCap_2267	ref_gnd
++ pcbCap_2268	ref_gnd
++ pcbCap_2269	ref_gnd
++ pcbCap_2270	ref_gnd
++ pcbCap_2271	ref_gnd
++ pcbCap_2272	ref_gnd
++ pcbCap_2329	ref_gnd
++ pcbCap_2330	ref_gnd
++ pcbCap_2331	ref_gnd
++ pcbCap_2332	ref_gnd
++ pcbCap_2333	ref_gnd
++ pcbCap_2334	ref_gnd
++ pcbCap_2335	ref_gnd
++ pcbCap_2381	ref_gnd
++ pcbCap_2382	ref_gnd
++ str(PCB_model)
+
+*** PCB cap ***
+	*XpcbCap_C_brd_193		pcbCap_193 	ref_gnd 	str(mlcc_22uF_0805)
+	*XpcbCap_C_brd_194		pcbCap_194 	ref_gnd 	str(mlcc_10uF_0402)
+	*XpcbCap_C_brd_195		pcbCap_195 	ref_gnd 	str(mlcc_10uF_0402)
+	*XpcbCap_C_brd_196		pcbCap_196 	ref_gnd 	str(mlcc_10uF_0402)
+	*XpcbCap_C_brd_197		pcbCap_197 	ref_gnd 	str(mlcc_22uF_0805)
+	*XpcbCap_C_brd_198		pcbCap_198 	 		open_circuit
+	*XpcbCap_C_brd_199		pcbCap_199 	 		open_circuit
+	*XpcbCap_C_brd_1067		pcbCap_1067 	 		open_circuit
+	*XpcbCap_C_brd_1068		pcbCap_1068 			open_circuit
+	*XpcbCap_C_brd_1069		pcbCap_1069 			open_circuit
+	*XpcbCap_C_brd_1070		pcbCap_1070 			open_circuit
+XpcbCap_C_brd_1074		pcbCap_1074 	ref_gnd 	str(mlcc_22uF_0805)
+XpcbCap_C_brd_1075		pcbCap_1075 	ref_gnd 	str(mlcc_22uF_0805)
+XpcbCap_C_brd_1071		pcbCap_1071 	ref_gnd 	str(mlcc_470uF_mockup)		*** PMIC side bulk caps
+XpcbCap_C_brd_1072		pcbCap_1072 	ref_gnd 	str(mlcc_470uF_mockup)
+XpcbCap_C_brd_1073		pcbCap_1073 	ref_gnd 	str(mlcc_470uF_mockup)
+XpcbCap_C_brd_1076		pcbCap_1076 	ref_gnd 	str(mlcc_470uF_mockup)
+XpcbCap_C_brd_1077		pcbCap_1077 	ref_gnd 	str(mlcc_470uF_mockup)
+XpcbCap_C_brd_1078		pcbCap_1078 	ref_gnd 	str(mlcc_470uF_mockup)		*** end of PMIC side bulk caps
+XpcbCap_C_brd_1866		pcbCap_1866 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1867		pcbCap_1867 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1868		pcbCap_1868 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1869		pcbCap_1869 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1870		pcbCap_1870 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1871		pcbCap_1871 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_1872		pcbCap_1872 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1873		pcbCap_1873 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1956		pcbCap_1956 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1957		pcbCap_1957 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1958		pcbCap_1958 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_1959		pcbCap_1959 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1960		pcbCap_1960 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1961		pcbCap_1961 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1962		pcbCap_1962 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_1963		pcbCap_1963 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2042		pcbCap_2042 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2043		pcbCap_2043 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2044		pcbCap_2044 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2045		pcbCap_2045 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2046		pcbCap_2046 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2047		pcbCap_2047 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2048		pcbCap_2048 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2109		pcbCap_2109 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2110		pcbCap_2110 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2111		pcbCap_2111 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2112		pcbCap_2112 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2159		pcbCap_2159 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2160		pcbCap_2160 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2161		pcbCap_2161 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2162		pcbCap_2162 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2163		pcbCap_2163 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2164		pcbCap_2164 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2165		pcbCap_2165 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2227		pcbCap_2227 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2228		pcbCap_2228 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2229		pcbCap_2229 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2230		pcbCap_2230 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2231		pcbCap_2231 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2232		pcbCap_2232 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2233		pcbCap_2233 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2266		pcbCap_2266 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2267		pcbCap_2267 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2268		pcbCap_2268 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2269		pcbCap_2269 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2270		pcbCap_2270 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2271		pcbCap_2271 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2272		pcbCap_2272 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2329		pcbCap_2329 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2330		pcbCap_2330 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2331		pcbCap_2331 	ref_gnd 	GCM155D70E106ME36_DC0V_125degC_0402_10uF
+XpcbCap_C_brd_2332		pcbCap_2332 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2333		pcbCap_2333 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2334		pcbCap_2334 	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+XpcbCap_C_brd_2335		pcbCap_2335 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2381		pcbCap_2381 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+XpcbCap_C_brd_2382		pcbCap_2382 	ref_gnd		GCM155C71A105KE38_DC0V_125degC_0402_1uF
+
+XpcbCap_C_brd_2381_B		pcbCap_2381 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+XpcbCap_C_brd_2382_B		pcbCap_2382 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+
+
+.if( 0 )	*** SoC side back side caps exp
+	XpcbCap_C_brd_1873_B		pcbCap_1873 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+	XpcbCap_C_brd_1866_B		pcbCap_1866 	ref_gnd		GCM32ED70E107ME36_DC0V_125degC_1210_100uF
+	XpcbCap_C_brd_2042_B		pcbCap_2042 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+	XpcbCap_C_brd_2112_B		pcbCap_2112 	ref_gnd		GCM31CD70G476ME02_DC0V_125degC_1206_47uF
+.endif
+
+.if( 0 )	*** PMIC Bulk cap exp
+	XpcbCap_C_brd_1071_x2		pcbCap_1071 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1072_x2		pcbCap_1072 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1073_x2		pcbCap_1073 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1076_x2		pcbCap_1076 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1077_x2		pcbCap_1077 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1078_x2		pcbCap_1078 	ref_gnd 	str(mlcc_470uF_mockup)	
+	XpcbCap_C_brd_1071_x3		pcbCap_1071 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1072_x3		pcbCap_1072 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1073_x3		pcbCap_1073 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1076_x3		pcbCap_1076 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1077_x3		pcbCap_1077 	ref_gnd 	str(mlcc_470uF_mockup)
+	XpcbCap_C_brd_1078_x3		pcbCap_1078 	ref_gnd 	str(mlcc_470uF_mockup)	
+.endif 
+
+
+
+*************************************** Pkg ***********************************
+.if ( 0 )   *NOTE: pkge option 1
+
+	Xblk_pkg
+	+ bga_pkg		ref_gnd
+	+ pkg_bump_0_0	ref_gnd
+	+ pkg_bump_0_1	ref_gnd
+	+ pkg_bump_0_2	ref_gnd
+	+ pkg_bump_0_3	ref_gnd
+	+ pkg_bump_1_0	ref_gnd
+	+ pkg_bump_1_1	ref_gnd
+	+ pkg_bump_1_2	ref_gnd
+	+ pkg_bump_1_3	ref_gnd
+	+ pkgCap_1		ref_gnd	
+	+ pkgCap_2		ref_gnd	
+	+ pkgCap_3		ref_gnd	
+	+ pkgCap_4		ref_gnd	
+	+ pkgCap_5		ref_gnd	
+	+ pkgCap_6		ref_gnd	
+	+ pkgCap_7		ref_gnd	
+	+ pkgCap_8		ref_gnd	
+	+ pkgCap_9		ref_gnd	
+	+ pkgCap_10		ref_gnd	
+	+ pkgCap_11		ref_gnd	
+	+ pkgCap_12		ref_gnd	
+	+ pkgCap_13		ref_gnd	
+	+ pkgCap_14		ref_gnd	
+	+ pkgCap_15		ref_gnd	
+	+ pkgCap_16		ref_gnd	
+	+ pkgCap_17		ref_gnd	
+	+ pkgCap_18		ref_gnd	
+	+ andes_0407_cut_NNE_IdEM_wt0p5
+	*** Pkg cap ***
+	XpkgCap_1	pkgCap_1	ref_gnd		pkgCap_1 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF 
+	XpkgCap_2	pkgCap_2	ref_gnd		pkgCap_2 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_3	pkgCap_3	ref_gnd		pkgCap_3 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_4	pkgCap_4	ref_gnd		pkgCap_4 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_5	pkgCap_5	ref_gnd		pkgCap_5 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_6	pkgCap_6	ref_gnd		pkgCap_6 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_7	pkgCap_7	ref_gnd		pkgCap_7 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_8	pkgCap_8	ref_gnd		pkgCap_8 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+	XpkgCap_9	pkgCap_9	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+	XpkgCap_10	pkgCap_10	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+	XpkgCap_11	pkgCap_11	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+	XpkgCap_12	pkgCap_12	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+	XpkgCap_13	pkgCap_13	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+	XpkgCap_14	pkgCap_14	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF 
+	XpkgCap_15	pkgCap_15	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+	XpkgCap_16	pkgCap_16	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+	XpkgCap_17	pkgCap_17	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+	XpkgCap_14_2	pkgCap_14	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF 
+	XpkgCap_15_2	pkgCap_15	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+	XpkgCap_16_2	pkgCap_16	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+	XpkgCap_17_2	pkgCap_17	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+	XpkgCap_18_2	pkgCap_18	ref_gnd		GCM155D70E106ME36_DC0V_125degC_0402_10uF
+
+.endif 
+
+   **********
+
+.if ( 0 )   *NOTE: pkge option 2
+
+	Xblk_pkg
+	+ bga_pkg		ref_gnd
+	+ pkgCap_1		ref_gnd	
+	+ pkgCap_2		ref_gnd	
+	+ pkgCap_3		ref_gnd	
+	+ pkgCap_4		ref_gnd	
+	+ pkgCap_5		ref_gnd	
+	+ pkgCap_6		ref_gnd	
+	+ pkgCap_7		ref_gnd	
+	+ pkgCap_8		ref_gnd	
+	+ pkgCap_9		ref_gnd	
+	+ pkgCap_10		ref_gnd	
+	+ pkgCap_11		ref_gnd	
+	+ pkgCap_12		ref_gnd	
+	+ pkgCap_13		ref_gnd	
+	+ pkgCap_14		ref_gnd	
+	+ pkgCap_15		ref_gnd	
+	+ pkgCap_16		ref_gnd	
+	+ pkgCap_17		ref_gnd	
+	+ pkgCap_18		ref_gnd	
+	+ pkgCap_19		ref_gnd	
+	+ pkgCap_20		ref_gnd	
+	+ pkgCap_21		ref_gnd	
+	+ pkgCap_22		ref_gnd	
+	+ pkgCap_23		ref_gnd	
+	+ pkgCap_24		ref_gnd	
+	+ pkgCap_25		ref_gnd	
+	+ pkgCap_26		ref_gnd	
+	+ pkgCap_27		ref_gnd	
+	+ pkgCap_28		ref_gnd	
+	+ pkg_bump_0_1	ref_gnd
+	+ pkg_bump_1_2	ref_gnd
+	+ pkg_bump_1_1	ref_gnd
+	+ pkg_bump_0_3	ref_gnd
+	+ pkg_bump_1_3	ref_gnd
+	+ pkg_bump_0_0	ref_gnd
+	+ pkg_bump_0_2	ref_gnd
+	+ pkg_bump_1_0	ref_gnd
+	+ pkge_230329_FCBGA_L12_mammoth_20230406_5_add0510_6_v2_IdEM
+	*** Pkg cap ***
+	.if ( 0 )  	*** 5/12 3T cap obsolete due to non-feed through
+		XpkgCap_1	pkgCap_1	ref_gnd		pkgCap_1 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF 
+		XpkgCap_2	pkgCap_2	ref_gnd		pkgCap_2 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_3	pkgCap_3	ref_gnd		pkgCap_3 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_4	pkgCap_4	ref_gnd		pkgCap_4 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_5	pkgCap_5	ref_gnd		pkgCap_5 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_6	pkgCap_6	ref_gnd		pkgCap_6 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_7	pkgCap_7	ref_gnd		pkgCap_7 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_8	pkgCap_8	ref_gnd		pkgCap_8 	ref_gnd		NFM15HC105D0G3_feedthrough_DC0V_85degC_3T_0402_1uF
+		XpkgCap_9	pkgCap_9	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+		XpkgCap_10	pkgCap_10	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+		XpkgCap_11	pkgCap_11	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+		XpkgCap_12	pkgCap_12	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+		XpkgCap_13	pkgCap_13	ref_gnd		GCM155D70G475ME36_DC0V_125degC_0402_4p7uF
+		XpkgCap_14	pkgCap_14	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF 
+		XpkgCap_15	pkgCap_15	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+		XpkgCap_16	pkgCap_16	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+		XpkgCap_17	pkgCap_17	ref_gnd		GCM033D70E105ME36_DC0V_125degC_0201_1uF
+		XpkgCap_18	pkgCap_18	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_10uF_0402)
+	.endif
+
+	.if ( 1 )	
+		.if ( 1 ) 	*** use 0204 reverse geo 
+			XpkgCap_1	pkgCap_1	ref_gnd		str(mlcc_1uF_0204) 
+			XpkgCap_2	pkgCap_2	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_3	pkgCap_3	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_4	pkgCap_4	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_5	pkgCap_5	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_6	pkgCap_6	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_7	pkgCap_7	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_8	pkgCap_8	ref_gnd		str(mlcc_1uF_0204)
+		.endif
+		.if ( 0 )	*** empower si-cap
+			XpkgCap_1	pkgCap_1	str(siCap_empwr_EC1001) 
+			XpkgCap_2	pkgCap_2	str(siCap_empwr_EC1001)
+			XpkgCap_3	pkgCap_3	str(siCap_empwr_EC1001)
+			XpkgCap_4	pkgCap_4	str(siCap_empwr_EC1001)
+			XpkgCap_5	pkgCap_5	str(siCap_empwr_EC1001)
+			XpkgCap_6	pkgCap_6	str(siCap_empwr_EC1001)
+			XpkgCap_7	pkgCap_7	str(siCap_empwr_EC1001)
+			XpkgCap_8	pkgCap_8	str(siCap_empwr_EC1001)
+		.endif
+		**********
+		.if( 1 )	*** C9-C18 Andes cap, POR
+			XpkgCap_9	pkgCap_9	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_10	pkgCap_10	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_11	pkgCap_11	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_12	pkgCap_12	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_13	pkgCap_13	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_14	pkgCap_14	ref_gnd		str(mlcc_1uF_0201)
+			XpkgCap_15	pkgCap_15	ref_gnd		str(mlcc_1uF_0201)
+			XpkgCap_16	pkgCap_16	ref_gnd		str(mlcc_1uF_0201)
+			XpkgCap_17	pkgCap_17	ref_gnd		str(mlcc_1uF_0201)
+			XpkgCap_18	pkgCap_18	ref_gnd		str(mlcc_1uF_0201)
+		.endif 
+
+		.if ( 0 )	*** C9-C18 si-cap,  exp 
+			XpkgCap_9	pkgCap_9	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_10	pkgCap_10	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_11	pkgCap_11	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_12	pkgCap_12	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_13	pkgCap_13	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_14	pkgCap_14	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_15	pkgCap_15	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_16	pkgCap_16	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_17	pkgCap_17	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_18	pkgCap_18	ref_gnd		str(siCap_empwr_EC1001)
+		.endif
+		**********
+		XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_10uF_0402)
+		XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_10uF_0402)
+	.endif
+.endif 
+
+
+.if ( 0 )   *NOTE: pkge option 3: Andes DSC 0517
+	Xblk_pkg
+	+ bga_pkg		ref_gnd
+	+ pkgCap_1		ref_gnd	
+	+ pkgCap_2		ref_gnd	
+	+ pkgCap_3		ref_gnd	
+	+ pkgCap_4		ref_gnd	
+	+ pkgCap_5		ref_gnd	
+	+ pkgCap_6		ref_gnd	
+	+ pkgCap_7		ref_gnd	
+	+ pkgCap_8		ref_gnd	
+	+ pkgCap_9		ref_gnd	
+	+ pkgCap_10		ref_gnd	
+	+ pkgCap_11		ref_gnd	
+	+ pkgCap_12		ref_gnd	
+	+ pkgCap_13		ref_gnd	
+	+ pkgCap_14		ref_gnd	
+	+ pkgCap_15		ref_gnd	
+	+ pkgCap_16		ref_gnd	
+	+ pkgCap_17		ref_gnd	
+	+ pkgCap_18		ref_gnd	
+	+ pkgCap_19		ref_gnd	
+	+ pkgCap_20		ref_gnd	
+	+ pkgCap_21		ref_gnd	
+	+ pkgCap_22		ref_gnd	
+	+ pkgCap_23		ref_gnd	
+	+ pkgCap_24		ref_gnd	
+	+ pkgCap_25		ref_gnd	
+	+ pkgCap_26		ref_gnd	
+	+ pkgCap_27		ref_gnd	
+	+ pkgCap_28		ref_gnd	
+	+ pkg_bump_0_1	ref_gnd
+	+ pkg_bump_1_2	ref_gnd
+	+ pkg_bump_1_1	ref_gnd
+	+ pkg_bump_0_3	ref_gnd
+	+ pkg_bump_1_3	ref_gnd
+	+ pkg_bump_0_0	ref_gnd
+	+ pkg_bump_0_2	ref_gnd
+	+ pkg_bump_1_0	ref_gnd
+	+ pkge_230329_FCBGA_L12_mammoth_20230406_5_add0510_6_v2_IdEM
+
+	XpkgCap_1	pkgCap_1	ref_gnd		str(mlcc_0p01uF_0201) 
+	XpkgCap_2	pkgCap_2	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_3	pkgCap_3	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_4	pkgCap_4	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_5	pkgCap_5	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_6	pkgCap_6	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_7	pkgCap_7	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_8	pkgCap_8	ref_gnd		str(mlcc_0p01uF_0201)
+	**********
+	.if ( 1 )	*** opt 1/2, C9-C18 Andes cap, POR 0522
+		XpkgCap_9	pkgCap_9	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_10	pkgCap_10	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_11	pkgCap_11	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_12	pkgCap_12	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_13	pkgCap_13	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_14	pkgCap_14	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_15	pkgCap_15	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_16	pkgCap_16	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_17	pkgCap_17	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_18	pkgCap_18	ref_gnd		str(mlcc_1uF_0204)
+	.endif 
+	.if ( 0 )	*** opt 2/2, C9-C18 si-cap,  exp 
+		XpkgCap_9	pkgCap_9	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_10	pkgCap_10	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_11	pkgCap_11	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_12	pkgCap_12	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_13	pkgCap_13	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_14	pkgCap_14	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_15	pkgCap_15	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_16	pkgCap_16	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_17	pkgCap_17	ref_gnd		str(siCap_empwr_EC1001)
+		XpkgCap_18	pkgCap_18	ref_gnd		str(siCap_empwr_EC1001)
+	.endif
+	**********
+	XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_4p7uF_0402)
+	XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_4p7uF_0402)
+
+	.if ( 0 )	*** exp adding more caps
+		XpkgCap_29	pkgCap_19	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_30	pkgCap_20	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_31	pkgCap_21	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_32	pkgCap_22	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_33	pkgCap_23	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_34	pkgCap_24	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_35	pkgCap_25	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_36	pkgCap_26	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_37	pkgCap_27	ref_gnd		str(mlcc_0p1uF_0402)
+		XpkgCap_38	pkgCap_28	ref_gnd		str(mlcc_0p1uF_0402)
+	.endif 
+
+.endif
+
+.if ( 1 )   *NOTE: pkge option 4: Andes 0526 pkge model with 28+35 DSC
+	Xblk_pkg
+	+ bga_pkg		ref_gnd
+	+ pkg_bump_0_0	ref_gnd
+	+ pkg_bump_0_1	ref_gnd
+	+ pkg_bump_0_2	ref_gnd
+	+ pkg_bump_0_3	ref_gnd
+	+ pkg_bump_1_0	ref_gnd
+	+ pkg_bump_1_1	ref_gnd
+	+ pkg_bump_1_2	ref_gnd
+	+ pkg_bump_1_3	ref_gnd
+	+ pkgCab_5_13	ref_gnd
+	+ pkgCab_5_14	ref_gnd
+	+ pkgCab_5_15	ref_gnd
+	+ pkgCab_5_16	ref_gnd
+	+ pkgCab_5_17	ref_gnd
+	+ pkgCab_5_18	ref_gnd
+	+ pkgCab_5_19	ref_gnd
+	+ pkgCab_5_20	ref_gnd
+	+ pkgCap_1		ref_gnd	
+	+ pkgCap_2		ref_gnd	
+	+ pkgCap_3		ref_gnd	
+	+ pkgCap_4		ref_gnd	
+	+ pkgCap_5		ref_gnd	
+	+ pkgCap_6		ref_gnd	
+	+ pkgCap_7		ref_gnd	
+	+ pkgCap_8		ref_gnd	
+	+ pkgCap_9		ref_gnd	
+	+ pkgCap_10		ref_gnd	
+	+ pkgCap_11		ref_gnd	
+	+ pkgCap_12		ref_gnd	
+	+ pkgCap_13		ref_gnd	
+	+ pkgCap_14		ref_gnd	
+	+ pkgCap_15		ref_gnd	
+	+ pkgCap_16		ref_gnd	
+	+ pkgCap_17		ref_gnd	
+	+ pkgCap_18		ref_gnd	
+	+ pkgCap_19		ref_gnd	
+	+ pkgCap_20		ref_gnd	
+	+ pkgCap_21		ref_gnd	
+	+ pkgCap_22		ref_gnd	
+	+ pkgCap_23		ref_gnd	
+	+ pkgCap_24		ref_gnd	
+	+ pkgCap_25		ref_gnd	
+	+ pkgCap_26		ref_gnd	
+	+ pkgCap_27		ref_gnd	
+	+ pkgCap_28		ref_gnd	
+	+ pkgCab_5_1	ref_gnd
+	+ pkgCab_5_2	ref_gnd
+	+ pkgCab_5_3	ref_gnd
+	+ pkgCab_5_4	ref_gnd
+	+ pkgCab_5_5	ref_gnd
+	+ pkgCab_5_6	ref_gnd
+	+ pkgCab_5_7	ref_gnd
+	+ pkgCab_5_8	ref_gnd
+	+ pkgCab_5_9	ref_gnd
+	+ pkgCab_5_10	ref_gnd
+	+ pkgCab_5_11	ref_gnd
+	+ pkgCab_5_12	ref_gnd
+	+ pkgCab_4_1	ref_gnd
+	+ pkgCab_4_2	ref_gnd
+	+ pkgCab_4_3	ref_gnd
+	+ pkgCab_4_4	ref_gnd
+	+ pkgCab_4_5	ref_gnd
+	+ pkgCab_4_6	ref_gnd
+	+ pkgCab_4_7	ref_gnd
+	+ pkgCab_4_8	ref_gnd
+	+ pkgCab_4_9	ref_gnd
+	+ pkgCab_4_10	ref_gnd
+	+ pkgCab_4_11	ref_gnd
+	+ pkgCab_4_12	ref_gnd
+	+ pkgCab_4_13	ref_gnd
+	+ pkgCab_4_14	ref_gnd
+	+ pkgCab_4_15	ref_gnd
+	+ nne_pkg_230329_FCBGA_L12_mammoth_20230525ate_a_IdEM
+
+	XpkgCap_1	pkgCap_1	ref_gnd		str(mlcc_0p01uF_0201) 
+	XpkgCap_2	pkgCap_2	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_3	pkgCap_3	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_4	pkgCap_4	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_5	pkgCap_5	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_6	pkgCap_6	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_7	pkgCap_7	ref_gnd		str(mlcc_0p01uF_0201)
+	XpkgCap_8	pkgCap_8	ref_gnd		str(mlcc_0p01uF_0201)
+
+	**********
+	.if ( 0 )	*** jgwei opt attmpt
+		.if ( 1 )	*** opt 1/2, C9-C18 Andes cap, POR 0522
+			XpkgCap_9	pkgCap_9	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_10	pkgCap_10	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_11	pkgCap_11	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_12	pkgCap_12	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_13	pkgCap_13	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_14	pkgCap_14	ref_gnd		str(mlcc_0p1uF_0204)
+			XpkgCap_15	pkgCap_15	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_16	pkgCap_16	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_17	pkgCap_17	ref_gnd		str(mlcc_1uF_0204)
+			XpkgCap_18	pkgCap_18	ref_gnd		str(mlcc_1uF_0204)
+		.endif 
+		.if ( 0 )	*** opt 2/2, C9-C18 si-cap,  exp 
+			XpkgCap_9	pkgCap_9	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_10	pkgCap_10	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_11	pkgCap_11	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_12	pkgCap_12	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_13	pkgCap_13	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_14	pkgCap_14	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_15	pkgCap_15	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_16	pkgCap_16	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_17	pkgCap_17	ref_gnd		str(siCap_empwr_EC1001)
+			XpkgCap_18	pkgCap_18	ref_gnd		str(siCap_empwr_EC1001)
+		.endif
+		**********
+		XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_4p7uF_0402)
+		XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_4p7uF_0402)
+
+		.if ( 1 )
+			XpkgCap_4_1	pkgCap_4_1	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_2	pkgCap_4_2	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_3	pkgCap_4_3	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_4	pkgCap_4_4	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_5	pkgCap_4_5	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_6	pkgCap_4_6	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_7	pkgCap_4_7	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_8	pkgCap_4_8	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_9	pkgCap_4_9	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_10	pkgCap_4_10	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_11	pkgCap_4_11	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_12	pkgCap_4_12	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_13	pkgCap_4_13	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_14	pkgCap_4_14	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_4_15	pkgCap_4_15	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_1	pkgCap_5_1	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_2	pkgCap_5_2	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_3	pkgCap_5_3	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_4	pkgCap_5_4	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_5	pkgCap_5_5	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_6	pkgCap_5_6	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_7	pkgCap_5_7	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_8	pkgCap_5_8	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_9	pkgCap_5_9	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_10	pkgCap_5_10	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_11	pkgCap_5_11	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_12	pkgCap_5_12	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_13	pkgCap_5_13	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_14	pkgCap_5_14	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_15	pkgCap_5_15	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_16	pkgCap_5_16	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_17	pkgCap_5_17	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_18	pkgCap_5_18	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_19	pkgCap_5_19	ref_gnd		str(mlcc_10uf_0402)
+			XpkgCap_5_20	pkgCap_5_20	ref_gnd		str(mlcc_10uf_0402)
+		.endif 
+	.endif 	*** END of jgwei opt attmpt
+
+	.if( 1 ) 	*** Andes DSC 0531, w/ jgwei change from C19~C28
+		XpkgCap_9	pkgCap_9	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_10	pkgCap_10	ref_gnd		str(mlcc_0p1uF_0204)
+		XpkgCap_11	pkgCap_11	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_12	pkgCap_12	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_13	pkgCap_13	ref_gnd		str(mlcc_0p015uF_0402)		
+		XpkgCap_14	pkgCap_14	ref_gnd		str(mlcc_0p015uF_0402)
+		XpkgCap_15	pkgCap_15	ref_gnd		str(mlcc_0p015uF_0402)
+		XpkgCap_16	pkgCap_16	ref_gnd		str(mlcc_0p015uF_0402)
+		XpkgCap_17	pkgCap_17	ref_gnd		str(mlcc_0p015uF_0402)
+		XpkgCap_18	pkgCap_18	ref_gnd		str(mlcc_0p015uF_0402)
+			.if( 0 )	*** Andes
+			XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_0p015uF_0402)
+			.endif
+			.if( 1 )	*** jgwei change
+			XpkgCap_19	pkgCap_19	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_20	pkgCap_20	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_21	pkgCap_21	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_22	pkgCap_22	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_23	pkgCap_23	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_24	pkgCap_24	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_25	pkgCap_25	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_26	pkgCap_26	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_27	pkgCap_27	ref_gnd		str(mlcc_4p7uF_0402)
+			XpkgCap_28	pkgCap_28	ref_gnd		str(mlcc_4p7uF_0402)
+			.endif
+
+		.if (0)		*** this row of cap values do not seem to be effective
+			XpkgCap_4_1	pkgCap_4_1	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_2	pkgCap_4_2	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_3	pkgCap_4_3	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_4	pkgCap_4_4	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_5	pkgCap_4_5	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_6	pkgCap_4_6	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_7	pkgCap_4_7	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_8	pkgCap_4_8	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_9	pkgCap_4_9	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_10	pkgCap_4_10	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_11	pkgCap_4_11	ref_gnd		str(mlcc_0p015uF_0402)
+			XpkgCap_4_12	pkgCap_4_12	ref_gnd		str(mlcc_0p015uF_0402)
+
+			XpkgCap_4_13	pkgCap_4_13	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_4_14	pkgCap_4_14	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_4_15	pkgCap_4_15	ref_gnd		str(mlcc_0p1uF_0201)
+		.endif 
+
+			XpkgCap_5_16	pkgCap_4_16	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_5_17	pkgCap_4_17	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_5_18	pkgCap_4_18	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_5_19	pkgCap_4_19	ref_gnd		str(mlcc_0p1uF_0201)
+			XpkgCap_5_20	pkgCap_4_20	ref_gnd		str(mlcc_0p1uF_0201)
+
+		XpkgCap_5_1	pkgCap_5_1	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_2	pkgCap_5_2	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_3	pkgCap_5_3	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_4	pkgCap_5_4	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_5	pkgCap_5_5	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_6	pkgCap_5_6	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_7	pkgCap_5_7	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_8	pkgCap_5_8	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_9	pkgCap_5_9	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_10	pkgCap_5_10	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_11	pkgCap_5_11	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_12	pkgCap_5_12	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_13	pkgCap_5_13	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_14	pkgCap_5_14	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_15	pkgCap_5_15	ref_gnd		str(mlcc_10uf_0402)
+	.endif	*** END of Andes DSC 0531
+.endif
+
+
+*************************************** Die ***********************************
+Xblk_die_0_0	pkg_bump_0_0	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+Xblk_die_0_1	pkg_bump_0_1	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+Xblk_die_0_2	pkg_bump_0_2	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+Xblk_die_0_3	pkg_bump_0_3	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+Xblk_die_1_0	pkg_bump_1_0	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'
+Xblk_die_1_1	pkg_bump_1_1	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+Xblk_die_1_2	pkg_bump_1_2	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+Xblk_die_1_3	pkg_bump_1_3	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+
+*************************************** Analysis I: AC simulation *************
+.if ( 0 )
+	.if ( 1 )
+	*** NOTE: DO not include port def if tran analysis later
+	P1 pkg_bump_0_0	ref_gnd	port=1	z0 = 0.1
+	P2 pkg_bump_0_1	ref_gnd	port=2	z0 = 0.1
+	P3 pkg_bump_0_2	ref_gnd	port=3	z0 = 0.1
+	P4 pkg_bump_0_3	ref_gnd	port=4	z0 = 0.1
+	P5 pkg_bump_1_0	ref_gnd	port=5	z0 = 0.1
+	P6 pkg_bump_1_1	ref_gnd	port=6	z0 = 0.1
+	P7 pkg_bump_1_2	ref_gnd	port=7	z0 = 0.1
+	P8 pkg_bump_1_3	ref_gnd	port=8	z0 = 0.1
+
+	
+	.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
+	**.probe  ac s11(db) s11(p) s21(db) s21(p) 
+	.probe ac zin(1)(m) zin(1)(p) zin(5)(m) zin(5)(p) 
+	.endif 
+
+	.ac 	dec 50 1. 1.G
+	*I_pkg_bump_1_0 		pkg_bump_1_0	ref_gnd		AC=1
+	*.probe AC v(pkg_bump_1_0)
+
+.endif 
+
+*************************************** Analysis II: Transient simulation *****
+.if ( 1 )
+	.tran tStep tSTOP 
+
+
+	.probe tran v(pkg_bump_1_0) v(pkg_bump_0_0) v(bga_pkg)
+	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
+
+
+	*.probe i(*)
+	*.probe x(*)
+
+.endif 
