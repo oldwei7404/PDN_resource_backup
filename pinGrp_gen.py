@@ -21,6 +21,7 @@ rm_dim2_step_per_net = 2
 ##### End of User Input 
 
 ##### Do Check with your layout to make sure dim1_list assumption is valid 
+##### WARNING: an invalid value will lead to incomplete pin groups
 dim1_list = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "R", "T", "U", "V", "W", "Y", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AJ", "AK", "AL", "AM", "AN", "AP", "AR", "AT", "AU", "AV", "AW", "AY", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BJ", "BK", "BL", "BM", "BN", "BP", "BR", "BT", "BU", "BV", "BW", "BY", "CA", "CB", "CC", "CD", "CE", "CF", "CG", "CH", "CJ", "CK", "CL", "CM", "CN", "CP", "CR", "CT", "CU", "CV", "CW", "CY"]
 
 
