@@ -88,8 +88,19 @@ class Waveform:
                     continue 
 
                 cln_str_split = cln_st_src.split(' ')
-                time_this = float(cln_str_split[0])
-                data_this = float(cln_str_split[2])   #### how to fix this ???
+                line_info_cnt = 0
+                len_tmp = len(cln_str_split)
+                for i in range(0, len_tmp):
+                    #if cln_str_split[i].isnumeric():
+                    if len(cln_str_split[i]) != 0 and cln_str_split[i] != ' ':
+                        if line_info_cnt == 0:
+                            time_this = float(cln_str_split[i])
+                        elif line_info_cnt == 1:
+                            data_this = float(cln_str_split[i])
+                        line_info_cnt = line_info_cnt + 1
+                    
+                    if line_info_cnt == 2:
+                        break
 
                 if data_this > self.val_MAX:
                     self.val_MAX = data_this
@@ -136,11 +147,11 @@ class Waveform:
         for i in range (0, len_bin):
             time_tot = time_tot + self.bin_time_accu_list[i]
 
-        fout.write('MAX: ' + str(self.val_MAX) + ', \tMIN: ' + str(self.val_MIN))
-        fout.write('bin high bd,\t time_accmulated,\t, time_accumulated pct (%)\n')
+        fout.write('MAX: ' + str(self.val_MAX) + ', MIN: ' + str(self.val_MIN)+'\n')
+        fout.write('bin high bd, time_accmulated(s), time_accumulated pct (%)\n')
         for i in range (0, len_bin):
             #fout.write(str(self.bin_val_list[i]) + ',\t' + str(self.bin_time_accu_list[i]) + ',\t' + str( self.bin_time_accu_list[i]/time_tot * 100. ) + '\n')
-            fout.write(str( "{:.3f}".format( self.bin_val_list[i])) + ',\t' + str("{:.3E}".format( self.bin_time_accu_list[i])) + ',\t' + str( "{:.2f}".format( self.bin_time_accu_list[i]/time_tot * 100. )) + '\n')
+            fout.write(str( "{:.3f}".format( self.bin_val_list[i])) + ', ' + str("{:.3E}".format( self.bin_time_accu_list[i])) + ', ' + str( "{:.2f}".format( self.bin_time_accu_list[i]/time_tot * 100. )) + '\n')
            
         fout.close()
 
@@ -183,6 +194,9 @@ else:
     sys.exit(-1)
 
 ### start processing data
+print('#INFO: waveform parser in process... \n')
 waveformParseInst = Waveform(file_input_path)
 waveformParseInst.read_parse_waveform_file()
 waveformParseInst.output_statistics(file_output_path)
+
+print('#INFO: waveform parser finished. Quit normally\n')
