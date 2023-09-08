@@ -1,6 +1,6 @@
 # This script is created to repeat input current waveforms.
-# run example: YOUR_PYTHON_EXE waveform_parser.py [-d: in/out file directory] [-i: input file name] [-s: time stamp repeat start idx] [-e: time stamp repeat end idx] [-l: total len of finished waveform] [-p: ONLY if plot result waveform]
-# NOTE: 
+# run example: YOUR_PYTHON_EXE waveform_parser.py [-d: in/out file directory] [-i: input file name] [-s: time stamp repeat start idx] [-e: time stamp repeat end idx] [-l: total length in TIME(s) of finished waveform] [-p: ONLY if plot result waveform]
+# python .\waveform_repeater.py -d . -i cphy_ana_RX_FF_2T_3G5_vp_.pwl -s 2 -e 291660 -l 1.e-6  -p
 
 import os, sys, getopt
 import matplotlib.pyplot as plt
