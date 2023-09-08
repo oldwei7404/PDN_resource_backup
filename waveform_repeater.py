@@ -39,7 +39,7 @@ class Waveform:
             cln_str = fin.readline()
             while cln_str: 
                 cln_st_src = cln_str.lstrip(' ').rstrip(' ').rstrip('\t').rstrip('\n')
-                if cln_st_src == '' or cln_st_src[0] == '#' or cln_st_src[0].isnumeric() == False:
+                if cln_st_src == '' or cln_st_src[0] == '#' or ( cln_st_src[0].isnumeric() == False and '+' not in cln_st_src[0] ) or  ')' in cln_str or '(' in cln_str: 
                     cln_str = fin.readline()
                     continue 
 
@@ -49,9 +49,8 @@ class Waveform:
                     cln_str_split = cln_st_src.split(' ')
                 line_info_cnt = 0
                 len_tmp = len(cln_str_split)
-                for i in range(0, len_tmp):
-                    #if cln_str_split[i].isnumeric():
-                    if len(cln_str_split[i]) != 0 and cln_str_split[i] != ' ':
+                for i in range(0, len_tmp): ### loop this line after splitting
+                    if len(cln_str_split[i]) != 0 and cln_str_split[i] != ' ' and cln_str_split[i]!= '+': # and cln_str_split[i][0].isnumeric():
                         if line_info_cnt == 0:
                             time_this = float(cln_str_split[i])
                         elif line_info_cnt == 1:
@@ -90,14 +89,24 @@ class Waveform:
         print('#INFO: output waveforms ...')
         fout = open(self.waveform_file_out_path, 'w') 
         len_data = len(self.list_time)
-        
-        fout.write('BEGIN  TIMEDATA' + '\n')
-        fout.write('# T ( SEC  V  R 50 )' + '\n')
-        fout.write('%   time      voltage' + '\n')  ### Note: this is not typo, "voltage" is just format for TIM file       
-        for i in range(0, len_data):
-            fout.write(str(self.list_time[i]) + '\t' + str(self.list_waveform[i]) + '\n')
-        fout.write('END' + '\n')
 
+        if self.waveform_file_in_path.endswith('.pwl'):
+            fout.write('I/V_YourCurrSrcName  YourSrcNode  YourRefGnd PWL(\n')
+            for i in range(0, len_data):
+                fout.write('+ '+ str(self.list_time[i]) + '\t' + str(self.list_waveform[i]) + '\n')
+            fout.write('+ r=0) \n')
+
+        else:   # self.waveform_file_in_path.endswith('.tim'):
+            fout.write('BEGIN  TIMEDATA' + '\n')
+            fout.write('# T ( SEC  V  R 50 )' + '\n')
+            fout.write('%   time      voltage' + '\n')  ### Note: this is not typo, "voltage" is just format for TIM file       
+            for i in range(0, len_data):
+                fout.write(str(self.list_time[i]) + '\t' + str(self.list_waveform[i]) + '\n')
+            fout.write('END \n')
+
+        fout.close()
+
+            
     def PlotWaveform(self):
         print('#INFO: plotting waveforms ...')
         plt.rcParams.update({'font.size': 15})
@@ -153,7 +162,10 @@ for o, a in opts:
 
 
 file_input_path     = file_dir + file_input
-file_output_path    = file_input_path.rstrip('.tim') + '_out_stat.tim'
+if file_input_path.endswith('tim'):
+    file_output_path    = file_input_path.rstrip('.tim') + '_out_stat.tim'
+elif file_input_path.endswith('pwl'):
+    file_output_path    = file_input_path.rstrip('.pwl') + '_out_stat.pwl'
 
 if os.path.exists(file_input_path):
     print('#INFO: Input file path: ' + file_input_path)
