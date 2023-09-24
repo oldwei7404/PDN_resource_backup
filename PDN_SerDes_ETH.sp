@@ -11,6 +11,17 @@
 .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_ETH/inc_data/ZJC_5_PDN_SerDes_cut_only_ETH10G.cir
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_ETH10G')
 
+***** current profiles 
+.param currSrc_vdd_c_cmn = str('./inc_data/cmn_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_tx = str('./inc_data/tx_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_rx = str('./inc_data/rx_avdd_clk_current_ff.csv')
+.param currSrc_vdd_d_cmn = str('./inc_data/cmn_avdd_current_ff.csv')
+.param currSrc_vdd_d_tx = str('./inc_data/tx_avdd_current_ff.csv')
+.param currSrc_vdd_d_rx = str('./inc_data/rx_avdd_current_ff.csv')
+.param currSrc_vdd_h_cmn = str('./inc_data/cmn_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_tx = str('./inc_data/tx_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_rx = str('./inc_data/rx_avdd_h_current_ff.csv')
+
 ***** die params 
 .param Cdie_avdd_c	= '72.55p'
 .param Rdie_avdd_c  = '827m'
@@ -35,63 +46,24 @@
 
 ***** end of user input 
 ***** die models 
-.subckt model_die_eth_vdd_c_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
+.subckt model_die_eth_vdd_cdh_cmn
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in = str('./currSrc.csv')	
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/cmn_avdd_clk_current_ff.csv' 	R
+IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
 .ends 
 **
-.subckt model_die_eth_vdd_c_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
+.subckt model_die_eth_vdd_cdh
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in_tx = str('./currSrc.csv')	pwl_file_in_rx = str('./currSrc.csv')			
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc_rx	2			ref_gnd		PWL pwlfile = './inc_data/rx_avdd_clk_current_ff.csv' 	R
-IcurrSrc_tx	2			ref_gnd		PWL pwlfile = './inc_data/tx_avdd_clk_current_ff.csv' 	R
+IcurrSrc_rx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_rx)	R
+IcurrSrc_tx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_tx) 	R
 .ends 
-**
-.subckt model_die_eth_vdd_d_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/cmn_avdd_current_ff.csv' 	R
-.ends 
-**
-.subckt model_die_eth_vdd_d_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc_rx	2			ref_gnd		PWL pwlfile = './inc_data/rx_avdd_current_ff.csv' 	R
-IcurrSrc_tx	2			ref_gnd		PWL pwlfile = './inc_data/tx_avdd_current_ff.csv' 	R
-.ends 
-**
-.subckt model_die_eth_vdd_h_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/cmn_avdd_h_current_ff.csv' 	R
-.ends 
-**
-.subckt model_die_eth_vdd_h_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m				
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc_rx	2			ref_gnd		PWL pwlfile = './inc_data/rx_avdd_h_current_ff.csv' 	R
-IcurrSrc_tx	2			ref_gnd		PWL pwlfile = './inc_data/tx_avdd_h_current_ff.csv' 	R
-.ends 
-**
 
 *************************************** cap model *****************************
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -236,23 +208,34 @@ xblk_pkg
  
  ***** die 
  *** Note: all 3 lanes use same profile for now
- Xblk_die_vdd_c_cmn 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_c_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn' 
- Xblk_die_vdd_c_lane_0 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_c_ln0	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
- Xblk_die_vdd_c_lane_1 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_c_ln0	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 
- Xblk_die_vdd_c_lane_2 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_c_ln0	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 
+ Xblk_die_vdd_c_cmn 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn' 	
+ + pwl_file_in = str(currSrc_vdd_c_cmn)
+ Xblk_die_vdd_c_lane_0 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
+ Xblk_die_vdd_c_lane_1 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
+ Xblk_die_vdd_c_lane_2 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
  
- Xblk_die_vdd_d_cmn 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_d_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn' 
- Xblk_die_vdd_d_lane_0 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_d_ln0	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
- Xblk_die_vdd_d_lane_1 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_d_ln0	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 
- Xblk_die_vdd_d_lane_2 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_d_ln0	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 
+ Xblk_die_vdd_d_cmn 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn' 	
+ + pwl_file_in = str(currSrc_vdd_d_cmn)
+ Xblk_die_vdd_d_lane_0 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
+ Xblk_die_vdd_d_lane_1 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
+ Xblk_die_vdd_d_lane_2 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
  
- Xblk_die_vdd_h_cmn 		bump_pwr_vdd_h_cmn	ref_gnd	model_die_eth_vdd_h_cmn	Cdie= 'Cdie_avdd_h_cmn'		Rdie= 'Rdie_avdd_h_cmn'		Res= 'Res_avdd_h_cmn' 
- Xblk_die_vdd_h_lane_0 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_h_ln0	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
- Xblk_die_vdd_h_lane_1 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_h_ln0	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 
- Xblk_die_vdd_h_lane_2 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_h_ln0	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 
+ Xblk_die_vdd_h_cmn 		bump_pwr_vdd_h_cmn	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_h_cmn'		Rdie= 'Rdie_avdd_h_cmn'		Res= 'Res_avdd_h_cmn' 	
+ + pwl_file_in = str(currSrc_vdd_h_cmn)
  
-
-
+ Xblk_die_vdd_h_lane_0 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
+ Xblk_die_vdd_h_lane_1 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
+ Xblk_die_vdd_h_lane_2 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
+ 
 *** run settings 
 .option post=1
 .option parhier = local 
@@ -260,7 +243,7 @@ xblk_pkg
 .option lis_new
 .option post probe
 
-.param is_ac_run = 0
+.param is_ac_run = 1
 
 .if ( is_ac_run == 1 )  *** jgwei AC sim
 	.if ( 1 )
@@ -282,15 +265,15 @@ xblk_pkg
 
 .if ( is_ac_run != 1 )  *** jgwei trans sim
 	.param tStep	= 10.p
-	.param tStop	= 2.u
+	.param tStop	= 120n.   *2.u
 	
 	.tran tStep tSTOP 
 
 	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)	v(bump_pwr_vdd_h_cmn)
 	.probe x(xblk_pkg.a_6)   x(xblk_pkg.a_7) 	x(xblk_pkg.a_8)		x(xblk_pkg.a_5) 
 
-	.param vdd_meas_start = 10.ns
-	.param vdd_meas_end   = 2.us
+	.param vdd_meas_start = 10.n
+	.param vdd_meas_end   = 100.n
 	.meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
@@ -314,5 +297,6 @@ xblk_pkg
 	.meas tran bump_pwr_vdd_h_cmn_vmin	MIN	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_h_cmn_vmax_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_h_cmn_vmin_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+
 	
 .endif 

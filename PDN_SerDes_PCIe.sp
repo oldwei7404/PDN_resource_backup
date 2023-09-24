@@ -11,6 +11,25 @@
 .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM.cir
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM')
 
+***** current profiles 
+.param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
+.param currSrc_vdd_c_ln0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
+.param currSrc_vdd_c_ln1 = str('./inc_data/i_avdd_clk_a0_lane_1_WC.csv')
+.param currSrc_vdd_c_ln2 = str('./inc_data/i_avdd_clk_a0_lane_2_WC.csv')
+.param currSrc_vdd_c_ln3 = str('./inc_data/i_avdd_clk_a0_lane_3_WC.csv')
+
+.param currSrc_vdd_d_cmn = str('./inc_data/i_avdd_a0_cmn_TT25_x1p3.csv')
+.param currSrc_vdd_d_ln0 = str('./inc_data/i_avdd_a0_lane_0_WC.csv')
+.param currSrc_vdd_d_ln1 = str('./inc_data/i_avdd_a0_lane_1_WC.csv')
+.param currSrc_vdd_d_ln2 = str('./inc_data/i_avdd_a0_lane_2_WC.csv')
+.param currSrc_vdd_d_ln3 = str('./inc_data/i_avdd_a0_lane_3_WC.csv')
+
+.param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
+.param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
+.param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
+.param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
+.param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
+
 ***** die params 
 .param Cdie_avdd_c_xcvr	= '268p'
 .param Rdie_avdd_c_xcvr = '73m'
@@ -31,155 +50,25 @@
 .param Cdie_avdd_h_cmn 	= '50p'
 .param Res_avdd_h_cmn 	= '80m'
 
-
-* .param curr_src_vdd_c_lane_0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
-* .param curr_src_vdd_d_lane_0 = str('./inc_data/i_avdd_a0_lane_0_WC.csv')
-* .param curr_src_vdd_h_lane_0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
-
 ***** end of user input 
 ***** die models 
-.subckt model_die_pcie_vdd_c_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m					* FileName = './'
+.subckt model_die_pcie_vdd_cdh_cmn
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in = str('./currSrc.csv')	
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = "./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv" 	R
+IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
 .ends 
 **
-.subckt model_die_pcie_vdd_c_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m					* FileName = './'
+.subckt model_die_pcie_vdd_cdh
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in = str('./currSrc.csv')
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = "./inc_data/i_avdd_clk_a0_lane_0_WC.csv" 	R
-*IcurrSrc	2			ref_gnd		PWL pwlfile= FileName	R
-*IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_c_lane_0)		R
+IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
 .ends 
-**
-.subckt model_die_pcie_vdd_c_ln1
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m					* FileName = './'
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = "./inc_data/i_avdd_clk_a0_lane_1_WC.csv" 	R
-.ends 
-**
-.subckt model_die_pcie_vdd_c_ln2
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m					* FileName = './'
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = "./inc_data/i_avdd_clk_a0_lane_2_WC.csv" 	R
-.ends 
-**
-.subckt model_die_pcie_vdd_c_ln3
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m					* FileName = './'
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = "./inc_data/i_avdd_clk_a0_lane_3_WC.csv" 	R
-.ends 
-**
-.subckt model_die_pcie_vdd_d_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_a0_cmn_TT25_x1p3.csv' 	R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_d_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_d_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_a0_lane_0_WC.csv' 	R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_d_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_d_ln1
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_a0_lane_1_WC.csv' 	R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_d_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_d_ln2
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_a0_lane_2_WC.csv' 	R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_d_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_d_ln3
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		1			ref_gnd 	Cdie 
-R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_a0_lane_3_WC.csv' 	R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_d_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_h_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		2			ref_gnd 	Cdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv' R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_h_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_h_ln0
-+ pin_bump ref_gnd Cdie = 1n. 	Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		2			ref_gnd 	Cdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_h_a0_lane_0_WC.csv' R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_h_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_h_ln1
-+ pin_bump ref_gnd Cdie = 1n. 	Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		2			ref_gnd 	Cdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_h_a0_lane_1_WC.csv' R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_h_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_h_ln2
-+ pin_bump ref_gnd Cdie = 1n. 	Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		2			ref_gnd 	Cdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_h_a0_lane_2_WC.csv' R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_h_lane_0)		R
-.ends 
-**
-.subckt model_die_pcie_vdd_h_ln3
-+ pin_bump ref_gnd Cdie = 1n. 	Res = 50m	
-
-R_res_		pin_bump	2			Res 
-C_die_		2			ref_gnd 	Cdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = './inc_data/i_avdd_h_a0_lane_3_WC.csv' R
-* IcurrSrc	2			ref_gnd		PWL pwlfile= str(curr_src_vdd_h_lane_0)		R
-.ends 
-**
 
 *************************************** cap model *****************************
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -311,23 +200,23 @@ xblk_PCB
   xcapPkg_C140_vdd_h  	capPkg_C140_vdd_h ref_gnd 	str(mlcc_0p47nF_0201)
   
 ***** die
-Xblk_die_vdd_c_cmn 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_c_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn'   	
-Xblk_die_vdd_c_lane_0 		bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_c_ln0	Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr' 		
-Xblk_die_vdd_c_lane_1 		bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_c_ln1	Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr' 		
-Xblk_die_vdd_c_lane_2 		bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_c_ln2	Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr' 		
-Xblk_die_vdd_c_lane_3 		bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_c_ln3	Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr' 		
+Xblk_die_vdd_c_cmn 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn'  	pwl_file_in = str(currSrc_vdd_c_cmn)
+Xblk_die_vdd_c_ln0 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln0)
+Xblk_die_vdd_c_ln1 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln1)
+Xblk_die_vdd_c_ln2 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln2)
+Xblk_die_vdd_c_ln3 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln3)
 
-Xblk_die_vdd_d_cmn 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_d_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn' 
-Xblk_die_vdd_d_lane_0 		bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_d_ln0	Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr' 
-Xblk_die_vdd_d_lane_1 		bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_d_ln1	Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr' 
-Xblk_die_vdd_d_lane_2 		bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_d_ln2	Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr' 
-Xblk_die_vdd_d_lane_3 		bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_d_ln3	Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr' 
+Xblk_die_vdd_d_cmn 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn'  	pwl_file_in = str(currSrc_vdd_d_cmn)
+Xblk_die_vdd_d_ln0 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr'  pwl_file_in = str(currSrc_vdd_d_ln0)
+Xblk_die_vdd_d_ln1 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr'  pwl_file_in = str(currSrc_vdd_d_ln1)
+Xblk_die_vdd_d_ln2 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr'  pwl_file_in = str(currSrc_vdd_d_ln2)
+Xblk_die_vdd_d_ln3 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr'  pwl_file_in = str(currSrc_vdd_d_ln3)
 
-Xblk_die_vdd_h_cmn 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_cmn	Cdie= 'Cdie_avdd_h_cmn'		Res= 'Res_avdd_h_cmn' 
-Xblk_die_vdd_h_lane_0 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln0	Cdie= 'Cdie_avdd_h_xcvr'	Res= 'Res_avdd_h_xcvr' 
-Xblk_die_vdd_h_lane_1 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln1	Cdie= 'Cdie_avdd_h_xcvr'	Res= 'Res_avdd_h_xcvr' 
-Xblk_die_vdd_h_lane_2 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln2	Cdie= 'Cdie_avdd_h_xcvr'	Res= 'Res_avdd_h_xcvr' 
-Xblk_die_vdd_h_lane_3 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln3	Cdie= 'Cdie_avdd_h_xcvr'	Res= 'Res_avdd_h_xcvr' 
+Xblk_die_vdd_h_cmn 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh_cmn	Cdie= 'Cdie_avdd_h_cmn'		Rdie= 1.e-6		Res= 'Res_avdd_h_cmn'  	pwl_file_in = str(currSrc_vdd_h_cmn)
+Xblk_die_vdd_h_ln0 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln0)
+Xblk_die_vdd_h_ln1 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln1)
+Xblk_die_vdd_h_ln2 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln2)
+Xblk_die_vdd_h_ln3 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln3)
 
 *** run settings 
 .option post=1
@@ -336,7 +225,7 @@ Xblk_die_vdd_h_lane_3 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln3	Cdie= 'C
 .option lis_new
 .option post probe
 
-.param is_ac_run = 0
+.param is_ac_run = 1
 
 .if ( is_ac_run == 1 )  *** jgwei AC sim
 	.if ( 1 )
@@ -365,8 +254,8 @@ Xblk_die_vdd_h_lane_3 		bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_h_ln3	Cdie= 'C
 	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)
 	.probe x(xblk_pkg.a_4)   x(xblk_pkg.a_5) 	x(xblk_pkg.a_6) 
 
-	.param vdd_meas_start = 35.ns
-	.param vdd_meas_end   = 1.us
+	.param vdd_meas_start = 35.n
+	.param vdd_meas_end   = 1.u
 	.meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
