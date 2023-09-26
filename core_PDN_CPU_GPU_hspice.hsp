@@ -13,7 +13,10 @@
 
 *************************************** Input Models**************************
 	***** define load current source model used in die model *****
-.inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
+
+* .inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
+.param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')
+.param pwl_file_gpu = str('./hspice_inc/out_curr_profile_GPU_fake_0.csv')
 
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_13A_1000ns_cnst_500ns_9_13_rand_55ns_rampDown_noClk.txt
 
@@ -23,12 +26,23 @@
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_11A_1000ns_cnst_500ns_9_13_rand_55ns_rampDown_noClk.txt
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_9A_1000ns_cnst_500ns_6_9_rand_55ns_rampDown_noClk.txt
 
+
 	*** GPU profile
 .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
 
 	***** define die model *****
-.inc ./hspice_inc/model_die_CPU.inc 
-.inc ./hspice_inc/model_die_GPU.inc 
+* .inc ./hspice_inc/model_die_CPU.inc 
+* .inc ./hspice_inc/model_die_GPU.inc 
+
+.subckt model_die_typ
++ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84	pwl_file_in = str('./currSrc.csv')	
+
+R_die_1_ 	pin_bump	2	R_die_1
+R_die_2_	2		3	R_die_2
+C_die_		3		ref_gnd	C_die 
+R_leak_		pin_bump	ref_gnd	R_leak	
+IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) 
+.ends
 
 	***** define pkg model *****
 	*.inc ./hspice_inc/C_v1_forCPU_wBF_wDSU_wGPU_RmLF_1e4Hz_IdEM.cir
@@ -74,10 +88,7 @@
 	*.param Cdie_gpu	= '0.n'
 	*.param Rdie_gpu	= '1.e9m'
 	*.param Rleak_gpu= 1.e9
-
-.param tStep	= 10.p
-.param tStop	= 10.u
-
+	
 .param Lcomp_val= 10.p		*** temporarily mimic Andes pkg design rule, use 0 if pkg model is appropriate
 
 *************************************** cap model *****************************
@@ -1114,11 +1125,16 @@ L_comp_gpu	pkg_bump_gpu 	pkg_bump_toPkge_gpu	Lcomp_val
 .endif  	*** end of pkg mock up Andes 0724 	
 	
 *************************************** Die ***********************************
-Xblk_die 	pkg_bump	ref_gnd str(CPU_die) C_die= 'Cdie_cpu'	R_die_1= 'Rdie_cpu' R_die_2= 1.e-6	R_leak= 'Rleak_cpu'
-Xblk_die_gpu 	pkg_bump_gpu	ref_gnd str(GPU_die) C_die= 'Cdie_gpu'	R_die_1= 'Rdie_gpu' R_die_2= 1.e-6	R_leak= 'Rleak_gpu'
+* Xblk_die 		pkg_bump	ref_gnd str(CPU_die) C_die= 'Cdie_cpu'	R_die_1= 'Rdie_cpu' R_die_2= 1.e-6	R_leak= 'Rleak_cpu'
+* Xblk_die_gpu 	pkg_bump_gpu	ref_gnd str(GPU_die) C_die= 'Cdie_gpu'	R_die_1= 'Rdie_gpu' R_die_2= 1.e-6	R_leak= 'Rleak_gpu'
 
+Xblk_die 		pkg_bump		ref_gnd model_die_typ C_die= 'Cdie_cpu'	R_die_1= 'Rdie_cpu' R_die_2= 1.e-6	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpu)
+Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdie_gpu' R_die_2= 1.e-6	R_leak= 'Rleak_gpu'	pwl_file_in = str(pwl_file_gpu)
+
+
+.param is_ac_run = 0
 *************************************** Analysis I: AC simulation *************
-.if ( 0 )
+.if ( is_ac_run == 1 )
 	.if ( 1 )
 	*** NOTE: DO not include port def if tran analysis later
 	P1 pkg_bump	ref_gnd	port=1	z0 = 0.1
@@ -1137,7 +1153,9 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd str(GPU_die) C_die= 'Cdie_gpu'	R_die_1= 'Rdie
 .endif
 
 *************************************** Analysis II: Transient simulation *****
-.if ( 1 )
+.if ( is_ac_run != 1 )
+	.param tStep	= 10.p
+	.param tStop	= 10.u
 	.tran tStep tSTOP 
 
 	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)

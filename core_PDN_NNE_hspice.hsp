@@ -47,8 +47,11 @@
 	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
 	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
 
-.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc	*** POR as of 0622
-.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc
+* .inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc	*** POR as of 0622
+* .inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc
+
+.param pwl_file_in_PA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
+.param pwl_file_in_MA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
 	
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -59,20 +62,31 @@
 	*.inc ./hspice_inc/out_curr_profile_NNE_300nsRamp_100ns_12A_10000ns_cnst_100ns_rampDown_Clk0p7floor.txt
 
 	***** define die model *****
-		***** PA tile 
-	*.inc ./hspice_inc/model_die_NNE_PA_idle.inc			*** idle 0A
-	*.param NNE_die_PA_idle = str('model_die_lumped_nne_pa_idle_0A')
+.subckt model_die_lumped_nne_tile
++ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84	pwl_file_in = str('./currSrc.csv')	
 
-.inc ./hspice_inc/model_die_NNE_PA.inc		
-.param NNE_die_PA = str('model_die_lumped_nne_pa')	
-	*.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp.inc	*** 12A step up current
-	*.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp')
-	*.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp_clk.inc	*** 12A step up current w/ clk edges
-	*.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp_clk')
+R_die_1_ 	pin_bump	2	R_die_1
+R_die_2_	2		3	R_die_2
+C_die_		3		ref_gnd	C_die 
+R_leak_		pin_bump	ref_gnd	R_leak	
+IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) 
+.ends
 
-		***** MA tile					
-.inc ./hspice_inc/model_die_NNE_MA.inc								 
-.param NNE_die_MA = str('model_die_lumped_nne_ma')
+
+		* ***** PA tile 
+	* *.inc ./hspice_inc/model_die_NNE_PA_idle.inc			*** idle 0A
+	* *.param NNE_die_PA_idle = str('model_die_lumped_nne_pa_idle_0A')
+
+* .inc ./hspice_inc/model_die_NNE_PA.inc		
+* .param NNE_die_PA = str('model_die_lumped_nne_pa')	
+	* *.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp.inc	*** 12A step up current
+	* *.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp')
+	* *.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp_clk.inc	*** 12A step up current w/ clk edges
+	* *.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp_clk')
+
+		* ***** MA tile					
+* .inc ./hspice_inc/model_die_NNE_MA.inc								 
+* .param NNE_die_MA = str('model_die_lumped_nne_ma')
 
 	***** define pkg model *****
 
@@ -115,8 +129,7 @@
 .param Rdie_MA 	= '1.3m * Rdie_coeff'
 .param Rleak 	= 0.84
 
-.param tStep	= 10.p
-.param tStop	= 50.0u
+*************************************** End of User Input params **************
 
 *************************************** cap model *****************************
 .inc ../models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -1411,17 +1424,25 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 
 
 *************************************** Die ***********************************
-Xblk_die_0_0	pkg_bump_0_0	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
-Xblk_die_0_1	pkg_bump_0_1	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
-Xblk_die_0_2	pkg_bump_0_2	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
-Xblk_die_0_3	pkg_bump_0_3	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
-Xblk_die_1_0	pkg_bump_1_0	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'
-Xblk_die_1_1	pkg_bump_1_1	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
-Xblk_die_1_2	pkg_bump_1_2	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
-Xblk_die_1_3	pkg_bump_1_3	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+* Xblk_die_0_0	pkg_bump_0_0	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+* Xblk_die_0_1	pkg_bump_0_1	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+* Xblk_die_0_2	pkg_bump_0_2	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
+* Xblk_die_0_3	pkg_bump_0_3	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+* Xblk_die_1_0	pkg_bump_1_0	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'
+* Xblk_die_1_1	pkg_bump_1_1	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+* Xblk_die_1_2	pkg_bump_1_2	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		
+* Xblk_die_1_3	pkg_bump_1_3	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
 
+Xblk_die_0_0	pkg_bump_0_0	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
+Xblk_die_0_1	pkg_bump_0_1	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
+Xblk_die_0_2	pkg_bump_0_2	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
+Xblk_die_0_3	pkg_bump_0_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
+Xblk_die_1_0	pkg_bump_1_0	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA)
+Xblk_die_1_1	pkg_bump_1_1	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA)
+Xblk_die_1_2	pkg_bump_1_2	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA)
+Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA)
 
-.param is_ac_run = 1
+.param is_ac_run = 0
 *************************************** Analysis I: AC simulation *************
 .if ( is_ac_run == 1 )
 	.if ( 1 )
@@ -1457,8 +1478,9 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	str(NNE_die_PA)	C_die= 'Cdie_PA'	R_die_1= 'Rdi
 
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
+	.param tStep	= 10.p
+	.param tStop	= 50.0u
 	.tran tStep tSTOP 
-
 
 	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  v(bga_pkg)
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
