@@ -11,6 +11,11 @@
 .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM.cir
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM')
 
+	*** other device model
+	*** filter 
+.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
+.param ferrite_mod1 = str('BLM18SN220TH1')
+
 ***** current profiles 
 .param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
 .param currSrc_vdd_c_ln0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
@@ -24,11 +29,31 @@
 .param currSrc_vdd_d_ln2 = str('./inc_data/i_avdd_a0_lane_2_WC.csv')
 .param currSrc_vdd_d_ln3 = str('./inc_data/i_avdd_a0_lane_3_WC.csv')
 
-.param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
-.param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
-.param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
-.param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
-.param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
+* .param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
+* .param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
+* .param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
+* .param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
+
+*** debug to use 0 current for some rails 
+* .param currSrc_vdd_c_cmn = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_c_ln0 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_c_ln1 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_c_ln2 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_c_ln3 = str('./inc_data/i_curr_0.csv')
+
+* .param currSrc_vdd_d_cmn = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_ln0 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_ln1 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_ln2 = str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_ln3 = str('./inc_data/i_curr_0.csv')
+
+.param currSrc_vdd_h_cmn = str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_ln0 = str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_ln1 = str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_ln2 = str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_ln3 = str('./inc_data/i_curr_0.csv')
+*** end of debug to quite vddd, vddh
 
 ***** die params 
 .param Cdie_avdd_c_xcvr	= '268p'
@@ -69,6 +94,24 @@ C_die_		1			ref_gnd 	Cdie
 R_die_		2			1			Rdie 
 IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
 .ends 
+
+***** filter models 
+.subckt model_filter
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L
+  + pin_pwr_C
+  + str(ferrite_mod1)
+ C1 	pin_pwr_C 	ref_gnd	 	47.u
+ C2		pin_pwr_C	ref_gnd		1.u
+ C3   	pin_pwr_C	ref_gnd		0.1u
+ 
+ XfilterCap_1	pin_pwr_2 	ref_gnd	str(mlcc_47uF_1206)
+ XfilterCap_2	pin_pwr_2 	ref_gnd	str(mlcc_1uF_0201)
+ XfilterCap_3	pin_pwr_2 	ref_gnd	str(mlcc_0p1uF_0201)
+.ends 
+
 
 *************************************** cap model *****************************
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -182,11 +225,35 @@ xblk_PCB
  xcapPcb_C2694	capPcb_C2694	ref_gnd		str(mlcc_10uF_0402)
  xcapPcb_C2717	capPcb_C2717	ref_gnd		str(mlcc_10uF_0402)
  
+*****
+.param use_filter = 1
+	***** filter 
+ .if (use_filter == 1) 
+	 xModel_filter_vddc
+	 + bga_pwr_pcie_0p95
+	 + bga_pwr_pcie_0p95_vddc
+	 + ref_gnd
+	 + model_filter
+
+	 xModel_filter_vddd
+	 + bga_pwr_pcie_0p95
+	 + bga_pwr_pcie_0p95_vddd
+	 + ref_gnd
+	 + model_filter
+ .endif 
+
+ ***** shorting VDDC, VDDD to PCB 
+ .if (use_filter != 1)
+ r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+ r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
+ .endif 
+
+ 
  ***** pkg 
  xblk_pkg
-  + bga_pwr_pcie_0p95 	ref_gnd			*bga_pwr_vdd_c
-  + bga_pwr_pcie_0p95	ref_gnd			*bga_pwr_vdd_d 
-  + bga_pwr_pcie_1p8	ref_gnd			*bga_pwr_vdd_h
+  + bga_pwr_pcie_0p95_vddc 	ref_gnd			
+  + bga_pwr_pcie_0p95_vddd	ref_gnd	
+  + bga_pwr_pcie_1p8	ref_gnd			*NOTE: bga_pwr_vdd_h
   + bump_pwr_vdd_c		ref_gnd
   + bump_pwr_vdd_d		ref_gnd
   + bump_pwr_vdd_h		ref_gnd
@@ -225,7 +292,7 @@ Xblk_die_vdd_h_ln3 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie
 .option lis_new
 .option post probe
 
-.param is_ac_run = 1
+.param is_ac_run = 0
 
 .if ( is_ac_run == 1 )  *** jgwei AC sim
 	.if ( 1 )

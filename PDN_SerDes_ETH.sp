@@ -12,15 +12,24 @@
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_ETH10G')
 
 ***** current profiles 
-.param currSrc_vdd_c_cmn = str('./inc_data/cmn_avdd_clk_current_ff.csv')
-.param currSrc_vdd_c_tx = str('./inc_data/tx_avdd_clk_current_ff.csv')
-.param currSrc_vdd_c_rx = str('./inc_data/rx_avdd_clk_current_ff.csv')
-.param currSrc_vdd_d_cmn = str('./inc_data/cmn_avdd_current_ff.csv')
-.param currSrc_vdd_d_tx = str('./inc_data/tx_avdd_current_ff.csv')
-.param currSrc_vdd_d_rx = str('./inc_data/rx_avdd_current_ff.csv')
-.param currSrc_vdd_h_cmn = str('./inc_data/cmn_avdd_h_current_ff.csv')
-.param currSrc_vdd_h_tx = str('./inc_data/tx_avdd_h_current_ff.csv')
-.param currSrc_vdd_h_rx = str('./inc_data/rx_avdd_h_current_ff.csv')
+.param currSrc_vdd_c_cmn 	= str('./inc_data/cmn_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_tx 	= str('./inc_data/tx_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_rx 	= str('./inc_data/rx_avdd_clk_current_ff.csv')
+* .param currSrc_vdd_d_cmn 	= str('./inc_data/cmn_avdd_current_ff.csv')
+* .param currSrc_vdd_d_tx 	= str('./inc_data/tx_avdd_current_ff.csv')
+* .param currSrc_vdd_d_rx 	= str('./inc_data/rx_avdd_current_ff.csv')
+* .param currSrc_vdd_h_cmn 	= str('./inc_data/cmn_avdd_h_current_ff.csv')
+* .param currSrc_vdd_h_tx 	= str('./inc_data/tx_avdd_h_current_ff.csv')
+* .param currSrc_vdd_h_rx 	= str('./inc_data/rx_avdd_h_current_ff.csv')
+
+*** debug
+.param currSrc_vdd_d_cmn 	= str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_d_tx 	= str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_d_rx 	= str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_cmn 	= str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_tx 	= str('./inc_data/i_curr_0.csv')
+.param currSrc_vdd_h_rx 	= str('./inc_data/i_curr_0.csv')
+*** debug end 
 
 ***** die params 
 .param Cdie_avdd_c	= '72.55p'
@@ -243,7 +252,7 @@ xblk_pkg
 .option lis_new
 .option post probe
 
-.param is_ac_run = 1
+.param is_ac_run = 0
 
 .if ( is_ac_run == 1 )  *** jgwei AC sim
 	.if ( 1 )
@@ -265,15 +274,15 @@ xblk_pkg
 
 .if ( is_ac_run != 1 )  *** jgwei trans sim
 	.param tStep	= 10.p
-	.param tStop	= 120n.   *2.u
+	.param tStop	= 1.u
 	
 	.tran tStep tSTOP 
 
 	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)	v(bump_pwr_vdd_h_cmn)
 	.probe x(xblk_pkg.a_6)   x(xblk_pkg.a_7) 	x(xblk_pkg.a_8)		x(xblk_pkg.a_5) 
 
-	.param vdd_meas_start = 10.n
-	.param vdd_meas_end   = 100.n
+	.param vdd_meas_start = 0.n
+	.param vdd_meas_end   = 1000.n
 	.meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
