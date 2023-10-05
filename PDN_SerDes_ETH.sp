@@ -15,20 +15,20 @@
 .param currSrc_vdd_c_cmn 	= str('./inc_data/cmn_avdd_clk_current_ff.csv')
 .param currSrc_vdd_c_tx 	= str('./inc_data/tx_avdd_clk_current_ff.csv')
 .param currSrc_vdd_c_rx 	= str('./inc_data/rx_avdd_clk_current_ff.csv')
-* .param currSrc_vdd_d_cmn 	= str('./inc_data/cmn_avdd_current_ff.csv')
-* .param currSrc_vdd_d_tx 	= str('./inc_data/tx_avdd_current_ff.csv')
-* .param currSrc_vdd_d_rx 	= str('./inc_data/rx_avdd_current_ff.csv')
-* .param currSrc_vdd_h_cmn 	= str('./inc_data/cmn_avdd_h_current_ff.csv')
-* .param currSrc_vdd_h_tx 	= str('./inc_data/tx_avdd_h_current_ff.csv')
-* .param currSrc_vdd_h_rx 	= str('./inc_data/rx_avdd_h_current_ff.csv')
+.param currSrc_vdd_d_cmn 	= str('./inc_data/cmn_avdd_current_ff.csv')
+.param currSrc_vdd_d_tx 	= str('./inc_data/tx_avdd_current_ff.csv')
+.param currSrc_vdd_d_rx 	= str('./inc_data/rx_avdd_current_ff.csv')
+.param currSrc_vdd_h_cmn 	= str('./inc_data/cmn_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_tx 	= str('./inc_data/tx_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_rx 	= str('./inc_data/rx_avdd_h_current_ff.csv')
 
 *** debug
-.param currSrc_vdd_d_cmn 	= str('./inc_data/i_curr_0.csv')
-.param currSrc_vdd_d_tx 	= str('./inc_data/i_curr_0.csv')
-.param currSrc_vdd_d_rx 	= str('./inc_data/i_curr_0.csv')
-.param currSrc_vdd_h_cmn 	= str('./inc_data/i_curr_0.csv')
-.param currSrc_vdd_h_tx 	= str('./inc_data/i_curr_0.csv')
-.param currSrc_vdd_h_rx 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_cmn 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_tx 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_d_rx 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_h_cmn 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_h_tx 	= str('./inc_data/i_curr_0.csv')
+* .param currSrc_vdd_h_rx 	= str('./inc_data/i_curr_0.csv')
 *** debug end 
 
 ***** die params 

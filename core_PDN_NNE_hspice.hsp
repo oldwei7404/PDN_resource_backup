@@ -6,6 +6,7 @@
 .option measform = 1
 .option lis_new
 .option post probe
+.param pi = 3.141592653
 
 *************************************** User defined functions ****************
 .param V_meas(node, ref) = 'v(node) - v(ref)'
@@ -179,9 +180,16 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 Vref_gnd 	ref_gnd		0	0.				
 	*E_fdbk	ref_gnd	0	VCVS DELAY pmic_pwr pkg_bump_1_0  td=50.n	*** opt 2/2 VCVS to model feedback
 
+.subckt PMIC_model
++ pin_out ref_gnd vdd_pmic = 0.75
+	VshortPMIC	pin_out	ref_gnd	vdd_pmic
+.ends 
+
+
 *** opt 1 ideal PMIC w/o remote sense feedback
 .if ( 1 )
-	VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
+	*VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
+	xblk_PMIC pmic_pwr ref_gnd PMIC_model  vdd_pmic = 'Vdd'  		
 .endif 
 *** opt 2 EMpower simplified IVR equivalent model 	(remember to disable PMIC bulk caps on PCB)
 .if ( 0 )
@@ -432,6 +440,247 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	XpcbCap__C613	pcbCap__C613	ref_gnd		str(mlcc_470uF_mockup)	
 	
 .endif 	*** end of 0825 Andes PCB mockup, jgwei caps
+
+.if ( 0 )	*** test, 0825 Andes PCB mockup, jgwei caps, PMIC connected on back side of PCB caps 
+	Xblk_PCB 
+	+ 		pmic_pwr_none 	*  pmic_pwr
+	+ 		pmic_pwr_none	*  pmic_pwr
+	+ 		pmic_pwr_none	*  pmic_pwr
+	+ bga_pcb
+	+ pcbCap__C601
+	+ pcbCap__C602
+	+ pcbCap__C603
+	+ pcbCap__C604
+	+ pcbCap__C605
+	+ pcbCap__C607
+	+ pcbCap__C611
+	+ pcbCap__C612
+	+ pcbCap__C613
+	+ pcbCap__C614
+	+ pcbCap__C615
+	+ pcbCap__C617
+	+ pcbCap__C621
+	+ pcbCap__C622
+	+ pcbCap__C623
+	+ pcbCap__C624
+	+ pcbCap__C625
+	+ pcbCap__C626
+	+ pcbCap__C627
+	+ pcbCap__C702
+	+ pcbCap__C703
+	+ pcbCap__C704
+	+ pcbCap__C705
+	+   pmic_pwr				* pcbCap__C6023
+	+	pmic_pwr			* pcbCap__C6024
+	+	pmic_pwr			* pcbCap__C6025
+	+	pmic_pwr			* pcbCap__C6026
+	+	pmic_pwr			* pcbCap__C6027
+	+	pmic_pwr			* pcbCap__C6028
+	+	pmic_pwr			* pcbCap__C6029
+	+	pmic_pwr			* pcbCap__C6030
+	+	pmic_pwr			* pcbCap__C6031
+	+	pmic_pwr			* pcbCap__C6032
+	+	pmic_pwr			* pcbCap__C6033
+	+	pmic_pwr			* pcbCap__C6034
+	+	pmic_pwr			* pcbCap__C6035
+	+	pmic_pwr			* pcbCap__C6036
+	+	pmic_pwr			* pcbCap__C6037
+	+	pmic_pwr			* pcbCap__C6038
+	+	pmic_pwr			* pcbCap__C6039
+	+	pmic_pwr			* pcbCap__C6040
+	+	pmic_pwr			* pcbCap__C6041
+	+	pmic_pwr			* pcbCap__C6042
+	+	pmic_pwr			* pcbCap__C6043
+	+	pmic_pwr			* pcbCap__C6044
+	+	pmic_pwr			* pcbCap__C6045
+	+	pmic_pwr			* pcbCap__C6046
+	+	pmic_pwr			* pcbCap__C6047
+	+	pmic_pwr			* pcbCap__C6048
+	+	pmic_pwr			* pcbCap__C6049
+	+	pmic_pwr			* pcbCap__C6050
+	+	pmic_pwr			* pcbCap__C6051
+	+	pmic_pwr			* pcbCap__C6052
+	+	pmic_pwr			* pcbCap__C6053
+	+	pmic_pwr			* pcbCap__C6054
+	+	pmic_pwr			* pcbCap__C6055
+	+ pcbCap__C6056
+	+ pcbCap__C6057
+	+ pcbCap__C6058
+	+ pcbCap__C6059
+	+ pcbCap__C6060
+	+ pcbCap__C6061
+	+ pcbCap__C6062
+	+ pcbCap__C6063
+	+ pcbCap__C6064
+	+ pcbCap__C6065
+	+ pcbCap__C6066
+	+ pcbCap__C6067
+	+ pcbCap__C6068
+	+ pcbCap__C6069
+	+ pcbCap__C6070
+	+ pcbCap__C6071
+	+ pcbCap__C6072
+	+ pcbCap__C6073
+	+ pcbCap__C6074
+	+ pcbCap__C6075
+	+ pcbCap__C6076
+	+ pcbCap__C6077
+	+ pcbCap__C6078
+	+ pcbCap__C6079
+	+ pcbCap__C6080
+	+ pcbCap__C6081
+	+ pcbCap__C6082
+	+ pcbCap__C6083
+	+ pcbCap__C6084
+	+ pcbCap__C6085
+	+ pcbCap__C6086
+	+ pcbCap__C6087
+	+ pcbCap__C6088
+	+ pcbCap__C6089
+	+ pcbCap__C6090
+	+ pcbCap__C6091
+	+ pcbCap__C6092
+	+ pcbCap__C6093
+	+ pcbCap__C6094
+	+ pcbCap__C6095
+	+ pcbCap__C6096
+	+ pcbCap__C6097
+	+ pcbCap__C6098
+	+ pcbCap__C6099
+	+ pcbCap__C6100
+	+ pcbCap__C6101
+	+ pcbCap__C6102
+	+ pcbCap__C6103
+	+ pcbCap__C6104
+	+ pcbCap__C6105
+	+ pcbCap__C6106
+	+ pcbCap__C6107
+	+ pcbCap__C6108
+	+ pcbCap__C6109
+	+ pcbCap__C6110
+	+ pcbCap__C6111
+	+ pcbCap__C6112
+	+ pcbCap__C6113
+	+ pcbCap__C6114
+	+ pcbCap__C6115
+	+ pcbCap__C6116
+	+ pcbCap__C6117
+	+ pcbCap__C6118
+	+ pcbCap__C6119
+	+ pcbCap__C6120
+	+ pcbCap__C6121
+	+ pcbCap__C6122
+	+ pcbCap__C6123
+	+ pcbCap__C6124
+	+ pcbCap__C6125
+	+ pcbCap__C6126
+	+ pcbCap__C6127
+	+ pcbCap__C6128
+	+ pcbCap__C6129
+	+ pcbCap__C6130
+	+ pcbCap__C6131
+	+ pcbCap__C6132
+	+ pcbCap__C6133
+	+ pcbCap__C6134
+	+ pcbCap__C6135
+	+ pcbCap__C6136
+	+ pcbCap__C6137
+	+ pcbCap__C6138
+	+ pcbCap__C6139
+	+ pcbCap__C6140
+	+ pcbCap__C6141
+	+ pcbCap__C6142
+	+ pcbCap__C6143
+	+ pcbCap__C6144
+	+ pcbCap__C6145
+	+ pcbCap__C6146
+	+ pcbCap__C6147
+	+ pcbCap__C6148
+	+ pcbCap__C6149
+	+ pcbCap__C6150
+	+ pcbCap__C6151
+	+ pcbCap__C6152
+	+ pcbCap__C6153
+	+ pcbCap__C6154
+	+ pcbCap__C6155
+	+ pcbCap__C6156
+	+ pcbCap__C6157
+	+ pcbCap__C6158
+	+ pcbCap__C6159
+	+ pcbCap__C6160
+	+ pcbCap__C6161
+	+ pcbCap__C6162
+	+ pcbCap__C6163
+	+ pcbCap__C6164
+	+ ref_gnd 
+	+ str(PCB_model)
+	
+	*** PCB cap ***
+		*** bulk caps near SoC die shadow
+	XpcbCap__C607	pcbCap__C607	ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C617	pcbCap__C617	ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C626	pcbCap__C626	ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C627	pcbCap__C627	ref_gnd		str(mlcc_100uF_1210)	
+	XpcbCap__C6050	pcbCap__C6050	ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C6083	pcbCap__C6083	ref_gnd		str(mlcc_100uF_1210)	
+		*** 22uF
+	XpcbCap__C6137	pcbCap__C6137	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C6139	pcbCap__C6139	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C6145	pcbCap__C6145	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C6147	pcbCap__C6147	ref_gnd		str(mlcc_22uF_0805)	
+		*** 10uF
+	XpcbCap__C6100		pcbCap__C6100	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6101		pcbCap__C6101	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6102		pcbCap__C6102	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6103		pcbCap__C6103	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6104		pcbCap__C6104	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6105		pcbCap__C6105	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6106		pcbCap__C6106	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6107		pcbCap__C6107	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6108		pcbCap__C6108	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6109		pcbCap__C6109	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6110		pcbCap__C6110	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6111		pcbCap__C6111	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6112		pcbCap__C6112	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6113		pcbCap__C6113	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6114		pcbCap__C6114	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6115		pcbCap__C6115	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6116		pcbCap__C6116	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6117		pcbCap__C6117	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6118		pcbCap__C6118	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6119		pcbCap__C6119	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6120		pcbCap__C6120	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6121		pcbCap__C6121	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6122		pcbCap__C6122	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6123		pcbCap__C6123	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6124		pcbCap__C6124	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6125		pcbCap__C6125	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6126		pcbCap__C6126	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6127		pcbCap__C6127	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6128		pcbCap__C6128	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6129		pcbCap__C6129	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6130		pcbCap__C6130	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6131		pcbCap__C6131	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6132		pcbCap__C6132	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6133		pcbCap__C6133	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6134		pcbCap__C6134	ref_gnd		str(mlcc_10uF_0402)
+	XpcbCap__C6135		pcbCap__C6135	ref_gnd		str(mlcc_10uF_0402)	
+	
+	*** PMIC side bulk caps 
+	XpcbCap__C604	pcbCap__C604	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C605	pcbCap__C605	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C614	pcbCap__C614	ref_gnd		str(mlcc_22uF_0805)
+	XpcbCap__C615	pcbCap__C615	ref_gnd		str(mlcc_22uF_0805)		
+	
+	XpcbCap__C601	pcbCap__C601	ref_gnd		str(mlcc_470uF_mockup)	
+	XpcbCap__C602	pcbCap__C602	ref_gnd		str(mlcc_470uF_mockup)	
+	XpcbCap__C603	pcbCap__C603	ref_gnd		str(mlcc_470uF_mockup)	
+	XpcbCap__C611	pcbCap__C611	ref_gnd		str(mlcc_470uF_mockup)	
+	XpcbCap__C612	pcbCap__C612	ref_gnd		str(mlcc_470uF_mockup)	
+	XpcbCap__C613	pcbCap__C613	ref_gnd		str(mlcc_470uF_mockup)	
+	
+.endif 	*** end of 0825 Andes PCB mockup, jgwei caps, PMIC connected on back side of PCB caps 
+
 
 .if ( 0 )	*** 0518 PCB
 	Xblk_PCB 
@@ -1460,19 +1709,33 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_d
 		.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
 		**.probe  ac s11(db) s11(p) s21(db) s21(p) 
 		.probe ac zin(1)(m) zin(1)(p) zin(5)(m) zin(5)(p) 
+		
+		.ac 	dec 50 1. 1.G
+			
 	.endif 
 
 	.if ( 0 )
-		*i_ac_pkg_bump_0_0 pkg_bump_0_0 ref_gnd dc=0 ac=1
-		i_ac_pkg_bump_1_0 pkg_bump_1_0 ref_gnd dc=0 ac=1
-		.probe ac v(pkg_bump_0_0)	v(pkg_bump_1_0)
-	.endif 
-
-	.ac 	dec 50 1. 1.G
+		*i_ac_pkg_bump_0_0 pkg_bump_0_0 ref_gnd dc=0 ac=-1.
+		* .probe ac v(pkg_bump_0_0)
 		
-	
-	*I_pkg_bump_1_0 		pkg_bump_1_0	ref_gnd		AC=1
-	*.probe AC v(pkg_bump_1_0)
+		i_ac_pkg_bump_1_0 pkg_bump_1_0 ref_gnd dc=0 ac=-1.
+		.probe ac v(pkg_bump_1_0)	vi(pkg_bump_1_0)	vr(pkg_bump_1_0)	
+		
+		.ac 	dec 50 1. 1.G
+		
+		* .param v_imag = vi(pkg_bump_1_0)
+		* .param acl = 'v_imag / 2./pi '
+		* .print 'vi(pkg_bump_1_0) / 2. '		*** works
+				* .print 'vi(pkg_bump_1_0) / pi '						*** NOT work 
+				* .measure ac ACL param = 'vi(pkg_bump_1_0) / 2.'		*** NOT work 
+
+		.param pfreq = 100.e6
+		.param dfreq = 10.e6
+		.measure ac zval_1   find vi(pkg_bump_1_0)	at = 'pfreq - dfreq '
+		.measure ac zval_2   find vi(pkg_bump_1_0)	at = 'pfreq + dfreq '
+		.measure ac acl      param='(zval_2 - zval_1)/2./pi/(dfreq+dfreq)'
+
+	.endif 
 
 .endif 
 
@@ -1484,6 +1747,7 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_d
 
 	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  v(bga_pkg)
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
+	.probe x(xblk_PMIC.pin_out)
 
 	* .param vdd_meas_start = 0.us
 	* .param vdd_meas_end   = 50.us
