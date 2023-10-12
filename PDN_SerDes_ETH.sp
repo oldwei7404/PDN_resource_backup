@@ -11,16 +11,46 @@
 .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_ETH/inc_data/ZJC_5_PDN_SerDes_cut_only_ETH10G.cir
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_ETH10G')
 
+***** filter models 
+.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
+.param ferrite_mod1 = str('BLM18SN220TH1')
+
+.subckt model_filter
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L		*** PMIC side 
+  + pin_pwr_C		*** SoC side
+  + str(ferrite_mod1)
+ C1 	pin_pwr_C 	ref_gnd	 	47.u
+ C2		pin_pwr_C	ref_gnd		1.u
+ C3   	pin_pwr_C	ref_gnd		0.1u
+ 
+ XfilterCap_1	pin_pwr_2 	ref_gnd	str(mlcc_47uF_1206)
+ XfilterCap_2	pin_pwr_2 	ref_gnd	str(mlcc_1uF_0201)
+ XfilterCap_3	pin_pwr_2 	ref_gnd	str(mlcc_0p1uF_0201)
+.ends 
+
 ***** current profiles 
-.param currSrc_vdd_c_cmn 	= str('./inc_data/cmn_avdd_clk_current_ff.csv')
-.param currSrc_vdd_c_tx 	= str('./inc_data/tx_avdd_clk_current_ff.csv')
-.param currSrc_vdd_c_rx 	= str('./inc_data/rx_avdd_clk_current_ff.csv')
-.param currSrc_vdd_d_cmn 	= str('./inc_data/cmn_avdd_current_ff.csv')
-.param currSrc_vdd_d_tx 	= str('./inc_data/tx_avdd_current_ff.csv')
-.param currSrc_vdd_d_rx 	= str('./inc_data/rx_avdd_current_ff.csv')
-.param currSrc_vdd_h_cmn 	= str('./inc_data/cmn_avdd_h_current_ff.csv')
-.param currSrc_vdd_h_tx 	= str('./inc_data/tx_avdd_h_current_ff.csv')
-.param currSrc_vdd_h_rx 	= str('./inc_data/rx_avdd_h_current_ff.csv')
+.param currSrc_vdd_c_cmn 	= str('./inc_data/profile_1010/cmn_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_tx 	= str('./inc_data/profile_1010/tx_avdd_clk_current_ff.csv')
+.param currSrc_vdd_c_rx 	= str('./inc_data/profile_1010/rx_avdd_clk_current_ff.csv')
+.param currSrc_vdd_d_cmn 	= str('./inc_data/profile_1010/cmn_avdd_current_ff.csv')
+.param currSrc_vdd_d_tx 	= str('./inc_data/profile_1010/tx_avdd_current_ff.csv')
+.param currSrc_vdd_d_rx 	= str('./inc_data/profile_1010/rx_avdd_current_ff.csv')
+.param currSrc_vdd_h_cmn 	= str('./inc_data/profile_1010/cmn_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_tx 	= str('./inc_data/profile_1010/tx_avdd_h_current_ff.csv')
+.param currSrc_vdd_h_rx 	= str('./inc_data/profile_1010/rx_avdd_h_current_ff.csv')
+
+* .param currSrc_vdd_c_cmn 	= str('./inc_data/cmn_avdd_clk_current_ff.csv')
+* .param currSrc_vdd_c_tx 	= str('./inc_data/tx_avdd_clk_current_ff.csv')
+* .param currSrc_vdd_c_rx 	= str('./inc_data/rx_avdd_clk_current_ff.csv')
+* .param currSrc_vdd_d_cmn 	= str('./inc_data/cmn_avdd_current_ff.csv')
+* .param currSrc_vdd_d_tx 	= str('./inc_data/tx_avdd_current_ff.csv')
+* .param currSrc_vdd_d_rx 	= str('./inc_data/rx_avdd_current_ff.csv')
+* .param currSrc_vdd_h_cmn 	= str('./inc_data/cmn_avdd_h_current_ff.csv')
+* .param currSrc_vdd_h_tx 	= str('./inc_data/tx_avdd_h_current_ff.csv')
+* .param currSrc_vdd_h_rx 	= str('./inc_data/rx_avdd_h_current_ff.csv')
 
 *** debug
 * .param currSrc_vdd_d_cmn 	= str('./inc_data/i_curr_0.csv')
@@ -188,6 +218,45 @@ xblk_PCB
  XcapPcb_C2697	capPcb_C2697	ref_gnd		str(mlcc_10uF_0402)
  XcapPcb_C2736	capPcb_C2736	ref_gnd		str(mlcc_10uF_0402)
  
+
+
+.param use_filter = 1
+	***** filter 
+ .if (use_filter == 1) 
+	 xModel_filter_vddc
+	 + bga_pwr_eth_0p95
+	 + bga_pwr_vdd_c
+	 + ref_gnd
+	 + model_filter
+
+	 xModel_filter_vddd
+	 + bga_pwr_eth_0p95
+	 + bga_pwr_vdd_d
+	 + ref_gnd
+	 + model_filter
+	 
+	 xModel_filter_vddh
+	 + bga_pwr_eth_1p8
+	 + bga_pwr_vdd_h
+	 + ref_gnd
+	 + model_filter
+
+	 xModel_filter_vddh_cmn
+	 + bga_pwr_eth_1p8
+	 + bga_pwr_vdd_h_cmn
+	 + ref_gnd
+	 + model_filter
+	 
+ .endif 
+
+ ***** shorting VDDC, VDDD to PCB 
+ .if (use_filter != 1)
+	 r_vddc bga_pwr_vdd_c		bga_pwr_eth_0p95	1.n
+	 r_vddd bga_pwr_vdd_d		bga_pwr_eth_0p95	1.n
+	 r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n
+	 r_vddh_cmn bga_pwr_vdd_h_cmn	bga_pwr_eth_1p8		1.n 
+ .endif 
+ 
  
   ***** pkg
   
@@ -197,10 +266,10 @@ xblk_PCB
   ** debug end 
 
 xblk_pkg
- + bga_pwr_eth_1p8
- + bga_pwr_eth_0p95
- + bga_pwr_eth_0p95
- + bga_pwr_eth_1p8
+ + bga_pwr_vdd_h_cmn 		
+ + bga_pwr_vdd_c			
+ + bga_pwr_vdd_d			
+ + bga_pwr_vdd_h			
  + bump_pwr_vdd_h_cmn
  + bump_pwr_vdd_c
  + bump_pwr_vdd_d

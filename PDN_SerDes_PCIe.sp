@@ -12,9 +12,7 @@
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM')
 
 	*** other device model
-	*** filter 
-.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
-.param ferrite_mod1 = str('BLM18SN220TH1')
+
 
 ***** current profiles 
 .param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
@@ -96,6 +94,9 @@ IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
 .ends 
 
 ***** filter models 
+.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
+.param ferrite_mod1 = str('BLM18SN220TH1')
+
 .subckt model_filter
 + pin_pwr_L pin_pwr_C ref_gnd 
 
@@ -244,8 +245,8 @@ xblk_PCB
 
  ***** shorting VDDC, VDDD to PCB 
  .if (use_filter != 1)
- r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
- r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
+	 r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+	 r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
  .endif 
 
  
