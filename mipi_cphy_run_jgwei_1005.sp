@@ -21,26 +21,6 @@ v_vdd	vdd_in	0	dc='xvdd'
 * .include '../CapLib/2012M_CapLib.ckt'
 * .include '../CapLib/3216M_CapLib.ckt'
 
-***** filter models 
-.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
-.param ferrite_mod1 = str('BLM18SN220TH1')
-
-.subckt model_filter
-+ pin_pwr_L pin_pwr_C ref_gnd 
-
- Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
-  + pin_pwr_L		*** PMIC side 
-  + pin_pwr_C		*** SoC side
-  + str(ferrite_mod1)
- C1 	pin_pwr_C 	ref_gnd	 	47.u
- C2		pin_pwr_C	ref_gnd		1.u
- C3   	pin_pwr_C	ref_gnd		0.1u
- 
- XfilterCap_1	pin_pwr_2 	ref_gnd	str(mlcc_47uF_1206)
- XfilterCap_2	pin_pwr_2 	ref_gnd	str(mlcc_1uF_0201)
- XfilterCap_3	pin_pwr_2 	ref_gnd	str(mlcc_0p1uF_0201)
-.ends 
-
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70G475ME36_DC0V_125degC_0402_4p7uF.mod
 .inc /data/home/jiangongwei/work/models_cap/GCM155C71A105KE38_DC0V_125degC_0402_1uF.mod
@@ -75,6 +55,36 @@ v_vdd	vdd_in	0	dc='xvdd'
 .param mlcc_0p01uF_0201		= str('GRT033R70J103KE01_DC0V_125degC')
 .param mlcc_22uF_0805		= str('GCM21BD70G226ME36_DC0V_125degC_0805_22uF')
 .param mlcc_470uF_mockup	= str('mlcc_470uF_mockup_T598D477M2R5ATE009') 
+
+***** filter models 
+.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
+.param ferrite_mod1 = str('BLM18SN220TH1')
+
+.subckt model_filter
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L
+  + pin_pwr_C
+  + str(ferrite_mod1)
+ 
+ XfilterCap_1	pin_pwr_C 	ref_gnd	str(mlcc_47uF_1206)
+ XfilterCap_2	pin_pwr_C 	ref_gnd	str(mlcc_1uF_0402)
+ XfilterCap_3	pin_pwr_C 	ref_gnd	str(mlcc_0p1uF_0402)
+.ends 
+
+.subckt model_filter_22uF
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L
+  + pin_pwr_C
+  + str(ferrite_mod1)
+
+ XfilterCap_1	pin_pwr_C 	ref_gnd	str(mlcc_22uF_0805)
+ XfilterCap_2	pin_pwr_C 	ref_gnd	str(mlcc_1uF_0402)
+ XfilterCap_3	pin_pwr_C 	ref_gnd	str(mlcc_0p1uF_0402)
+.ends 
 
 *=================================================================================
 *  pcb model
@@ -234,13 +244,15 @@ x_pcb
 	 + vdd_vp_ball
 	 + vdd_ball
 	 + ref_gnd
-	 + model_filter
+	 * + model_filter
+	 + model_filter_22uF
 	 
 	 xModel_filter_vdd45
 	 + vdd_vp_ball
 	 + vdd_ball_45
 	 + ref_gnd
-	 + model_filter
+	 * + model_filter
+	 + model_filter_22uF
 	 
  .endif 
  .if (use_filter != 1) 
@@ -335,7 +347,7 @@ xdwc_mipi_cdphy_2l2t_ns_ln5
 
 
 	.param tStep	= 10.p
-	.param tStop	= 6.u
+	.param tStop	= 2.u
 
 	.tran tStep tSTOP 
 
@@ -348,7 +360,7 @@ xdwc_mipi_cdphy_2l2t_ns_ln5
 
 
 $$ Start/end points for selected transient measures
-.param sim_time = 6.u
+.param sim_time = 2.u
 .param ringing_period_exclude = 0
 
 .param vdd_meas_start = 0
@@ -367,6 +379,7 @@ $$ TR measures on die p2p
 
 .meas tran hsonly_vp_die_p2p  	PP	V(vp_die)	from='ana_burst_start' to='ana_burst_end'
 .meas tran hsonly_vph_die_p2p 	PP	V(vph_die)	from='ana_burst_start' to='ana_burst_end'
+.meas tran hsonly_vdd_die_p2p 	PP	V(vdd_die)	from='ana_burst_start' to='ana_burst_end'
 
 .meas tran hsonly_p2p_vp	PARAM='(hsonly_vp_die_p2p/xvp)*100'
 .meas tran hsonly_p2p_vph	PARAM='(hsonly_vph_die_p2p/xvph)*100'

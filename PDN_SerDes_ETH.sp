@@ -8,28 +8,11 @@
 .param PCB_model = str('ACM2_PT00547399_A_01_PWR_cut_pcie_eth_usb_run3_v2_IdEM')
 
 	*** pkg model 
-.inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_ETH/inc_data/ZJC_5_PDN_SerDes_cut_only_ETH10G.cir
+.inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_ETH/inc_data/ZJC_5_PDN_SerDes_cut_only_ETH10G.cir			*** NOTE: POR
 .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_ETH10G')
 
-***** filter models 
-.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
-.param ferrite_mod1 = str('BLM18SN220TH1')
-
-.subckt model_filter
-+ pin_pwr_L pin_pwr_C ref_gnd 
-
- Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
-  + pin_pwr_L		*** PMIC side 
-  + pin_pwr_C		*** SoC side
-  + str(ferrite_mod1)
- C1 	pin_pwr_C 	ref_gnd	 	47.u
- C2		pin_pwr_C	ref_gnd		1.u
- C3   	pin_pwr_C	ref_gnd		0.1u
- 
- XfilterCap_1	pin_pwr_2 	ref_gnd	str(mlcc_47uF_1206)
- XfilterCap_2	pin_pwr_2 	ref_gnd	str(mlcc_1uF_0201)
- XfilterCap_3	pin_pwr_2 	ref_gnd	str(mlcc_0p1uF_0201)
-.ends 
+					* .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_ETH/inc_data/tcodb_eth_TC_IdEM.cir		*** NOTE: Cadence 10/16 TC pkg 
+					* .param pkg_model = str('tcodb_eth_TC_IdEM')
 
 ***** current profiles 
 .param currSrc_vdd_c_cmn 	= str('./inc_data/profile_1010/cmn_avdd_clk_current_ff.csv')
@@ -155,6 +138,36 @@ IcurrSrc_tx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_tx) 	R
 .param siCap_empwr_EC1002 = str('EC1002')
 .param siCap_empwr_EC1100_200nF = str('EC1100_200nF')
 
+***** filter models 
+.inc   /data/home/jiangongwei/work/models_cap/BLM18SN220TH1.mod
+.param ferrite_mod1 = str('BLM18SN220TH1')
+
+.subckt model_filter
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L
+  + pin_pwr_C
+  + str(ferrite_mod1)
+
+ XfilterCap_1	pin_pwr_C 	ref_gnd	str(mlcc_47uF_1206)
+ XfilterCap_2	pin_pwr_C 	ref_gnd	str(mlcc_1uF_0402)
+ XfilterCap_3	pin_pwr_C 	ref_gnd	str(mlcc_0p1uF_0402)
+.ends 
+
+.subckt model_filter_22uF
++ pin_pwr_L pin_pwr_C ref_gnd 
+
+ Xfilter			** NOTE: this filter is added to isolate VDDC from VDDD
+  + pin_pwr_L
+  + pin_pwr_C
+  + str(ferrite_mod1)
+
+ XfilterCap_1	pin_pwr_C 	ref_gnd	str(mlcc_22uF_0805)
+ XfilterCap_2	pin_pwr_C 	ref_gnd	str(mlcc_1uF_0402)
+ XfilterCap_3	pin_pwr_C 	ref_gnd	str(mlcc_0p1uF_0402)
+.ends 
+
 ***** PMIC 
 Vref_gnd 		ref_gnd		0	0.	
 Vsrc_vdd_c_d	pwr_pmic_0p95		ref_gnd	Vdd_c_d		*** can be switched to PMIC model 
@@ -220,51 +233,43 @@ xblk_PCB
  
 
 
-.param use_filter = 1
-	***** filter 
- .if (use_filter == 1) 
-	 xModel_filter_vddc
+***** opt 1/2: filter 
+	 xModel_filter_vddc							*** NOTE: vddc filter impact is larger 
 	 + bga_pwr_eth_0p95
 	 + bga_pwr_vdd_c
 	 + ref_gnd
-	 + model_filter
-
-	 xModel_filter_vddd
+	 * + model_filter
+	 + model_filter_22uF
+	 
+	 xModel_filter_vddd							*** NOTE: vddd filter impact is larger 
 	 + bga_pwr_eth_0p95
 	 + bga_pwr_vdd_d
 	 + ref_gnd
-	 + model_filter
+	 * + model_filter
+	 + model_filter_22uF
 	 
 	 xModel_filter_vddh
 	 + bga_pwr_eth_1p8
 	 + bga_pwr_vdd_h
 	 + ref_gnd
-	 + model_filter
+	 * + model_filter
+	 + model_filter_22uF
 
-	 xModel_filter_vddh_cmn
+	 xModel_filter_vddh_cmn						*** NOTE: h_cmn filter impact is larger  
 	 + bga_pwr_eth_1p8
 	 + bga_pwr_vdd_h_cmn
 	 + ref_gnd
-	 + model_filter
-	 
- .endif 
+	 * + model_filter
+	 + model_filter_22uF
 
- ***** shorting VDDC, VDDD to PCB 
- .if (use_filter != 1)
-	 r_vddc bga_pwr_vdd_c		bga_pwr_eth_0p95	1.n
-	 r_vddd bga_pwr_vdd_d		bga_pwr_eth_0p95	1.n
-	 r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n
-	 r_vddh_cmn bga_pwr_vdd_h_cmn	bga_pwr_eth_1p8		1.n 
- .endif 
+***** opt 2/2, shorting VDDC, VDDD to PCB 
+	 * r_vddc bga_pwr_vdd_c		bga_pwr_eth_0p95	1.n
+	 * r_vddd bga_pwr_vdd_d		bga_pwr_eth_0p95	1.n
+	 * r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n			*** NOTE: h p2p prefers w/o filter
+	 * r_vddh_cmn bga_pwr_vdd_h_cmn	bga_pwr_eth_1p8		1.n 
  
  
   ***** pkg
-  
-  ** debug
-  * r_dbg_1 bga_pwr_eth_0p95	ref_gnd	0.000001
-  * r_dbg_2 bga_pwr_eth_1p8	ref_gnd	0.000001
-  ** debug end 
-
 xblk_pkg
  + bga_pwr_vdd_h_cmn 		
  + bga_pwr_vdd_c			
@@ -283,6 +288,36 @@ xblk_pkg
  XcapPkg_C117_vdd_c		capPkg_C117_vdd_c	ref_gnd	str(mlcc_4p7nF_0201)
  XcapPkg_C130_vdd_d		capPkg_C130_vdd_d	ref_gnd	str(mlcc_0p47nF_0201)
  XcapPkg_C129_vdd_h		capPkg_C129_vdd_h	ref_gnd	str(mlcc_0p47nF_0201)
+ 
+			 *** debug CDNS pkg 
+			 * xblk_pkg 
+			 * + bump_pwr_vdd_c_x1
+			 * + bump_pwr_vdd_c 
+			 * + bump_pwr_vdd_c_x8
+			 * + bump_pwr_vdd_h_x1
+			 * + bump_pwr_vdd_h 
+			 * + bump_pwr_vdd_h_x8			 
+			 * + bump_pwr_vdd_d_x1
+			 * + bump_pwr_vdd_d 
+			 * + bump_pwr_vdd_d_x8			 
+			 * + bump_pwr_vdd_h_cmn_x1
+			 * + bump_pwr_vdd_h_cmn 
+			 * + bump_pwr_vdd_h_cmn_x8	
+			 * + bga_pwr_vdd_c_x1
+			 * + bga_pwr_vdd_c 
+			 * + bga_pwr_vdd_c_x8
+			 * + bga_pwr_vdd_h_x1
+			 * + bga_pwr_vdd_h 
+			 * + bga_pwr_vdd_h_x8			 
+			 * + bga_pwr_vdd_d_x1
+			 * + bga_pwr_vdd_d 
+			 * + bga_pwr_vdd_d_x8			 
+			 * + bga_pwr_vdd_h_cmn_x1
+			 * + bga_pwr_vdd_h_cmn 
+			 * + bga_pwr_vdd_h_cmn_x8	
+			 * + ref_gnd 
+			 * + str(pkg_model)			 
+			 *** debug CDNS pkg end 
  
  ***** die 
  *** Note: all 3 lanes use same profile for now
@@ -343,7 +378,7 @@ xblk_pkg
 
 .if ( is_ac_run != 1 )  *** jgwei trans sim
 	.param tStep	= 10.p
-	.param tStop	= 1.u
+	.param tStop	= 3.u   * 1.u
 	
 	.tran tStep tSTOP 
 
