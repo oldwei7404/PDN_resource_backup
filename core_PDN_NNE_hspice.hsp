@@ -53,6 +53,9 @@
 
 .param pwl_file_in_PA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
 .param pwl_file_in_MA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
+
+		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened.txt.csv')		*** PMIC vendor test, 11us
+		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened.txt.csv')
 	
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -1749,10 +1752,13 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_d
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
 	.probe x(xblk_PMIC.pin_out)
 
-	* .param vdd_meas_start = 0.us
-	* .param vdd_meas_end   = 50.us
+	* .param vdd_meas_start = 0.u
+	* .param vdd_meas_end   = 50.u
 	* .meas tran pkg_bump_1_0_p2p 		PP	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
-	
+	* .meas tran pkg_bump_1_0_cpu_vmax	MAX	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran pkg_bump_1_0_cpu_vmin	MIN	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran pkg_bump_1_0_cpu_vmax_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran pkg_bump_1_0_cpu_vmin_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmin' 	from='vdd_meas_start' to='vdd_meas_end'	
 
 	*.probe i(*)
 	*.probe x(*)

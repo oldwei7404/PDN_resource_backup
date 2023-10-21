@@ -13,25 +13,49 @@
 
 	*** other device model
 
+***** current profiles 10/18
+.param currSrc_vdd_c_cmn = str('./inc_data/profile_1017/i_avdd_clk_a0_cmn_WC.csv')
+* .param currSrc_vdd_c_ln0 = str('./inc_data/profile_1017/i_avdd_clk_a0_lane_0_WC.csv')	
+	.param currSrc_vdd_c_ln0 = str('./inc_data/profile_1017/i_avdd_clk_a4_a0_a4_lane_0_WC.csv')			*** NOTE: run > 5us
+* .param currSrc_vdd_c_ln1 = str('./inc_data/profile_1017/i_avdd_clk_a0_lane_1_WC.csv')
+	.param currSrc_vdd_c_ln1 = str('./inc_data/profile_1017/i_avdd_clk_a4_a0_a4_lane_1_WC.csv')			*** NOTE: run > 5us
+.param currSrc_vdd_c_ln2 = str('./inc_data/profile_1017/i_avdd_clk_a0_lane_2_WC.csv')
+.param currSrc_vdd_c_ln3 = str('./inc_data/profile_1017/i_avdd_clk_a0_lane_3_WC.csv')
 
-***** current profiles 
-.param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
-.param currSrc_vdd_c_ln0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
-.param currSrc_vdd_c_ln1 = str('./inc_data/i_avdd_clk_a0_lane_1_WC.csv')
-.param currSrc_vdd_c_ln2 = str('./inc_data/i_avdd_clk_a0_lane_2_WC.csv')
-.param currSrc_vdd_c_ln3 = str('./inc_data/i_avdd_clk_a0_lane_3_WC.csv')
+.param currSrc_vdd_d_cmn = str('./inc_data/profile_1017/i_avdd_a0_cmn_WC.csv')
+* .param currSrc_vdd_d_ln0 = str('./inc_data/profile_1017/i_avdd_a0_lane_0_WC.csv')
+	.param currSrc_vdd_d_ln0 = str('./inc_data/profile_1017/i_avdd_a4_a0_a4_lane_0_WC.csv')
+* .param currSrc_vdd_d_ln1 = str('./inc_data/profile_1017/i_avdd_a0_lane_1_WC.csv')
+	.param currSrc_vdd_d_ln1 = str('./inc_data/profile_1017/i_avdd_a4_a0_a4_lane_1_WC.csv')
+.param currSrc_vdd_d_ln2 = str('./inc_data/profile_1017/i_avdd_a0_lane_2_WC.csv')
+.param currSrc_vdd_d_ln3 = str('./inc_data/profile_1017/i_avdd_a0_lane_3_WC.csv')
 
-.param currSrc_vdd_d_cmn = str('./inc_data/i_avdd_a0_cmn_TT25_x1p3.csv')
-.param currSrc_vdd_d_ln0 = str('./inc_data/i_avdd_a0_lane_0_WC.csv')
-.param currSrc_vdd_d_ln1 = str('./inc_data/i_avdd_a0_lane_1_WC.csv')
-.param currSrc_vdd_d_ln2 = str('./inc_data/i_avdd_a0_lane_2_WC.csv')
-.param currSrc_vdd_d_ln3 = str('./inc_data/i_avdd_a0_lane_3_WC.csv')
+.param currSrc_vdd_h_cmn = str('./inc_data/profile_1017/i_avdd_h_a0_cmn_WC.csv')
+* .param currSrc_vdd_h_ln0 = str('./inc_data/profile_1017/i_avdd_h_a0_lane_0_WC.csv')
+	.param currSrc_vdd_h_ln0 = str('./inc_data/profile_1017/i_avdd_h_a4_a0_a4_lane_0_WC.csv')
+* .param currSrc_vdd_h_ln1 = str('./inc_data/profile_1017/i_avdd_h_a0_lane_1_WC.csv')
+	.param currSrc_vdd_h_ln1 = str('./inc_data/profile_1017/i_avdd_h_a4_a0_a4_lane_1_WC.csv')
+.param currSrc_vdd_h_ln2 = str('./inc_data/profile_1017/i_avdd_h_a0_lane_2_WC.csv')
+.param currSrc_vdd_h_ln3 = str('./inc_data/profile_1017/i_avdd_h_a0_lane_3_WC.csv')
 
-.param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
-.param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
-.param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
-.param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
-.param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
+***** current profiles
+* .param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_c_ln0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
+* .param currSrc_vdd_c_ln1 = str('./inc_data/i_avdd_clk_a0_lane_1_WC.csv')
+* .param currSrc_vdd_c_ln2 = str('./inc_data/i_avdd_clk_a0_lane_2_WC.csv')
+* .param currSrc_vdd_c_ln3 = str('./inc_data/i_avdd_clk_a0_lane_3_WC.csv')
+
+* .param currSrc_vdd_d_cmn = str('./inc_data/i_avdd_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_d_ln0 = str('./inc_data/i_avdd_a0_lane_0_WC.csv')
+* .param currSrc_vdd_d_ln1 = str('./inc_data/i_avdd_a0_lane_1_WC.csv')
+* .param currSrc_vdd_d_ln2 = str('./inc_data/i_avdd_a0_lane_2_WC.csv')
+* .param currSrc_vdd_d_ln3 = str('./inc_data/i_avdd_a0_lane_3_WC.csv')
+
+* .param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
+* .param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
+* .param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
+* .param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
 
 *** debug to use 0 current for some rails 
 * .param currSrc_vdd_c_cmn = str('./inc_data/i_curr_0.csv')
@@ -236,9 +260,7 @@ xblk_PCB
  xcapPcb_C2717	capPcb_C2717	ref_gnd		str(mlcc_10uF_0402)
  
 *****
-.param use_filter = 1
 	***** filter 
- .if (use_filter == 1) 
 	 xModel_filter_vddc
 	 + bga_pwr_pcie_0p95
 	 + bga_pwr_pcie_0p95_vddc
@@ -246,20 +268,18 @@ xblk_PCB
 	 + model_filter
 	 * + model_filter_22uF
 	 
-	 xModel_filter_vddd
-	 + bga_pwr_pcie_0p95
-	 + bga_pwr_pcie_0p95_vddd
-	 + ref_gnd
-	 + model_filter
-	 * + model_filter_22uF
-	 
- .endif 
+	 * xModel_filter_vddd
+	 * + bga_pwr_pcie_0p95
+	 * + bga_pwr_pcie_0p95_vddd
+	 * + ref_gnd
+	 * + model_filter
+	 * * + model_filter_22uF
+
 
  ***** shorting VDDC, VDDD to PCB 
- .if (use_filter != 1)
-	 r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+	 * r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
 	 r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
- .endif 
+
 
  
  ***** pkg 
@@ -327,7 +347,7 @@ Xblk_die_vdd_h_ln3 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie
 
 .if ( is_ac_run != 1 )  *** jgwei trans sim
 	.param tStep	= 10.p
-	.param tStop	= 3.u   *  1.3u
+	.param tStop	= 5.u   		*  1.3u
 	
 	.tran tStep tSTOP 
 
@@ -335,7 +355,7 @@ Xblk_die_vdd_h_ln3 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie
 	.probe x(xblk_pkg.a_4)   x(xblk_pkg.a_5) 	x(xblk_pkg.a_6) 
 
 	.param vdd_meas_start = 35.n
-	.param vdd_meas_end   = 1.u
+	.param vdd_meas_end   = 5.u
 	.meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'

@@ -69,22 +69,22 @@
 ***** end of user input 
 ***** die models 
 .subckt model_die_eth_vdd_cdh_cmn
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in = str('./currSrc.csv')	
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m 	delay = 0	pwl_file_in = str('./currSrc.csv')	
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
+IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R 	td = delay
 .ends 
 **
 .subckt model_die_eth_vdd_cdh
-+ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in_tx = str('./currSrc.csv')	pwl_file_in_rx = str('./currSrc.csv')			
++ pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	delay = 0  	pwl_file_in_tx = str('./currSrc.csv')	pwl_file_in_rx = str('./currSrc.csv')			
 
 R_res_		pin_bump	2			Res 
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
-IcurrSrc_rx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_rx)	R
-IcurrSrc_tx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_tx) 	R
+IcurrSrc_rx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_rx)	R	td = delay 
+IcurrSrc_tx	2			ref_gnd		PWL pwlfile = str(pwl_file_in_tx) 	R	td = delay 
 .ends 
 
 *************************************** cap model *****************************
@@ -248,24 +248,24 @@ xblk_PCB
 	 * + model_filter
 	 + model_filter_22uF
 	 
-	 xModel_filter_vddh
-	 + bga_pwr_eth_1p8
-	 + bga_pwr_vdd_h
-	 + ref_gnd
-	 * + model_filter
-	 + model_filter_22uF
+	 * xModel_filter_vddh
+	 * + bga_pwr_eth_1p8
+	 * + bga_pwr_vdd_h
+	 * + ref_gnd
+	 * * + model_filter
+	 * + model_filter_22uF
 
 	 xModel_filter_vddh_cmn						*** NOTE: h_cmn filter impact is larger  
 	 + bga_pwr_eth_1p8
 	 + bga_pwr_vdd_h_cmn
 	 + ref_gnd
-	 * + model_filter
-	 + model_filter_22uF
+	 + model_filter
+	 * + model_filter_22uF
 
 ***** opt 2/2, shorting VDDC, VDDD to PCB 
 	 * r_vddc bga_pwr_vdd_c		bga_pwr_eth_0p95	1.n
 	 * r_vddd bga_pwr_vdd_d		bga_pwr_eth_0p95	1.n
-	 * r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n			*** NOTE: h p2p prefers w/o filter
+	 r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n			*** NOTE: h p2p prefers w/o filter
 	 * r_vddh_cmn bga_pwr_vdd_h_cmn	bga_pwr_eth_1p8		1.n 
  
  
@@ -321,32 +321,32 @@ xblk_pkg
  
  ***** die 
  *** Note: all 3 lanes use same profile for now
- Xblk_die_vdd_c_cmn 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn' 	
+ Xblk_die_vdd_c_cmn 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn' 	delay = 0.
  + pwl_file_in = str(currSrc_vdd_c_cmn)
- Xblk_die_vdd_c_lane_0 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ Xblk_die_vdd_c_lane_0 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	delay = 0.
  + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
- Xblk_die_vdd_c_lane_1 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ Xblk_die_vdd_c_lane_1 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	delay = 800.p
  + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
- Xblk_die_vdd_c_lane_2 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	
+ Xblk_die_vdd_c_lane_2 		bump_pwr_vdd_c	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_c'			Rdie= 'Rdie_avdd_c'			Res= 'Res_avdd_c' 	delay = 1600.p
  + pwl_file_in_tx = str(currSrc_vdd_c_tx)	pwl_file_in_rx = str(currSrc_vdd_c_rx)
  
- Xblk_die_vdd_d_cmn 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn' 	
+ Xblk_die_vdd_d_cmn 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn' 	delay = 0.
  + pwl_file_in = str(currSrc_vdd_d_cmn)
- Xblk_die_vdd_d_lane_0 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ Xblk_die_vdd_d_lane_0 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	delay = 0.
  + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
- Xblk_die_vdd_d_lane_1 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ Xblk_die_vdd_d_lane_1 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	delay = 800.p
  + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
- Xblk_die_vdd_d_lane_2 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	
+ Xblk_die_vdd_d_lane_2 		bump_pwr_vdd_d	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_d'			Rdie= 'Rdie_avdd_d'			Res= 'Res_avdd_d' 	delay = 1600.p
  + pwl_file_in_tx = str(currSrc_vdd_d_tx)	pwl_file_in_rx = str(currSrc_vdd_d_rx)
  
- Xblk_die_vdd_h_cmn 		bump_pwr_vdd_h_cmn	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_h_cmn'		Rdie= 'Rdie_avdd_h_cmn'		Res= 'Res_avdd_h_cmn' 	
+ Xblk_die_vdd_h_cmn 		bump_pwr_vdd_h_cmn	ref_gnd	model_die_eth_vdd_cdh_cmn	Cdie= 'Cdie_avdd_h_cmn'		Rdie= 'Rdie_avdd_h_cmn'		Res= 'Res_avdd_h_cmn' 	delay = 0.	
  + pwl_file_in = str(currSrc_vdd_h_cmn)
  
- Xblk_die_vdd_h_lane_0 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ Xblk_die_vdd_h_lane_0 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	delay = 0.
  + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
- Xblk_die_vdd_h_lane_1 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ Xblk_die_vdd_h_lane_1 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	delay = 800.p
  + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
- Xblk_die_vdd_h_lane_2 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	
+ Xblk_die_vdd_h_lane_2 		bump_pwr_vdd_h	ref_gnd	model_die_eth_vdd_cdh	Cdie= 'Cdie_avdd_h'			Rdie= 'Rdie_avdd_h'			Res= 'Res_avdd_h' 	delay = 1600.p
  + pwl_file_in_tx = str(currSrc_vdd_h_tx)	pwl_file_in_rx = str(currSrc_vdd_h_rx)
  
 *** run settings 

@@ -15,7 +15,15 @@
 	***** define load current source model used in die model *****
 
 * .inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
-.param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')
+* .param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')	
+
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v2.txt.csv') 			*** NOTE: 10/10 current profile 	, length 1us
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v3.txt.csv') 			*** NOTE: 10/10 current profile , length 7us
+*.param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v2p2.txt.csv') 			*** NOTE: 10/10 current profile , length 1us
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v3p2.txt.csv') 			*** NOTE: 10/10 current profile , length 8us
+.param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_1us.txt.csv') 			*** NOTE: 10/18 current profile
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_L3_6p5us.txt.csv') 			*** NOTE: 10/18 current profile
+
 
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_13A_1000ns_cnst_500ns_9_13_rand_55ns_rampDown_noClk.txt
 
@@ -67,8 +75,8 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	*.inc ./hspice_inc/MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5.cir
 	*.param PCB_model = str('MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5')
 
-.inc ./hspice_inc/MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM.cir			*** POR
-.param PCB_model = str('MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM')
+	* * .inc ./hspice_inc/MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM.cir			*** POR 
+	* * .param PCB_model = str('MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM')
 
 	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM.cir					***0927, CPU PMIC at south of SoC 
 	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM')
@@ -76,28 +84,27 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM.cir		***0927, CPU PMIC at south of SoC, L4/9 pwr cut off
 	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM')	
 
+	.inc ./hspice_inc/MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM.cir				*** 1018, PMIC at south edge of SoC, PTH power vias 
+	.param PCB_model = str('MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM')
 
 *************************************** Input params **************************
-.param Vdd 	= 0.75
+.param Vdd 	= 0.815
 
 .param CPU_die = str('model_die_lumped_cpu')
 .param GPU_die = str('model_die_lumped_gpu')
 
-.param Cdie_cpu	 = '226.n'
-.param Rdie_cpu	 = '0.664m'
+.param Cdie_cpu	 = '276.n'
+.param Rdie_cpu	 = '0.452m'
 .param Rleak_cpu = 0.232
 
-.param Cdie_gpu  = '187.n'
-.param Rdie_gpu  = '0.81m'
+.param Cdie_gpu  = '268.n'
+.param Rdie_gpu  = '0.465m'
 .param Rleak_gpu = 1.27
 
 	*** exp. to turn off GPU die model
 	*.param Cdie_gpu	= '0.n'
 	*.param Rdie_gpu	= '1.e9m'
 	*.param Rleak_gpu= 1.e9
-	
-.param Lcomp_val= 10.p		*** temporarily mimic Andes pkg design rule, use 0 if pkg model is appropriate
-
 *************************************** cap model *****************************
 .inc ../models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
 .inc ../models_cap/GCM155D70G475ME36_DC0V_125degC_0402_4p7uF.mod
@@ -759,7 +766,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	
 .endif	*** end of PCB 0724 Andes mockup
 
-.if ( 1 )	*** PCB 0803 Andes mockup
+.if ( 0 )	*** PCB 0803 Andes mockup
 	Xblk_PCB
 	+ pmic_pwr 					ref_gnd 	*** use L501 and L511 as PMIC port 
 	+ pmic_pwr 		   			ref_gnd 	
@@ -1268,7 +1275,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 .endif	*** end of PCB 0803 Andes mockup, test vertical feed 
 
 
-.if ( 0 )	*** PCB 0927 Andes mockup
+.if ( 0 )	*** PCB 0927 Andes mockup, PMIC at south of CPU 
 	Xblk_PCB
 	+ pmic_pwr 					 	*** use L501 and L511 as PMIC port 
 	+ pmic_pwr 		   			 	
@@ -1381,10 +1388,10 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	*** end of PMIC bulk	
 	
 	*** CPU PCB bulk cap outside die shadow
-	XpcbCap_C506   pcbCap_C506     ref_gnd	str(mlcc_100uF_1210)
-	XpcbCap_C507   pcbCap_C507     ref_gnd	str(mlcc_100uF_1210)
-	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_100uF_1210)
-	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_100uF_1210)
+	XpcbCap_C506   pcbCap_C506     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C507   pcbCap_C507     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_47uF_1206)
 
 	.if ( 0 )	*** exp used to suppress resonoance near 0.2MHz
 		XpcbCap_C506_2  pcbCap_C506     ref_gnd	str(mlcc_100uF_1210)	
@@ -1398,13 +1405,13 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 		XpcbCap_C5038_2  pcbCap_C5038    ref_gnd  	str(mlcc_100uF_1210)
 	.endif 
 
-	.if ( 1 )	*** exp to suppress low freq noise 
-		XpcbCap_C5002_2  pcbCap_C5002    ref_gnd	str(mlcc_100uF_1210)
-		*XpcbCap_C5007_2  pcbCap_C5007    ref_gnd	str(mlcc_100uF_1210)
-		XpcbCap_C5014_2  pcbCap_C5014    ref_gnd	str(mlcc_100uF_1210)
-		*XpcbCap_C5021_2  pcbCap_C5021    ref_gnd	str(mlcc_100uF_1210)
-		*XpcbCap_C5027_2  pcbCap_C5027    ref_gnd	str(mlcc_100uF_1210)
-		XpcbCap_C5033_2  pcbCap_C5033    ref_gnd	str(mlcc_100uF_1210)
+	.if ( 0 )	*** exp to suppress low freq noise 
+		XpcbCap_C5002_2  pcbCap_C5002    ref_gnd	str(mlcc_47uF_1206)
+		*XpcbCap_C5007_2  pcbCap_C5007    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5014_2  pcbCap_C5014    ref_gnd	str(mlcc_47uF_1206)
+		*XpcbCap_C5021_2  pcbCap_C5021    ref_gnd	str(mlcc_47uF_1206)
+		*XpcbCap_C5027_2  pcbCap_C5027    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5033_2  pcbCap_C5033    ref_gnd	str(mlcc_47uF_1206)
 	.endif 
 	*** CPU PCB bulk cap outside die shadow
 	
@@ -1495,66 +1502,220 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	
 .endif	*** end of PCB 0927 Andes mockup
 
-*************************************** Pkg ***********************************
-L_comp		pkg_bump 	pkg_bump_toPkge		Lcomp_val
-L_comp_gpu	pkg_bump_gpu 	pkg_bump_toPkge_gpu	Lcomp_val
-
-.if (0)	*** pkg mock up Sierra
-	Xblk_pkg
-	+ pkg_bump_toPkge		ref_gnd 
-	+ pkg_bump_DSU_toPkge		ref_gnd		*** DSU die bump group, may not be connected to die model
-	+ pkg_bump_toPkge		ref_gnd 
-	+ pkg_bump_toPkge		ref_gnd 
-	+ pkg_bump_toPkge		ref_gnd 
-	+ bga_pkg 				ref_gnd 
-	+ pkgCap_1		ref_gnd	
-	+ pkgCap_2		ref_gnd	
-	+ pkgCap_3		ref_gnd	
-	+ pkgCap_4		ref_gnd	
-	+ pkgCap_5		ref_gnd	
-	+ pkgCap_6		ref_gnd	
-	+ pkgCap_7		ref_gnd	
-	+ pkgCap_8		ref_gnd	
-	+ pkgCap_9		ref_gnd	
-	+ pkgCap_10		ref_gnd	
-	+ pkgCap_11		ref_gnd	
-	+ pkgCap_12		ref_gnd	
-	+ pkgCap_13		ref_gnd	
-	+ pkgCap_14		ref_gnd	
-	+ pkgCap_15		ref_gnd	
-	+ pkgCap_16		ref_gnd	
-	+ pkgCap_17		ref_gnd	
-	+ pkgCap_18		ref_gnd	
-	+ pkgCap_19		ref_gnd	
-	+ pkgCap_20		ref_gnd	
-	+ pkg_bump_toPkge_gpu	ref_gnd		*** GPU die bump group, connect to GPU die model
-	+ str(pkg_model)
-
-	*** Pkg cap ***
-	XpkgCap_1  pkgCap_1	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_2  pkgCap_2	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_3  pkgCap_3	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_4  pkgCap_4	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_5  pkgCap_5	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_6  pkgCap_6	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_7  pkgCap_7	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_8  pkgCap_8	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_9  pkgCap_9	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_10  pkgCap_10	ref_gnd		str(mlcc_0p1uF_0204)
-	XpkgCap_11  pkgCap_11	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_12  pkgCap_12	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_13  pkgCap_13	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_14  pkgCap_14	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_15  pkgCap_15	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_16  pkgCap_16	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_17  pkgCap_17	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_18  pkgCap_18	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_19  pkgCap_19	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_20  pkgCap_20 	ref_gnd		str(mlcc_10uF_0402)	
+.if ( 1 )	*** PCB 1018 Andes mockup, PMIC at south of CPU, PTH via  
+	Xblk_PCB
+	+ pmic_pwr 					 	*** use L501 and L511 as PMIC port 
+	+ pmic_pwr 		   			 	
+	+ bga_pcb					
+    + pcbCap_C501
+    + pcbCap_C502
+    + pcbCap_C503
+    + pcbCap_C504
+    + pcbCap_C505
+    + pcbCap_C511
+    + pcbCap_C512
+    + pcbCap_C513
+    + pcbCap_C514
+    + pcbCap_C515
+    + pcbCap_C516
+    + pcbCap_C517
+    + pcbCap_C700
+    + pcbCap_C701
+    + pcbCap_C4009
+    + pcbCap_C4010
+    + pcbCap_C4016
+    + pcbCap_C4017
+    + pcbCap_C4018
+    + pcbCap_C4019
+    + pcbCap_C4020
+    + pcbCap_C4021
+    + pcbCap_C5001
+    + pcbCap_C5002
+    + pcbCap_C5003
+    + pcbCap_C5004
+    + pcbCap_C5005
+    + pcbCap_C5006
+    + pcbCap_C5007
+    + pcbCap_C5008
+    + pcbCap_C5009
+    + pcbCap_C5010
+    + pcbCap_C5011
+    + pcbCap_C5012
+    + pcbCap_C5013
+    + pcbCap_C5014
+    + pcbCap_C5015
+    + pcbCap_C5016
+    + pcbCap_C5017
+    + pcbCap_C5018
+    + pcbCap_C5019
+    + pcbCap_C5020
+    + pcbCap_C5021
+    + pcbCap_C5022
+    + pcbCap_C5023
+    + pcbCap_C5024
+    + pcbCap_C5025
+    + pcbCap_C5026
+    + pcbCap_C5027
+    + pcbCap_C5028
+    + pcbCap_C5029
+    + pcbCap_C5030
+    + pcbCap_C5031
+    + pcbCap_C5032
+    + pcbCap_C5033
+    + pcbCap_C5034
+    + pcbCap_C5035
+    + pcbCap_C5036
+    + pcbCap_C5037
+    + pcbCap_C5038
+    + pcbCap_C5039
+    + pcbCap_C5040
+    + pcbCap_C5041
+    + pcbCap_C5042
+    + pcbCap_C5043
+    + pcbCap_C5044
+    + pcbCap_C5045
+    + pcbCap_C5046
+    + pcbCap_C5047
+    + pcbCap_C5048
+    + pcbCap_C5049
+    + pcbCap_C5050
+    + pcbCap_C5051
+    + pcbCap_C5052
+    + pcbCap_C5053
+    + pcbCap_C5054
+    + pcbCap_C5055
+    + pcbCap_C5056
+    + pcbCap_C5057
+    + pcbCap_C5058
+    + pcbCap_C5059
+    + pcbCap_C5060
+    + pcbCap_C5061
+	+ ref_gnd
+	+ str(PCB_model)
 	
-.endif 	*** end of pkg mock up Sierra
+	*** start of PMIC bulk
+	XpcbCap_C504   pcbCap_C504	   ref_gnd	str(mlcc_22uF_0805)	
+	XpcbCap_C505   pcbCap_C505     ref_gnd	str(mlcc_22uF_0805)	
+	XpcbCap_C514   pcbCap_C514     ref_gnd	str(mlcc_22uF_0805)	
+	XpcbCap_C515   pcbCap_C515     ref_gnd	str(mlcc_22uF_0805)	
+	XpcbCap_C501   pcbCap_C501     ref_gnd  str(mlcc_22uF_0805)
+	XpcbCap_C502   pcbCap_C502     ref_gnd  str(mlcc_22uF_0805)
+	XpcbCap_C503   pcbCap_C503     ref_gnd	str(mlcc_22uF_0805)
+	XpcbCap_C511   pcbCap_C511     ref_gnd	str(mlcc_22uF_0805)
+	XpcbCap_C512   pcbCap_C512     ref_gnd  str(mlcc_22uF_0805)
+	XpcbCap_C513   pcbCap_C513     ref_gnd	str(mlcc_22uF_0805)
+	*** end of PMIC bulk	
+	
+	*** CPU PCB bulk cap outside die shadow
+	XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_47uF_1206)
+	
 
-.if ( 1 )	*** pkg mock up Andes 0724 
+	.if ( 0 )	*** exp used to suppress resonoance near 0.2MHz
+		XpcbCap_C506_2  pcbCap_C506     ref_gnd	str(mlcc_47uF_1206)	
+		XpcbCap_C507_2  pcbCap_C507     ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C516_2  pcbCap_C516     ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C517_2  pcbCap_C517     ref_gnd	str(mlcc_47uF_1206)	
+		XpcbCap_C5034_2  pcbCap_C5034    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5035_2  pcbCap_C5035    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5036_2  pcbCap_C5036    ref_gnd  	str(mlcc_47uF_1206)
+		XpcbCap_C5037_2  pcbCap_C5037    ref_gnd  	str(mlcc_47uF_1206)
+		XpcbCap_C5038_2  pcbCap_C5038    ref_gnd  	str(mlcc_47uF_1206)
+	.endif 
+
+	.if ( 0 )	*** exp to suppress low freq noise 
+		XpcbCap_C5002_2  pcbCap_C5002    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5026_2  pcbCap_C5026    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5012_2  pcbCap_C5012    ref_gnd	str(mlcc_47uF_1206)
+		XpcbCap_C5048_2  pcbCap_C5048    ref_gnd	str(mlcc_47uF_1206)
+	.endif 
+	*** CPU PCB bulk cap outside die shadow
+	
+	*** start of CPU caps under PCB die shadow  
+	XpcbCap_C5002  pcbCap_C5002    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5003  pcbCap_C5003    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5004  pcbCap_C5004    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5005  pcbCap_C5005    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5006  pcbCap_C5006    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5007  pcbCap_C5007    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C5009  pcbCap_C5009    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5010  pcbCap_C5010    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5011  pcbCap_C5011    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5012  pcbCap_C5012    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5013  pcbCap_C5013    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5014  pcbCap_C5014    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5016  pcbCap_C5016    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5017  pcbCap_C5017    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5018  pcbCap_C5018    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5019  pcbCap_C5019    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5020  pcbCap_C5020    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5021  pcbCap_C5021    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5022  pcbCap_C5022    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5023  pcbCap_C5023    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5024  pcbCap_C5024    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5025  pcbCap_C5025    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5026  pcbCap_C5026    ref_gnd	str(mlcc_4p7uF_0402)
+	XpcbCap_C5027  pcbCap_C5027    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5028  pcbCap_C5028    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5029  pcbCap_C5029    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5030  pcbCap_C5030    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5031  pcbCap_C5031    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5032  pcbCap_C5032    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5033  pcbCap_C5033    ref_gnd	str(mlcc_10uF_0402)
+	*** end of CPU caps under PCB die shadow
+	
+	*** start of CPU caps outside PCB die shadow
+	XpcbCap_C5034  pcbCap_C5034    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5035  pcbCap_C5035    ref_gnd	str(mlcc_10uF_0402)
+	XpcbCap_C5036  pcbCap_C5036    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5037  pcbCap_C5037    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5038  pcbCap_C5038    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5039  pcbCap_C5039    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5040  pcbCap_C5040    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5041  pcbCap_C5041    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5042  pcbCap_C5042    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5043  pcbCap_C5043    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5044  pcbCap_C5044    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5045  pcbCap_C5045    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5046  pcbCap_C5046    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5047  pcbCap_C5047    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5048  pcbCap_C5048    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5049  pcbCap_C5049    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5050  pcbCap_C5050    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5051  pcbCap_C5051    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5052  pcbCap_C5052    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5053  pcbCap_C5053    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5054  pcbCap_C5054    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5055  pcbCap_C5055    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5056  pcbCap_C5056    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5057  pcbCap_C5057    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5058  pcbCap_C5058    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5059  pcbCap_C5059    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5060  pcbCap_C5060    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5061  pcbCap_C5061    ref_gnd  str(mlcc_10uF_0402)
+
+	*** end of CPU caps outside PCB die shadow	
+
+	*** start of GPU PCB caps 
+	XpcbCap_C4009  pcbCap_C4009    ref_gnd	str(mlcc_1uF_0402)
+	XpcbCap_C4010  pcbCap_C4010    ref_gnd  str(mlcc_1uF_0402)
+	XpcbCap_C4016  pcbCap_C4016    ref_gnd  str(mlcc_1uF_0402)
+	XpcbCap_C4017  pcbCap_C4017    ref_gnd  str(mlcc_1uF_0402)
+	XpcbCap_C4018  pcbCap_C4018    ref_gnd  str(mlcc_1uF_0402)
+	XpcbCap_C4019  pcbCap_C4019    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C4020  pcbCap_C4020    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C4021  pcbCap_C4021    ref_gnd  str(mlcc_10uF_0402)
+	XpcbCap_C5001  pcbCap_C5001    ref_gnd  str(mlcc_4p7uF_0402)
+	XpcbCap_C5008  pcbCap_C5008    ref_gnd  str(mlcc_4p7uF_0402)
+	XpcbCap_C5015  pcbCap_C5015    ref_gnd	str(mlcc_4p7uF_0402)
+	*** end of GPU PCB caps 
+	
+.endif	*** end of PCB 1018 Andes mockup
+
+*************************************** Pkg ***********************************
+.if ( 1 )	*** pkg mock up Andes 0724, 1004
 	Xblk_pkg
 	 + pkgCap_C142  ref_gnd
 	 + pkgCap_C143  ref_gnd
@@ -1583,7 +1744,7 @@ L_comp_gpu	pkg_bump_gpu 	pkg_bump_toPkge_gpu	Lcomp_val
 	 + pkg_bump ref_gnd
 	 + pkg_bump ref_gnd
 	 + pkg_bump ref_gnd
-	 + pkg_bump_DSU ref_gnd		*** DSU 
+	 + pkg_bump ref_gnd		*** DSU 
 	 + pkg_bump ref_gnd
 	 + pkg_bump ref_gnd
 	 + pkg_bump ref_gnd
@@ -1650,7 +1811,7 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
 	.param tStep	= 10.p
-	.param tStop	= 10.u
+	.param tStop	= 1.u
 	.tran tStep tSTOP 
 
 	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)
@@ -1659,13 +1820,14 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 	.probe x(xblk_PCB.a_1)  	x(xblk_PCB.a_2) 
 	.probe x(xblk_PMIC.pin_out)
 
-	* .param vdd_meas_start = 35.ns
-	* .param vdd_meas_end   = 150.ns
-	* .meas tran pkg_bump_cpu_p2p 		PP	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_cpu_vmax	MAX	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_cpu_vmin	MIN	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_cpu_vmax_t	WHEN	V(pkg_bump) = 'pkg_bump_cpu_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_cpu_vmin_t	WHEN	V(pkg_bump) = 'pkg_bump_cpu_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	.param vdd_meas_start = 0.n
+	.param vdd_meas_end   = 1.u
+	.meas tran pkg_bump_cpu_p2p 		PP	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_cpu_vmax	MAX	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_cpu_vmin	MIN	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_cpu_vmax_t	WHEN	V(pkg_bump) = 'pkg_bump_cpu_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_cpu_vmin_t	WHEN	V(pkg_bump) = 'pkg_bump_cpu_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_p2p 		PP	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
 	
 	*.probe i(L_comp)	i(L_comp_gpu)
 	*.probe i(*)
