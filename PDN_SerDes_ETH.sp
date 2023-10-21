@@ -248,11 +248,11 @@ xblk_PCB
 	 * + model_filter
 	 + model_filter_22uF
 	 
-	 * xModel_filter_vddh
-	 * + bga_pwr_eth_1p8
-	 * + bga_pwr_vdd_h
-	 * + ref_gnd
-	 * * + model_filter
+	 xModel_filter_vddh
+	 + bga_pwr_eth_1p8
+	 + bga_pwr_vdd_h
+	 + ref_gnd
+	 + model_filter
 	 * + model_filter_22uF
 
 	 xModel_filter_vddh_cmn						*** NOTE: h_cmn filter impact is larger  
@@ -265,7 +265,7 @@ xblk_PCB
 ***** opt 2/2, shorting VDDC, VDDD to PCB 
 	 * r_vddc bga_pwr_vdd_c		bga_pwr_eth_0p95	1.n
 	 * r_vddd bga_pwr_vdd_d		bga_pwr_eth_0p95	1.n
-	 r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n			*** NOTE: h p2p prefers w/o filter
+	 * r_vddh bga_pwr_vdd_h		bga_pwr_eth_1p8		1.n			*** NOTE: h p2p prefers w/o filter
 	 * r_vddh_cmn bga_pwr_vdd_h_cmn	bga_pwr_eth_1p8		1.n 
  
  
@@ -378,7 +378,7 @@ xblk_pkg
 
 .if ( is_ac_run != 1 )  *** jgwei trans sim
 	.param tStep	= 10.p
-	.param tStop	= 3.u   * 1.u
+	.param tStop	= 1.u
 	
 	.tran tStep tSTOP 
 
