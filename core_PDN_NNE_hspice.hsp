@@ -384,8 +384,13 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	XpcbCap__C617	pcbCap__C617	ref_gnd		str(mlcc_100uF_1210)
 	XpcbCap__C626	pcbCap__C626	ref_gnd		str(mlcc_100uF_1210)
 	XpcbCap__C627	pcbCap__C627	ref_gnd		str(mlcc_100uF_1210)	
-	XpcbCap__C6050	pcbCap__C6050	ref_gnd		str(mlcc_100uF_1210)
-	XpcbCap__C6083	pcbCap__C6083	ref_gnd		str(mlcc_100uF_1210)	
+	XpcbCap__C702   pcbCap__C702    ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C703   pcbCap__C703    ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C704   pcbCap__C704    ref_gnd		str(mlcc_100uF_1210)
+	XpcbCap__C705   pcbCap__C705    ref_gnd		str(mlcc_100uF_1210)
+	
+	* XpcbCap__C6050	pcbCap__C6050	ref_gnd		str(mlcc_100uF_1210)
+	* XpcbCap__C6083	pcbCap__C6083	ref_gnd		str(mlcc_100uF_1210)	
 		*** 22uF
 	XpcbCap__C6137	pcbCap__C6137	ref_gnd		str(mlcc_22uF_0805)
 	XpcbCap__C6139	pcbCap__C6139	ref_gnd		str(mlcc_22uF_0805)
@@ -1752,13 +1757,13 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_d
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
 	.probe x(xblk_PMIC.pin_out)
 
-	* .param vdd_meas_start = 0.u
-	* .param vdd_meas_end   = 50.u
-	* .meas tran pkg_bump_1_0_p2p 		PP	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_1_0_cpu_vmax	MAX	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_1_0_cpu_vmin	MIN	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_1_0_cpu_vmax_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	* .meas tran pkg_bump_1_0_cpu_vmin_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmin' 	from='vdd_meas_start' to='vdd_meas_end'	
+	.param vdd_meas_start = 0.u
+	.param vdd_meas_end   = 50.u
+	.meas tran pkg_bump_1_0_p2p 		PP	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_1_0_cpu_vmax	MAX	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_1_0_cpu_vmin	MIN	V(pkg_bump_1_0)	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_1_0_cpu_vmax_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	.meas tran pkg_bump_1_0_cpu_vmin_t	WHEN	V(pkg_bump_1_0) = 'pkg_bump_1_0_cpu_vmin' 	from='vdd_meas_start' to='vdd_meas_end'	
 
 	*.probe i(*)
 	*.probe x(*)

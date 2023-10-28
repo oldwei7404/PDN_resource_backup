@@ -14,16 +14,17 @@
 *************************************** Input Models**************************
 	***** define load current source model used in die model *****
 
-* .inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
-* .param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')	
+		** .inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
+.param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')		*** 9us
 
 * .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v2.txt.csv') 			*** NOTE: 10/10 current profile 	, length 1us
 * .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v3.txt.csv') 			*** NOTE: 10/10 current profile , length 7us
 *.param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v2p2.txt.csv') 			*** NOTE: 10/10 current profile , length 1us
 * .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v3p2.txt.csv') 			*** NOTE: 10/10 current profile , length 8us
-.param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_1us.txt.csv') 			*** NOTE: 10/18 current profile
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_1us.txt.csv') 			*** NOTE: 10/18 current profile
 * .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_L3_6p5us.txt.csv') 			*** NOTE: 10/18 current profile
 
+* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_1027.txt.csv') 			*** NOTE: 10/27 current profile
 
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_13A_1000ns_cnst_500ns_9_13_rand_55ns_rampDown_noClk.txt
 
@@ -75,8 +76,8 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	*.inc ./hspice_inc/MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5.cir
 	*.param PCB_model = str('MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5')
 
-	* * .inc ./hspice_inc/MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM.cir			*** POR 
-	* * .param PCB_model = str('MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM')
+	* .inc ./hspice_inc/MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM.cir			*** POR 
+	* .param PCB_model = str('MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM')
 
 	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM.cir					***0927, CPU PMIC at south of SoC 
 	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM')
@@ -84,11 +85,19 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM.cir		***0927, CPU PMIC at south of SoC, L4/9 pwr cut off
 	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM')	
 
-	.inc ./hspice_inc/MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM.cir				*** 1018, PMIC at south edge of SoC, PTH power vias 
-	.param PCB_model = str('MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM')
+	* .inc ./hspice_inc/MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM.cir					*** 1018, PMIC at south of SoC, PTH power vias 
+	* .param PCB_model = str('MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM')
+	* .inc ./hspice_inc/MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_jgwei_rmLF_manip_IdEM.cir				*** 1025, PMIC at west of SoC, PTH power vias 
+	* .param PCB_model = str('MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_jgwei_rmLF_manip_IdEM')
 
+	* .inc ./hspice_inc/MAMMOTH_PCB_231023_1_CPU_GPU_merge_stk1025_jgwei_rmLF_manip_IdEM.cir				*** 1025, PMIC at south of SoC, PTH power vias, 1025 new PCB stackup, 
+	* .param PCB_model = str('MAMMOTH_PCB_231023_1_CPU_GPU_merge_stk1025_jgwei_rmLF_manip_IdEM')	
+	.inc ./hspice_inc/MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM.cir		*** 1025, PMIC at west of SoC, PTH power vias, 1025 new PCB stackup, 
+	.param PCB_model = str('MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM')
+
+	
 *************************************** Input params **************************
-.param Vdd 	= 0.815
+.param Vdd 	= 0.775
 
 .param CPU_die = str('model_die_lumped_cpu')
 .param GPU_die = str('model_die_lumped_gpu')
@@ -120,6 +129,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .inc ../models_cap/GCM21BD70G226ME36_DC0V_125degC_0805_22uF.mod
 .inc ../models_cap/GCM155R71E153KA55_DC0V_125degC_0402_0.015uF.mod
 .inc ../models_cap/GRT033C70J104KE01_DC0V_125degC_0201_0p1uF.mod
+.inc ../models_cap/GCM32EM8EA227ME08_DC0V_125degC_1210_220uF.mod
 .inc ../models_cap/mlcc_470uF_mockup_T598D477M2R5ATE009.mod
 .inc ../models_cap/open_circuit.mod
 
@@ -142,6 +152,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .param mlcc_0p015uF_0402	= str('GCM155R71E153KA55_DC0V_125degC')
 .param mlcc_0p01uF_0201		= str('GRT033R70J103KE01_DC0V_125degC')
 .param mlcc_22uF_0805		= str('GCM21BD70G226ME36_DC0V_125degC_0805_22uF')
+.param mlcc_220uF_1210		= str('GCM32EM8EA227ME08_DC0V_125degC')
 .param mlcc_470uF_mockup	= str('mlcc_470uF_mockup_T598D477M2R5ATE009') 
 
 .param siCap_empwr_EC1001 = str('EC1001')
@@ -1502,7 +1513,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	
 .endif	*** end of PCB 0927 Andes mockup
 
-.if ( 1 )	*** PCB 1018 Andes mockup, PMIC at south of CPU, PTH via  
+.if ( 1 )	*** PCB 1018, 1025 (PMIC south or left, multiple pcb same set of ports) Andes mockup, PTH via  
 	Xblk_PCB
 	+ pmic_pwr 					 	*** use L501 and L511 as PMIC port 
 	+ pmic_pwr 		   			 	
@@ -1594,23 +1605,28 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	+ str(PCB_model)
 	
 	*** start of PMIC bulk
-	XpcbCap_C504   pcbCap_C504	   ref_gnd	str(mlcc_22uF_0805)	
-	XpcbCap_C505   pcbCap_C505     ref_gnd	str(mlcc_22uF_0805)	
-	XpcbCap_C514   pcbCap_C514     ref_gnd	str(mlcc_22uF_0805)	
-	XpcbCap_C515   pcbCap_C515     ref_gnd	str(mlcc_22uF_0805)	
-	XpcbCap_C501   pcbCap_C501     ref_gnd  str(mlcc_22uF_0805)
-	XpcbCap_C502   pcbCap_C502     ref_gnd  str(mlcc_22uF_0805)
-	XpcbCap_C503   pcbCap_C503     ref_gnd	str(mlcc_22uF_0805)
-	XpcbCap_C511   pcbCap_C511     ref_gnd	str(mlcc_22uF_0805)
-	XpcbCap_C512   pcbCap_C512     ref_gnd  str(mlcc_22uF_0805)
-	XpcbCap_C513   pcbCap_C513     ref_gnd	str(mlcc_22uF_0805)
+	* XpcbCap_C504   pcbCap_C504	   ref_gnd	str(mlcc_220uF_1210)	
+	* XpcbCap_C505   pcbCap_C505     ref_gnd	str(mlcc_220uF_1210)	
+	* XpcbCap_C514   pcbCap_C514     ref_gnd	str(mlcc_220uF_1210)	
+	* XpcbCap_C515   pcbCap_C515     ref_gnd	str(mlcc_220uF_1210)	
+	* XpcbCap_C501   pcbCap_C501     ref_gnd  str(mlcc_220uF_1210)
+	* XpcbCap_C502   pcbCap_C502     ref_gnd  str(mlcc_220uF_1210)
+	* XpcbCap_C503   pcbCap_C503     ref_gnd	str(mlcc_220uF_1210)
+	* XpcbCap_C511   pcbCap_C511     ref_gnd	str(mlcc_220uF_1210)
+	* XpcbCap_C512   pcbCap_C512     ref_gnd  str(mlcc_220uF_1210)
+	* XpcbCap_C513   pcbCap_C513     ref_gnd	str(mlcc_220uF_1210)
 	*** end of PMIC bulk	
 	
 	*** CPU PCB bulk cap outside die shadow
-	XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_47uF_1206)
-	XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_47uF_1206)
-	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_47uF_1206)
-	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_47uF_1206)
+	XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_220uF_1210)
+	XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_220uF_1210)
+	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_220uF_1210)
+	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_220uF_1210)
+
+	* XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_100uF_1210)
+	* XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_100uF_1210)
+	* XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_100uF_1210)
+	* XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_100uF_1210)
 	
 
 	.if ( 0 )	*** exp used to suppress resonoance near 0.2MHz
@@ -1811,7 +1827,7 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
 	.param tStep	= 10.p
-	.param tStop	= 1.u
+	.param tStop	= 9.u
 	.tran tStep tSTOP 
 
 	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)
@@ -1821,7 +1837,7 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 	.probe x(xblk_PMIC.pin_out)
 
 	.param vdd_meas_start = 0.n
-	.param vdd_meas_end   = 1.u
+	.param vdd_meas_end   = 9.u
 	.meas tran pkg_bump_cpu_p2p 		PP	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran pkg_bump_cpu_vmax	MAX	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'
 	.meas tran pkg_bump_cpu_vmin	MIN	V(pkg_bump)	from='vdd_meas_start' to='vdd_meas_end'

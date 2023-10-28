@@ -47,11 +47,11 @@
 	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
 	*.inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0515_200clk_0scale_51502.inc
 
-* .inc ./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc	*** POR as of 0622
-* .inc ./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703.inc
+* .param pwl_file_in_PA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')		*** POR 
+* .param pwl_file_in_MA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
 
-		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened.txt.csv')		*** PMIC vendor test,  11us
-		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened.txt.csv')
+		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened_vdd0p78V.txt.csv')		*** PMIC vendor test,  11us
+		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened_vdd0p78V.txt.csv')
 		
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -78,23 +78,23 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	*.inc ./hspice_inc/model_die_NNE_PA_idle.inc			*** idle 0A
 	*.param NNE_die_PA_idle = str('model_die_lumped_nne_pa_idle_0A')
 
-.inc ./hspice_inc/model_die_NNE_PA.inc		
-.param NNE_die_PA = str('model_die_lumped_nne_pa')	
+* .inc ./hspice_inc/model_die_NNE_PA.inc		
+* .param NNE_die_PA = str('model_die_lumped_nne_pa')	
 	*.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp.inc	*** 12A step up current
 	*.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp')
 	*.inc ./hspice_inc/model_die_NNE_PA_stepUp12A_300nsRamp_clk.inc	*** 12A step up current w/ clk edges
 	*.param NNE_die_PA = str('model_die_lumped_nne_pa_12A_stepUp_300nsRamp_clk')
 
 		***** MA tile					
-.inc ./hspice_inc/model_die_NNE_MA.inc								 
-.param NNE_die_MA = str('model_die_lumped_nne_ma')
+* .inc ./hspice_inc/model_die_NNE_MA.inc								 
+* .param NNE_die_MA = str('model_die_lumped_nne_ma')
 
 	***** define reduced pkg&PCB model *****	
 .inc ./hspice_inc/Z_NNE_4x2_reducedModel_0912_jgwei_manip_IdEM.cir
 .param Redu_model = str('Z_NNE_4x2_reducedModel_0912_jgwei_manip_IdEM')
 
 *************************************** Input params **************************
-.param Vdd 	= 0.788
+.param Vdd 	= 0.779      * 0.788
 
 .para Cdie_coeff = 1.	* 1.8265
 .para Rdie_coeff = 1.	* 0.5475
@@ -106,7 +106,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .param Rleak 	= 0.84
 
 .param tStep	= 10.p
-.param tStop	= 11.0u
+.param tStop	= 50.0u
 
 *************************************** cap model *****************************
 .inc ../models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -156,9 +156,15 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 Vref_gnd 	ref_gnd		0	0.				
 	*E_fdbk	ref_gnd	0	VCVS DELAY pmic_pwr pkg_bump_1_0  td=50.n	*** opt 2/2 VCVS to model feedback
 
+.subckt PMIC_model
++ pin_out ref_gnd vdd_pmic = 0.75
+	VshortPMIC	pin_out	ref_gnd	vdd_pmic
+.ends 
+
 *** opt 1 ideal PMIC w/o remote sense feedback
 .if ( 1 )
-	VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
+	*VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
+	xblk_PMIC pmic_pwr ref_gnd PMIC_model  vdd_pmic = 'Vdd' 
 .endif 
 *** opt 2 EMpower simplified IVR equivalent model 	(remember to disable PMIC bulk caps on PCB)
 .if ( 0 )
@@ -245,6 +251,7 @@ Xblk_die_1_3	pkg_bump_1_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_d
 
 	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  v(bga_pkg)
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_2)	x(Xblk_pkg.a_1)
+	.probe x(xblk_PMIC.pin_out)
 
 
 	*.probe i(*)
