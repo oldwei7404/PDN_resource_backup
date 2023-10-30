@@ -121,6 +121,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .inc ../models_cap/GRT033R70J103KE01_DC0V_125degC_0201_0p01uF.mod
 .inc ../models_cap/GCM155R71C104KA55_DC0V_125degC_0402_0.1uF.mod
 .inc ../models_cap/GCM21BD70G226ME36_DC0V_125degC_0805_22uF.mod
+.inc ../models_cap/GCM32EM8EA227ME08_DC0V_125degC_1210_220uF.mod
 .inc ../models_cap/GCM155R71E153KA55_DC0V_125degC_0402_0.015uF.mod
 .inc ../models_cap/GRT033C70J104KE01_DC0V_125degC_0201_0p1uF.mod
 .inc ../models_cap/mlcc_470uF_mockup_T598D477M2R5ATE009.mod
@@ -146,6 +147,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .param mlcc_0p01uF_0201		= str('GRT033R70J103KE01_DC0V_125degC')
 .param mlcc_22uF_0805		= str('GCM21BD70G226ME36_DC0V_125degC_0805_22uF')
 .param mlcc_470uF_mockup	= str('mlcc_470uF_mockup_T598D477M2R5ATE009') 
+.param mlcc_220uF_1210		= str('GCM32EM8EA227ME08_DC0V_125degC')
 
 .param siCap_empwr_EC1001 = str('EC1001')
 .param siCap_empwr_EC1002 = str('EC1002')
