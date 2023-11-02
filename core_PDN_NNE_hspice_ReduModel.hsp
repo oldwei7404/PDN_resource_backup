@@ -50,8 +50,14 @@
 * .param pwl_file_in_PA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_PA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')		*** POR 
 * .param pwl_file_in_MA = str('./hspice_inc/out_curr_profile_NNE_4x2grp_MA_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk_51703_0925.inc.csv')
 
-		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened_vdd0p78V.txt.csv')		*** PMIC vendor test,  11us
-		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened_vdd0p78V.txt.csv')
+		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened_vdd0p78V.txt.csv')		*** PMIC vendor test,  11us
+		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened_vdd0p78V.txt.csv')
+
+		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened.txt.hspice.csv')		*** PMIC vendor test,  11us
+		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened.txt.hspice.csv')		
+
+		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_1031_500MHz.txt.csv')		*** PMIC vendor test,  11us
+		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_1031_500MHz.txt.csv')
 		
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -93,8 +99,11 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .inc ./hspice_inc/Z_NNE_4x2_reducedModel_0912_jgwei_manip_IdEM.cir
 .param Redu_model = str('Z_NNE_4x2_reducedModel_0912_jgwei_manip_IdEM')
 
+* .inc ./hspice_inc/Z_NNE_4x2_reducedModel_1029_IdEM0p5.cir
+* .param Redu_model = str('Z_NNE_4x2_reducedModel_1029_IdEM0p5')
+
 *************************************** Input params **************************
-.param Vdd 	= 0.779      * 0.788
+.param Vdd 	= 0.775      * 0.788
 
 .para Cdie_coeff = 1.	* 1.8265
 .para Rdie_coeff = 1.	* 0.5475
@@ -189,7 +198,7 @@ XreduModel
  + pkg_bump_1_3 
  + pmic_pwr 
  + ref_gnd
- + Z_NNE_4x2_reducedModel_0912_jgwei_manip_IdEM
+ + str(Redu_model)
  
 *************************************** Die ***********************************
 * Xblk_die_0_0	pkg_bump_0_0	ref_gnd	str(NNE_die_MA)	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'	
