@@ -237,28 +237,28 @@ x_pcb
  xpkgCap_45_VPH_C127	pkgCap_45_VPH_C127	0	str(mlcc_0p1uF_0201)
  xpkgCap_45_VDD_C122	pkgCap_45_VDD_C122	0	str(mlcc_0p1uF_0201)
 
-.param use_filter = 1
-	***** add filter to isolate xtalk from vp to vdd 
- .if (use_filter == 1) 
-	 xModel_filter_vdd01
-	 + vdd_vp_ball
-	 + vdd_ball
-	 + ref_gnd
-	 * + model_filter
-	 + model_filter_22uF
-	 
-	 xModel_filter_vdd45
-	 + vdd_vp_ball
-	 + vdd_ball_45
-	 + ref_gnd
-	 * + model_filter
-	 + model_filter_22uF
-	 
- .endif 
- .if (use_filter != 1) 
-	 r_vdd_ball_pcb_short1	vdd_ball	vdd_vp_ball		1.n			*** NOTE: short vdd/vp 
-	 r_vdd_ball_pcb_short3	vdd_ball_45	vdd_vp_ball		1.n			*** NOTE: short vdd/vp 
- .endif 
+			.param use_filter = 1
+			***** add filter to isolate xtalk to vdd 
+			.if (use_filter == 1) 
+			 xModel_filter_vdd01
+			 + vdd_vp_ball
+			 + vdd_ball
+			 + ref_gnd
+			 * + model_filter
+			 + model_filter_22uF
+			 
+			 xModel_filter_vdd45
+			 + vdd_vp_ball
+			 + vdd_ball_45
+			 + ref_gnd
+			 * + model_filter
+			 + model_filter_22uF
+			 
+			 .endif 
+			 .if (use_filter != 1) 
+				 r_vdd_ball_pcb_short1	vdd_ball	vdd_vp_ball		1.n			*** NOTE: short vdd/vp 
+				 r_vdd_ball_pcb_short3	vdd_ball_45	vdd_vp_ball		1.n			*** NOTE: short vdd/vp 
+			 .endif 
  
  r_vdd_ball_pcb_short2	vp_ball		vdd_vp_ball		1.n			*** NOTE: short vdd/vp
  r_vdd_ball_pcb_short4	vp_ball_45	vdd_vp_ball		1.n			*** NOTE: short vdd/vp 
@@ -330,14 +330,14 @@ xdwc_mipi_cdphy_2l2t_ns_ln5
 		.probe ac zin(1)(m) zin(1)(p) zin(2)(m) zin(2)(p) 
 	.endif
 	
-	i_ac_vp_vdd_die vp_die 0 dc=0 ac=1
-	.probe ac v(vp_die)
+	* i_ac_vp_vdd_die vp_die 0 dc=0 ac=1
+	* .probe ac v(vp_die)
 	
 	*i_ac_vph_die    vph_die    0 dc=0 ac=1		
 	*.probe ac v(vph_die)
 
-	*i_ac_vp_vdd_die vdd_die 0 dc=0 ac=1
-	*.probe ac v(vdd_die)
+	i_ac_vp_vdd_die vdd_die 0 dc=0 ac=1
+	.probe ac v(vdd_die)
 	
 	.ac 	dec 50 1. 1.G
 	
@@ -365,29 +365,27 @@ $$ Start/end points for selected transient measures
 
 .param vdd_meas_start = 0
 .param vdd_meas_end = sim_time
-.param ana_burst_start = 0.4754u     	
-.param ana_burst_end = 0.6441u
+.param ana_burst_start = 0.61u    	*   0.4754u     	
+.param ana_burst_end   = 0.6993u   	*   0.6441u
 
 $$ TR measures on die p2p
 .meas tran vdd_die_p2p 		PP	V(vdd_die)	from='vdd_meas_start' to='vdd_meas_end'
 .meas tran vp_die_p2p  		PP	V(vp_die)	from='ringing_period_exclude' to='sim_time'
 .meas tran vph_die_p2p 		PP	V(vph_die)	from='ringing_period_exclude' to='sim_time'
 
-.meas tran p2p_vdd		PARAM='(vdd_die_p2p/xvdd)*100'
 .meas tran p2p_vp		PARAM='(vp_die_p2p/xvp)*100'
 .meas tran p2p_vph		PARAM='(vph_die_p2p/xvph)*100'
 
 .meas tran hsonly_vp_die_p2p  	PP	V(vp_die)	from='ana_burst_start' to='ana_burst_end'
 .meas tran hsonly_vph_die_p2p 	PP	V(vph_die)	from='ana_burst_start' to='ana_burst_end'
-.meas tran hsonly_vdd_die_p2p 	PP	V(vdd_die)	from='ana_burst_start' to='ana_burst_end'
 
-.meas tran hsonly_p2p_vp	PARAM='(hsonly_vp_die_p2p/xvp)*100'
-.meas tran hsonly_p2p_vph	PARAM='(hsonly_vph_die_p2p/xvph)*100'
+* .meas tran hsonly_p2p_vp	PARAM='(hsonly_vp_die_p2p/xvp)*100'
+* .meas tran hsonly_p2p_vph	PARAM='(hsonly_vph_die_p2p/xvph)*100'
 
-.meas tran vp_min MIN V(vp_die)	from='ringing_period_exclude' to='sim_time'
-.meas tran vp_min_marg PARAM='vp_min-0.87*0.8'
-.meas tran hsonly_vp_min MIN V(vp_die)	from='ana_burst_start' to='ana_burst_end'
-.meas tran hsonly_vp_min_marg PARAM='hsonly_vp_min-0.87*0.75'
+* .meas tran vp_min MIN V(vp_die)	from='ringing_period_exclude' to='sim_time'
+* .meas tran vp_min_marg PARAM='vp_min-0.87*0.8'
+* .meas tran hsonly_vp_min MIN V(vp_die)	from='ana_burst_start' to='ana_burst_end'
+* .meas tran hsonly_vp_min_marg PARAM='hsonly_vp_min-0.87*0.75'
 
 
 
