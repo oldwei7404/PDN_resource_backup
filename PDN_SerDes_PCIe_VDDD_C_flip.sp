@@ -109,7 +109,7 @@ R_res_		pin_bump	2			Res
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
 IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
-.ends model_die_pcie_vdd_cdh_cmn
+.ends 
 **
 .subckt model_die_pcie_vdd_cdh
 + pin_bump ref_gnd Cdie = 1n. 	Rdie = 125m		Res = 50m	pwl_file_in = str('./currSrc.csv')
@@ -118,19 +118,7 @@ R_res_		pin_bump	2			Res
 C_die_		1			ref_gnd 	Cdie 
 R_die_		2			1			Rdie 
 IcurrSrc	2			ref_gnd		PWL pwlfile = str(pwl_file_in) 	R
-.ends model_die_pcie_vdd_cdh
-
-.subckt meas_filter
-+ pin_in  ref_gnd 	hf  lf 
-
-E_meas pin_meas ref_gnd  pin_in ref_gnd	1.0
-
-C_hf pin_meas	hf  	159.15p
-R_hf hf         ref_gnd 1k
-
-R_lf pin_meas	lf		1k
-C_lf lf 		ref_gnd	159.15p
-.ends meas_filter
+.ends 
 
 *************************************** cap model *****************************
 .inc /data/home/jiangongwei/work/models_cap/GCM155D70E106ME36_DC0V_125degC_0402_10uF.mod
@@ -284,24 +272,24 @@ xblk_PCB
  
 *****
 	***** filter 
-	 xModel_filter_vddc
-	 + bga_pwr_pcie_0p95
-	 + bga_pwr_pcie_0p95_vddc
-	 + ref_gnd
-	 + model_filter
-	 * + model_filter_22uF
-	 
-	 * xModel_filter_vddd
+	 * xModel_filter_vddc
 	 * + bga_pwr_pcie_0p95
-	 * + bga_pwr_pcie_0p95_vddd
+	 * + bga_pwr_pcie_0p95_vddc
 	 * + ref_gnd
 	 * + model_filter
 	 * * + model_filter_22uF
+	 
+	 xModel_filter_vddd
+	 + bga_pwr_pcie_0p95
+	 + bga_pwr_pcie_0p95_vddd
+	 + ref_gnd
+	 * + model_filter
+	 + model_filter_22uF
 
 
  ***** shorting VDDC, VDDD to PCB 
-	 * r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
-	 r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
+	 r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+	 * r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
 
 
  
@@ -310,34 +298,36 @@ xblk_PCB
   + bga_pwr_pcie_0p95_vddc 	ref_gnd			
   + bga_pwr_pcie_0p95_vddd	ref_gnd	
   + bga_pwr_pcie_1p8	ref_gnd			*NOTE: bga_pwr_vdd_h
-  + bump_pwr_vdd_c		ref_gnd
-  + bump_pwr_vdd_d		ref_gnd
+  + bump_pwr_vdd_d		ref_gnd			*** jgwei debug to flip with vddc 
+  + bump_pwr_vdd_c		ref_gnd			*** jgwei debug to flip with vddd
   + bump_pwr_vdd_h		ref_gnd
   + capPkg_C133_vdd_c	ref_gnd
   + capPkg_C141_vdd_d	ref_gnd
   + capPkg_C140_vdd_h	ref_gnd
   + str(pkg_model)
   
-  xcapPkg_C133_vdd_c  	capPkg_C133_vdd_c ref_gnd 	str(mlcc_2p2nF_0201)
-  xcapPkg_C141_vdd_d  	capPkg_C141_vdd_d ref_gnd 	str(mlcc_0p1uF_0204)
+  xcapPkg_C133_vdd_c  	capPkg_C133_vdd_c ref_gnd 	str(mlcc_0p1uF_0204)		*** jgwei debug: now vdd_d cap 
+  xcapPkg_C141_vdd_d  	capPkg_C141_vdd_d ref_gnd 	str(mlcc_2p2nF_0201)		*** jgwei debug: now vdd_c cap
   xcapPkg_C140_vdd_h  	capPkg_C140_vdd_h ref_gnd 	str(mlcc_0p47nF_0201)
   
   *** test to add more DSC
-    * xcapPkg_C133_2_vdd_c  	capPkg_C133_vdd_c 	str(siCap_empwr_EC1100_200nF)
-	* xcapPkg_C133_3_vdd_c  	capPkg_C133_vdd_c 	str(siCap_empwr_EC1100_200nF)
-	* xcapPkg_C133_4_vdd_c  	capPkg_C133_vdd_c 	str(siCap_empwr_EC1100_200nF)
+    * xcapPkg_C141_2_vdd_d  	capPkg_C141_vdd_d 	str(siCap_empwr_EC1100_200nF)
+	* xcapPkg_C141_3_vdd_d  	capPkg_C141_vdd_d 	str(siCap_empwr_EC1100_200nF)
+	* xcapPkg_C141_4_vdd_d  	capPkg_C141_vdd_d 	str(siCap_empwr_EC1100_200nF)
+	
+	* xcapPkg_C141_2_vdd_d  	capPkg_C141_vdd_d	ref_gnd 	str(mlcc_0p01uF_0201)
 	
  *** test to add more DSC using si cap	
-	* xcapPkg_C133_2_vdd_c 	
-	* + capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c
+	* xcapPkg_C141_2_vdd_c 	
+	* + capPkg_C141_vdd_capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d
 	* + ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd 
 	* + str(siCap_empwr_EC1004_240nF)	
-	* xcapPkg_C133_3_vdd_c 	
-	* + capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c
+	* xcapPkg_C141_3_vdd_c 	
+	* + capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d
 	* + ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd 
 	* + str(siCap_empwr_EC1004_240nF)	
-	* xcapPkg_C133_4_vdd_c 	
-	* + capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c
+	* xcapPkg_C141_4_vdd_c 	
+	* + capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d	capPkg_C141_vdd_d
 	* + ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd 
 	* + str(siCap_empwr_EC1004_240nF)	
   
@@ -359,14 +349,6 @@ Xblk_die_vdd_h_ln0 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie
 Xblk_die_vdd_h_ln1 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln1)
 Xblk_die_vdd_h_ln2 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln2)
 Xblk_die_vdd_h_ln3 			bump_pwr_vdd_h	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_h_xcvr'	Rdie= 1.e-6		Res= 'Res_avdd_h_xcvr'  pwl_file_in = str(currSrc_vdd_h_ln3)
-
-***** HF/LF meas
-Xvddc_meas
- + bump_pwr_vdd_c
- + ref_gnd
- + pin_vddc_meas_hf
- + pin_vddc_meas_lf
- + meas_filter
 
 *** run settings 
 .option post=1
@@ -402,7 +384,6 @@ Xvddc_meas
 	.tran tStep tSTOP 
 
 	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)
-	.probe tran v(pin_vddc_meas_hf)  v(pin_vddc_meas_lf)
 	.probe x(xblk_pkg.a_4)   x(xblk_pkg.a_5) 	x(xblk_pkg.a_6) 
 
 	.param vdd_meas_start = 35.n
