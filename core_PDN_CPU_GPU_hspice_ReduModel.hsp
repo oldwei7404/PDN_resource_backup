@@ -67,12 +67,12 @@
 .param CPU_die = str('model_die_lumped_cpu')
 .param GPU_die = str('model_die_lumped_gpu')
 
-.param Cdie_cpu	 = '226.n'
-.param Rdie_cpu	 = '0.664m'
+.param Cdie_cpu	 = '276.n'
+.param Rdie_cpu	 = '0.452m'
 .param Rleak_cpu = 0.232
 
-.param Cdie_gpu  = '187.n'
-.param Rdie_gpu  = '0.81m'
+.param Cdie_gpu  = '268.n'
+.param Rdie_gpu  = '0.465m'
 .param Rleak_gpu = 1.27
 
 	*** exp. to turn off GPU die model
@@ -101,6 +101,7 @@
 .inc ../models_cap/GCM32EM8EA227ME08_DC0V_125degC_1210_220uF.mod
 .inc ../models_cap/GCM155R71E153KA55_DC0V_125degC_0402_0.015uF.mod
 .inc ../models_cap/GRT033C70J104KE01_DC0V_125degC_0201_0p1uF.mod
+.inc ../models_cap/GCM033C70J104KE02_DC0V_125degC_0p1uF_0201.mod
 .inc ../models_cap/mlcc_470uF_mockup_T598D477M2R5ATE009.mod
 .inc ../models_cap/open_circuit.mod
 

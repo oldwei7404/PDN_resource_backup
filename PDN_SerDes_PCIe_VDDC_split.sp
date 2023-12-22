@@ -11,8 +11,8 @@
 * .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM.cir
 * .param pkg_model = str('ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM')
 
-.inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/Mam_MCM_L12_BH9_Ballv0p82_AVDD075CLKPCIE_L6_mod1_12_BallMap.cir		*** 20231220 Andes pcie pkg 
-.param	pkg_model = str('Mam_MCM_L12_BH9_Ballv0p82_AVDD075CLKPCIE_L6_mod1_12_BallMap')
+.inc /data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/split_pcie_pwr_1211_IdEM.cir	** ?? issue with file ?
+.param pkg_model = str('split_pcie_pwr_1211_IdEM')
 
 	*** other device model
 
@@ -21,33 +21,33 @@
 .param currSrc_vdd_c_cmn = str('./inc_data/profile_1213/i_avdd_clk_a0_cmn_WC.csv')
 * .param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L0_WC.csv')
 * .param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L2_WC.csv')
+.param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L2_WC.csv')
 .param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L3_WC.csv')
 	.param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L0_WC.csv')
 	.param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L1_WC.csv')
-	.param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L2_WC.csv')
 	* .param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L3_WC.csv')
 
-	* *** vddd *** 
+	*** vddd *** 
 .param currSrc_vdd_d_cmn = str('./inc_data/profile_1213/i_avdd_a0_cmn_WC.csv')
 * .param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a0_lane_L0_WC.csv')
 * .param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a0_lane_L2_WC.csv')
+.param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a0_lane_L2_WC.csv')
 .param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a0_lane_L3_WC.csv')
-.param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L0_WC.csv')
-.param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L1_WC.csv')
-.param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L2_WC.csv')
-* .param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L3_WC.csv')
- 
+	.param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L0_WC.csv')
+	.param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L1_WC.csv')
+	* .param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L3_WC.csv')
+
 	*** vddh *** 
 .param currSrc_vdd_h_cmn = str('./inc_data/profile_1213/i_avdd_h_a0_cmn_WC.csv')
 * .param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L0_WC.csv')
 * .param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L2_WC.csv')
+.param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L2_WC.csv')
 .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L3_WC.csv')
 	.param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L0_WC.csv')
 	.param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L1_WC.csv')
-	.param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L2_WC.csv')
 	* .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L3_WC.csv')
 
 ***** current profiles 10/18
@@ -83,6 +83,26 @@
 	* .param currSrc_vdd_h_ln2 = str('./inc_data/profile_1017/i_avdd_h_a4_a0_a4_lane_2_WC.csv')
 * .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1017/i_avdd_h_a0_lane_3_WC.csv')
 	* * .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1017/i_avdd_h_a4_a0_a4_lane_3_WC.csv')
+
+
+***** current profiles
+* .param currSrc_vdd_c_cmn = str('./inc_data/i_avdd_clk_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_c_ln0 = str('./inc_data/i_avdd_clk_a0_lane_0_WC.csv')
+* .param currSrc_vdd_c_ln1 = str('./inc_data/i_avdd_clk_a0_lane_1_WC.csv')
+* .param currSrc_vdd_c_ln2 = str('./inc_data/i_avdd_clk_a0_lane_2_WC.csv')
+* .param currSrc_vdd_c_ln3 = str('./inc_data/i_avdd_clk_a0_lane_3_WC.csv')
+
+* .param currSrc_vdd_d_cmn = str('./inc_data/i_avdd_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_d_ln0 = str('./inc_data/i_avdd_a0_lane_0_WC.csv')
+* .param currSrc_vdd_d_ln1 = str('./inc_data/i_avdd_a0_lane_1_WC.csv')
+* .param currSrc_vdd_d_ln2 = str('./inc_data/i_avdd_a0_lane_2_WC.csv')
+* .param currSrc_vdd_d_ln3 = str('./inc_data/i_avdd_a0_lane_3_WC.csv')
+
+* .param currSrc_vdd_h_cmn = str('./inc_data/i_avdd_h_a0_cmn_TT25_x1p3.csv')
+* .param currSrc_vdd_h_ln0 = str('./inc_data/i_avdd_h_a0_lane_0_WC.csv')
+* .param currSrc_vdd_h_ln1 = str('./inc_data/i_avdd_h_a0_lane_1_WC.csv')
+* .param currSrc_vdd_h_ln2 = str('./inc_data/i_avdd_h_a0_lane_2_WC.csv')
+* .param currSrc_vdd_h_ln3 = str('./inc_data/i_avdd_h_a0_lane_3_WC.csv')
 
 *** debug to use 0 current for some rails 
 * .param currSrc_vdd_c_cmn = str('./inc_data/i_curr_0.csv')
@@ -244,10 +264,6 @@ Vref_gnd 		ref_gnd		0	0.
 Vsrc_vdd_c_d	pwr_pmic_0p95		ref_gnd	Vdd_c_d		*** can be switched to PMIC model 
 Vsrc_vdd_h		pwr_pmic_pcie_1p8 	ref_gnd	Vdd_h		*** can be switched to PMIC model 
 
-	* ***** enable to debug, to short PCB (i.e., connect pkg directly to PMIC)
-	r_debug_pcie_0p95_to_pmic 	bga_pwr_pcie_0p95		pwr_pmic_0p95	1.n
-	* r_debug_pcie_1p8_to_pmic 	bga_pwr_pcie_1p8		pwr_pmic_pcie_1p8	1.n
-	
 ***** PCB 
 xblk_PCB
  + bga_pwr_eth_0p95
@@ -306,11 +322,22 @@ xblk_PCB
  xcapPcb_C2694	capPcb_C2694	ref_gnd		str(mlcc_10uF_0402)
  xcapPcb_C2717	capPcb_C2717	ref_gnd		str(mlcc_10uF_0402)
  
+	* ***** debug to short PCB 
+	* r_debug_pcie_0p95_to_pmic 	bga_pwr_pcie_0p95		pwr_pmic_0p95	1.n
+	* r_debug_pcie_1p8_to_pmic 	bga_pwr_pcie_1p8		pwr_pmic_pcie_1p8	1.n
+ 
 *****
 	***** filter 
 	 xModel_filter_vddc
 	 + bga_pwr_pcie_0p95
 	 + bga_pwr_pcie_0p95_vddc
+	 + ref_gnd
+	 + model_filter
+	 * + model_filter_22uF
+
+	 xModel_filter_vddc_1
+	 + bga_pwr_pcie_0p95
+	 + bga_pwr_pcie_0p95_vddc_1
 	 + ref_gnd
 	 + model_filter
 	 * + model_filter_22uF
@@ -325,26 +352,30 @@ xblk_PCB
 
  ***** shorting VDDC, VDDD to PCB 
 	 * r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+	 * r_vddc bga_pwr_pcie_0p95_vddc_1	bga_pwr_pcie_0p95	1.n
 	 * r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
 
 
  
  ***** pkg 
- * xblk_pkg
-  * + bga_pwr_pcie_0p95_vddc 	ref_gnd			
-  * + bga_pwr_pcie_0p95_vddd	ref_gnd	
-  * + bga_pwr_pcie_1p8	ref_gnd			*NOTE: bga_pwr_vdd_h
-  * + bump_pwr_vdd_c		ref_gnd
-  * + bump_pwr_vdd_d		ref_gnd
-  * + bump_pwr_vdd_h		ref_gnd
-  * + capPkg_C133_vdd_c	ref_gnd
-  * + capPkg_C141_vdd_d	ref_gnd
-  * + capPkg_C140_vdd_h	ref_gnd
-  * + str(pkg_model)
+ xblk_pkg
+ + capPkg_C141_vdd_d	
+ + capPkg_C133_vdd_c	
+ + capPkg_C140_vdd_h	
+ + bga_pwr_pcie_0p95_vddc 		
+ + bga_pwr_pcie_0p95_vddc_1 		
+ + bga_pwr_pcie_0p95_vddd		
+ + bga_pwr_pcie_1p8	
+ + bump_pwr_vdd_c		
+ + bump_pwr_vdd_c_1		
+ + bump_pwr_vdd_d		
+ + bump_pwr_vdd_h
+ + ref_gnd  
+ + str(pkg_model)
   
-  * xcapPkg_C133_vdd_c  	capPkg_C133_vdd_c ref_gnd 	str(mlcc_2p2nF_0201)
-  * xcapPkg_C141_vdd_d  	capPkg_C141_vdd_d ref_gnd 	str(mlcc_0p1uF_0204)
-  * xcapPkg_C140_vdd_h  	capPkg_C140_vdd_h ref_gnd 	str(mlcc_0p47nF_0201)
+  xcapPkg_C133_vdd_c  	capPkg_C133_vdd_c ref_gnd 	str(mlcc_2p2nF_0201)
+  xcapPkg_C141_vdd_d  	capPkg_C141_vdd_d ref_gnd 	str(mlcc_0p1uF_0204)
+  xcapPkg_C140_vdd_h  	capPkg_C140_vdd_h ref_gnd 	str(mlcc_0p47nF_0201)
   
   *** test to add more DSC
     * xcapPkg_C133_2_vdd_c  	capPkg_C133_vdd_c 	str(siCap_empwr_EC1100_200nF)
@@ -364,22 +395,15 @@ xblk_PCB
 	* + capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c	capPkg_C133_vdd_c
 	* + ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd ref_gnd 
 	* + str(siCap_empwr_EC1004_240nF)	
- 
- xblk_pkg 		*** 20231220 Andes pcie pkg 
- + a_1  a_2  a_3  a_4  a_5  a_6  a_7  a_8  a_9  a_10
- + bump_pwr_vdd_c bump_pwr_vdd_d bump_pwr_vdd_h a_14 a_15 a_16 a_17 a_18 a_19 a_20
- + a_21 a_22 a_23 a_24 a_25 a_26 a_27 a_28 bga_pwr_pcie_0p95_vddc bga_pwr_pcie_0p95_vddd
- + bga_pwr_pcie_1p8 a_32 a_33 a_34 a_35 a_36 a_37 a_38 a_39 a_40
- + a_41 a_42 a_43 a_44 a_45 a_46 a_47 a_48 a_49 a_50
- + a_51 a_52 a_53 ref_gnd
- + str(pkg_model)
- 
+  
 ***** die
 Xblk_die_vdd_c_cmn 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh_cmn	Cdie= 'Cdie_avdd_c_cmn'		Rdie= 'Rdie_avdd_c_cmn'		Res= 'Res_avdd_c_cmn'  	pwl_file_in = str(currSrc_vdd_c_cmn)
 Xblk_die_vdd_c_ln0 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln0)
 Xblk_die_vdd_c_ln1 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln1)
-Xblk_die_vdd_c_ln2 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln2)
-Xblk_die_vdd_c_ln3 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln3)
+* Xblk_die_vdd_c_ln2 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln2)
+* Xblk_die_vdd_c_ln3 			bump_pwr_vdd_c	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln3)
+	Xblk_die_vdd_c_ln2 			bump_pwr_vdd_c_1	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln2)
+	Xblk_die_vdd_c_ln3 			bump_pwr_vdd_c_1	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_c_xcvr'	Rdie= 'Rdie_avdd_c_xcvr'	Res= 'Res_avdd_c_xcvr'  pwl_file_in = str(currSrc_vdd_c_ln3)
 
 Xblk_die_vdd_d_cmn 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh_cmn	Cdie= 'Cdie_avdd_d_cmn'		Rdie= 'Rdie_avdd_d_cmn'		Res= 'Res_avdd_d_cmn'  	pwl_file_in = str(currSrc_vdd_d_cmn)
 Xblk_die_vdd_d_ln0 			bump_pwr_vdd_d	ref_gnd	model_die_pcie_vdd_cdh		Cdie= 'Cdie_avdd_d_xcvr'	Rdie= 'Rdie_avdd_d_xcvr'	Res= 'Res_avdd_d_xcvr'  pwl_file_in = str(currSrc_vdd_d_ln0)
@@ -401,6 +425,13 @@ Xvddc_meas
  + pin_vddc_meas_lf
  + meas_filter
 
+Xvddc_1_meas
+ + bump_pwr_vdd_c_1
+ + ref_gnd
+ + pin_vddc_1_meas_hf
+ + pin_vddc_1_meas_lf
+ + meas_filter
+ 
 Xvddd_meas
  + bump_pwr_vdd_d
  + ref_gnd
@@ -441,8 +472,8 @@ Xvddd_meas
 	
 	.tran tStep tSTOP 
 
-	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)
-	.probe tran v(pin_vddc_meas_hf)  v(pin_vddc_meas_lf)	v(pin_vddd_meas_hf)  v(pin_vddd_meas_lf)
+	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_c_1) v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)
+	.probe tran v(pin_vddc_meas_hf)  v(pin_vddc_meas_lf) v(pin_vddc_1_meas_hf)  v(pin_vddc_1_meas_lf)	v(pin_vddd_meas_hf)  v(pin_vddd_meas_lf)
 	.probe x(xblk_pkg.a_4)   x(xblk_pkg.a_5) 	x(xblk_pkg.a_6) 
 
 	.param vdd_meas_start = 35.n

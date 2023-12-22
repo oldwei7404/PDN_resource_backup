@@ -57,11 +57,11 @@
 		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_shortened.txt.csv')		*** PMIC vendor test, 11us
 		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_shortened.txt.csv')
 
-		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_1031_500MHz.txt.csv')		*** PMIC vendor test,  11us
-		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_1031_500MHz.txt.csv')
+		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_1031_500MHz.txt.csv')		*** PMIC vendor test,  11us
+		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_1031_500MHz.txt.csv')
 
-		*.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_noRampFr0515_1116.csv')		*** PMIC vendor test, no ramp ,  11us
-		*.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_noRampFr0515_1116.csv')
+		.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_noRampFr0515_1116.csv')		*** PMIC vendor test, no ramp ,  11us
+		.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_noRampFr0515_1116.csv')
 		
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -99,7 +99,8 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 * .param NNE_die_MA = str('model_die_lumped_nne_ma')
 
 	***** define pkg model *****
-.inc ./hspice_inc/nne_pkg_230329_FCBGA_L12_mammoth_20230525ate_a_IdEM.cir	***  0526 Andes pkg w/ 28 + 35 DSC
+	.inc ./hspice_inc/nne_pkg_230329_FCBGA_L12_mammoth_20230525ate_a_IdEM.cir	***  0526 Andes pkg w/ 28 + 35 DSC
+* .inc ./hspice_inc/Mam_MCM_L12_231215_mod40_jgwei_s72_IdEM.cir
 
 	***** define PCB model *****
 * .inc ./hspice_inc/MAMMOTH_PCB_230825_NNE_jgwei_PSI_LFcutout_manip.cir
@@ -111,8 +112,10 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.para Cdie_coeff = 1.	* 1.8265
-.para Rdie_coeff = 1.	* 0.5475
+.para Cdie_coeff = 3.7	
+.para Rdie_coeff = 0.27	
+* .para Cdie_coeff = 1.
+* .para Rdie_coeff = 1.	
 
 .param Cdie_PA 	= '123.n * Cdie_coeff'
 .param Cdie_MA 	= '96.n * Cdie_coeff'
@@ -1146,7 +1149,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 		.endif 
 	.endif 	*** END of jgwei opt attmpt
 
-	.if( 1 ) 	*** Andes DSC 0531, w/ jgwei change from C19~C28
+	.if( 0 ) 	*** Andes DSC 0531, w/ jgwei change from C19~C28
 		XpkgCap_9	pkgCap_9	ref_gnd		str(mlcc_0p1uF_0204)
 		XpkgCap_10	pkgCap_10	ref_gnd		str(mlcc_0p1uF_0204)
 		XpkgCap_11	pkgCap_11	ref_gnd		str(mlcc_1uF_0204)
@@ -1223,6 +1226,69 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 		XpkgCap_5_14	pkgCap_5_14	ref_gnd		str(mlcc_10uf_0402)
 		XpkgCap_5_15	pkgCap_5_15	ref_gnd		str(mlcc_10uf_0402)
 	.endif	*** END of Andes DSC 0531
+	
+	.if( 1 ) 	*** Andes DSC 231211
+		XpkgCap_9	pkgCap_9	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_10	pkgCap_10	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_11	pkgCap_11	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_12	pkgCap_12	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_13	pkgCap_13	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_14	pkgCap_14	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_15	pkgCap_15	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_16	pkgCap_16	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_17	pkgCap_17	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_18	pkgCap_18	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_19	pkgCap_19	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_20	pkgCap_20	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_21	pkgCap_21	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_22	pkgCap_22	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_23	pkgCap_23	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_24	pkgCap_24	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_25	pkgCap_25	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_26	pkgCap_26	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_27	pkgCap_27	ref_gnd	str(mlcc_1uF_0204)
+		XpkgCap_28	pkgCap_28	ref_gnd	str(mlcc_1uF_0204)
+		
+		XpkgCap_4_1	pkgCap_4_1	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_2	pkgCap_4_2	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_3	pkgCap_4_3	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_4	pkgCap_4_4	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_5	pkgCap_4_5	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_6	pkgCap_4_6	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_7	pkgCap_4_7	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_8	pkgCap_4_8	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_9	pkgCap_4_9	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_10	pkgCap_4_10	ref_gnd	str(mlcc_0p015uF_0402)	
+		XpkgCap_4_11	pkgCap_4_11	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_12	pkgCap_4_12	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_13	pkgCap_4_13	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_14	pkgCap_4_14	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_4_15	pkgCap_4_15	ref_gnd	str(mlcc_0p015uF_0402)	
+
+		XpkgCap_5_1	pkgCap_5_1	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_5_2	pkgCap_5_2	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_5_3	pkgCap_5_3	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_5_4	pkgCap_5_4	ref_gnd	str(mlcc_0p015uF_0402)
+		XpkgCap_5_5	pkgCap_5_5	ref_gnd	str(mlcc_0p015uF_0402)
+
+		XpkgCap_5_6	pkgCap_5_6	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_7	pkgCap_5_7	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_8	pkgCap_5_8	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_9	pkgCap_5_9	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_10	pkgCap_5_10	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_11	pkgCap_5_11	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_12	pkgCap_5_12	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_13	pkgCap_5_13	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_14	pkgCap_5_14	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_15	pkgCap_5_15	ref_gnd		str(mlcc_10uf_0402)		
+		XpkgCap_5_16	pkgCap_5_16	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_17	pkgCap_5_17	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_18	pkgCap_5_18	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_19	pkgCap_5_19	ref_gnd		str(mlcc_10uf_0402)
+		XpkgCap_5_20	pkgCap_5_20	ref_gnd		str(mlcc_10uf_0402)		
+		
+	.endif  *** END of Andes DSC 231211
+	
 .endif		*** END of pkge option 4: Andes 0526 pkge model with 28+35 DSC
 
 
