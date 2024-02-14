@@ -40,7 +40,8 @@
 * .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p5G_dtX14_240105.txt.csv') 			*** NOTE: 24/01/04 current profile, time slow down by 14x, 14us
 
 * .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x7.txt.csv') 			*** NOTE: 240131 current profile, time slow down by 7x for up/down only, 5us
-.param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x3p5.txt.csv') 			*** NOTE: 240205 current profile, time slow down by 3.5x for up/down only, 5us
+.param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x7_v2.txt.csv')			*** NOTE: 2400206 current profile, time slow down by 7x for up/down only, extend mid 5 times, 8us
+*.param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x3p5.txt.csv') 			*** NOTE: 240205 current profile, time slow down by 3.5x for up/down only, 5us
 
 	*** GPU profile
 * .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
@@ -68,6 +69,8 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .param pkg_model = str('Mam_MCM_Andes_0724_cpugpu_cut3_run2_IdEM')
 
 	.inc ./hspice_inc/Mam_MCM_L12_231215c_mod48_CPU_GPU_02_IdEM_s25p.cir
+	
+	.inc ./hspice_inc/cpu_0206_2_IdEM.cir		***  Zijie mock up 240207 w/  3x embedded ecap EC2047
 	
 	***** define PCB model *****
 	*.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_CPU_PSI_RmLF_manip_IdEM0p5.cir 
@@ -104,7 +107,7 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 	* .inc ./hspice_inc/MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM.cir		*** 1025, PMIC at west of SoC, PTH power vias, 1025 new PCB stackup, 
 	* .param PCB_model = str('MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM')
 
-			* .inc ./hspice_inc/ACM3_122323_nne_cut_manip_IdEM_s377p.cir					*** 231221 ACM3 PCB NNE, this is just a test 
+			.inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB, reduced to 5 ports, just for test 
 	
 *************************************** Input params **************************
 .param Vdd 	= 0.822
@@ -119,6 +122,8 @@ IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in)
 .param Cdie_gpu  = '283.n'				* '268.n'
 .param Rdie_gpu  = '0.088m'				* '0.465m'
 .param Rleak_gpu = 1.27
+
+.param is_use_ecap_ebed = 0		*** value: 0 or 1
 
 	*** exp. to turn off GPU die model
 	*.param Cdie_gpu	= '0.n'
@@ -249,14 +254,15 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	*** end of PMIC bulk	
 	
 	*** CPU/GPU PCB bulk cap outside die shadow
-	XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_220uF_1210)
-		*** jgwei experiment to 
-	XpcbCap_C5052	 pcbCap_C5052	ref_gnd   str(mlcc_100uF_1210)
-	XpcbCap_C4018	 pcbCap_C4018	ref_gnd   str(mlcc_100uF_1210)
-	
+	.if ( 1 ) 
+		XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_220uF_1210)
+		XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_220uF_1210)
+		XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_220uF_1210)
+		XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_220uF_1210)
+			*** jgwei experiment to 
+		XpcbCap_C5052	 pcbCap_C5052	ref_gnd   str(mlcc_100uF_1210)
+		XpcbCap_C4018	 pcbCap_C4018	ref_gnd   str(mlcc_100uF_1210)
+	.endif 
 	*** CPU/GPU PCB bulk cap outside die shadow
 	
 	*** start of CPU caps under PCB die shadow  
@@ -306,990 +312,17 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	
 .endif	*** end of PCB 1018 Andes mockup, 1030 jgwei cap enhancement 
 
-.if ( 0 )	*** PCB 1018, 1025 (PMIC south or left, multiple pcb same set of ports) Andes mockup, PTH via  
-	Xblk_PCB
-	+ pmic_pwr 					 	*** use L501 and L511 as PMIC port 
-	+ pmic_pwr 		   			 	
-	+ bga_pcb					
-    + pcbCap_C501
-    + pcbCap_C502
-    + pcbCap_C503
-    + pcbCap_C504
-    + pcbCap_C505
-    + pcbCap_C511
-    + pcbCap_C512
-    + pcbCap_C513
-    + pcbCap_C514
-    + pcbCap_C515
-    + pcbCap_C516
-    + pcbCap_C517
-    + pcbCap_C700
-    + pcbCap_C701
-    + pcbCap_C4009
-    + pcbCap_C4010
-    + pcbCap_C4016
-    + pcbCap_C4017
-    + pcbCap_C4018
-    + pcbCap_C4019
-    + pcbCap_C4020
-    + pcbCap_C4021
-    + pcbCap_C5001
-    + pcbCap_C5002
-    + pcbCap_C5003
-    + pcbCap_C5004
-    + pcbCap_C5005
-    + pcbCap_C5006
-    + pcbCap_C5007
-    + pcbCap_C5008
-    + pcbCap_C5009
-    + pcbCap_C5010
-    + pcbCap_C5011
-    + pcbCap_C5012
-    + pcbCap_C5013
-    + pcbCap_C5014
-    + pcbCap_C5015
-    + pcbCap_C5016
-    + pcbCap_C5017
-    + pcbCap_C5018
-    + pcbCap_C5019
-    + pcbCap_C5020
-    + pcbCap_C5021
-    + pcbCap_C5022
-    + pcbCap_C5023
-    + pcbCap_C5024
-    + pcbCap_C5025
-    + pcbCap_C5026
-    + pcbCap_C5027
-    + pcbCap_C5028
-    + pcbCap_C5029
-    + pcbCap_C5030
-    + pcbCap_C5031
-    + pcbCap_C5032
-    + pcbCap_C5033
-    + pcbCap_C5034
-    + pcbCap_C5035
-    + pcbCap_C5036
-    + pcbCap_C5037
-    + pcbCap_C5038
-    + pcbCap_C5039
-    + pcbCap_C5040
-    + pcbCap_C5041
-    + pcbCap_C5042
-    + pcbCap_C5043
-    + pcbCap_C5044
-    + pcbCap_C5045
-    + pcbCap_C5046
-    + pcbCap_C5047
-    + pcbCap_C5048
-    + pcbCap_C5049
-    + pcbCap_C5050
-    + pcbCap_C5051
-    + pcbCap_C5052
-    + pcbCap_C5053
-    + pcbCap_C5054
-    + pcbCap_C5055
-    + pcbCap_C5056
-    + pcbCap_C5057
-    + pcbCap_C5058
-    + pcbCap_C5059
-    + pcbCap_C5060
-    + pcbCap_C5061
-	+ ref_gnd
-	+ str(PCB_model)
-	
-	*** start of PMIC bulk
-	* XpcbCap_C504   pcbCap_C504	   ref_gnd	str(mlcc_220uF_1210)	
-	* XpcbCap_C505   pcbCap_C505     ref_gnd	str(mlcc_220uF_1210)	
-	* XpcbCap_C514   pcbCap_C514     ref_gnd	str(mlcc_220uF_1210)	
-	* XpcbCap_C515   pcbCap_C515     ref_gnd	str(mlcc_220uF_1210)	
-	* XpcbCap_C501   pcbCap_C501     ref_gnd  str(mlcc_220uF_1210)
-	* XpcbCap_C502   pcbCap_C502     ref_gnd  str(mlcc_220uF_1210)
-	* XpcbCap_C503   pcbCap_C503     ref_gnd	str(mlcc_220uF_1210)
-	* XpcbCap_C511   pcbCap_C511     ref_gnd	str(mlcc_220uF_1210)
-	* XpcbCap_C512   pcbCap_C512     ref_gnd  str(mlcc_220uF_1210)
-	* XpcbCap_C513   pcbCap_C513     ref_gnd	str(mlcc_220uF_1210)
-	*** end of PMIC bulk	
-	
-	*** CPU PCB bulk cap outside die shadow
-	XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_220uF_1210)
-	XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_220uF_1210)
-
-	* XpcbCap_C700   pcbCap_C700     ref_gnd	str(mlcc_100uF_1210)
-	* XpcbCap_C701   pcbCap_C701     ref_gnd	str(mlcc_100uF_1210)
-	* XpcbCap_C516   pcbCap_C516     ref_gnd	str(mlcc_100uF_1210)
-	* XpcbCap_C517   pcbCap_C517     ref_gnd	str(mlcc_100uF_1210)
-	
-
-	.if ( 0 )	*** exp used to suppress resonoance near 0.2MHz
-		XpcbCap_C506_2  pcbCap_C506     ref_gnd	str(mlcc_47uF_1206)	
-		XpcbCap_C507_2  pcbCap_C507     ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C516_2  pcbCap_C516     ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C517_2  pcbCap_C517     ref_gnd	str(mlcc_47uF_1206)	
-		XpcbCap_C5034_2  pcbCap_C5034    ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C5035_2  pcbCap_C5035    ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C5036_2  pcbCap_C5036    ref_gnd  	str(mlcc_47uF_1206)
-		XpcbCap_C5037_2  pcbCap_C5037    ref_gnd  	str(mlcc_47uF_1206)
-		XpcbCap_C5038_2  pcbCap_C5038    ref_gnd  	str(mlcc_47uF_1206)
-	.endif 
-
-	.if ( 0 )	*** exp to suppress low freq noise 
-		XpcbCap_C5002_2  pcbCap_C5002    ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C5026_2  pcbCap_C5026    ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C5012_2  pcbCap_C5012    ref_gnd	str(mlcc_47uF_1206)
-		XpcbCap_C5048_2  pcbCap_C5048    ref_gnd	str(mlcc_47uF_1206)
-	.endif 
-	*** CPU PCB bulk cap outside die shadow
-	
-	*** start of CPU caps under PCB die shadow  
-	XpcbCap_C5002  pcbCap_C5002    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5003  pcbCap_C5003    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5004  pcbCap_C5004    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5005  pcbCap_C5005    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5006  pcbCap_C5006    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5007  pcbCap_C5007    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C5009  pcbCap_C5009    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5010  pcbCap_C5010    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5011  pcbCap_C5011    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5012  pcbCap_C5012    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5013  pcbCap_C5013    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5014  pcbCap_C5014    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5016  pcbCap_C5016    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5017  pcbCap_C5017    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5018  pcbCap_C5018    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5019  pcbCap_C5019    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5020  pcbCap_C5020    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5021  pcbCap_C5021    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5022  pcbCap_C5022    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5023  pcbCap_C5023    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5024  pcbCap_C5024    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5025  pcbCap_C5025    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5026  pcbCap_C5026    ref_gnd	str(mlcc_4p7uF_0402)
-	XpcbCap_C5027  pcbCap_C5027    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5028  pcbCap_C5028    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5029  pcbCap_C5029    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5030  pcbCap_C5030    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5031  pcbCap_C5031    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5032  pcbCap_C5032    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5033  pcbCap_C5033    ref_gnd	str(mlcc_10uF_0402)
-	*** end of CPU caps under PCB die shadow
-	
-	*** start of CPU caps outside PCB die shadow
-	XpcbCap_C5034  pcbCap_C5034    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5035  pcbCap_C5035    ref_gnd	str(mlcc_10uF_0402)
-	XpcbCap_C5036  pcbCap_C5036    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5037  pcbCap_C5037    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5038  pcbCap_C5038    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5039  pcbCap_C5039    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5040  pcbCap_C5040    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5041  pcbCap_C5041    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5042  pcbCap_C5042    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5043  pcbCap_C5043    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5044  pcbCap_C5044    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5045  pcbCap_C5045    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5046  pcbCap_C5046    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5047  pcbCap_C5047    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5048  pcbCap_C5048    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5049  pcbCap_C5049    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5050  pcbCap_C5050    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5051  pcbCap_C5051    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5052  pcbCap_C5052    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5053  pcbCap_C5053    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5054  pcbCap_C5054    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5055  pcbCap_C5055    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5056  pcbCap_C5056    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5057  pcbCap_C5057    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5058  pcbCap_C5058    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5059  pcbCap_C5059    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5060  pcbCap_C5060    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5061  pcbCap_C5061    ref_gnd  str(mlcc_10uF_0402)
-
-	*** end of CPU caps outside PCB die shadow	
-
-	*** start of GPU PCB caps 
-	XpcbCap_C4009  pcbCap_C4009    ref_gnd	str(mlcc_1uF_0402)
-	XpcbCap_C4010  pcbCap_C4010    ref_gnd  str(mlcc_1uF_0402)
-	XpcbCap_C4016  pcbCap_C4016    ref_gnd  str(mlcc_1uF_0402)
-	XpcbCap_C4017  pcbCap_C4017    ref_gnd  str(mlcc_1uF_0402)
-	XpcbCap_C4018  pcbCap_C4018    ref_gnd  str(mlcc_1uF_0402)
-	XpcbCap_C4019  pcbCap_C4019    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C4020  pcbCap_C4020    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C4021  pcbCap_C4021    ref_gnd  str(mlcc_10uF_0402)
-	XpcbCap_C5001  pcbCap_C5001    ref_gnd  str(mlcc_4p7uF_0402)
-	XpcbCap_C5008  pcbCap_C5008    ref_gnd  str(mlcc_4p7uF_0402)
-	XpcbCap_C5015  pcbCap_C5015    ref_gnd	str(mlcc_4p7uF_0402)
-	*** end of GPU PCB caps 
-	
-.endif	*** end of PCB 1018 Andes mockup
-
-					.if ( 0 )	*** 231221 ACM3 PCB for NNE, this is just a test 
+					.if ( 0 )		*** just a test,  231221 ACM3 PCB for NNE , reduced to 5 ports 
 						Xblk_PCB 
 						+ bga_pcb
 						+ pmic_pwr
 						+ pmic_pwr
 						+ pmic_pwr
 						+ pmic_pwr
-						+ pcbCap_C86  
-						+ pcbCap_C87
-						+ pcbCap_C88
-						+ pcbCap_C89
-						+ pcbCap_C91
-						+ pcbCap_C93
-						+ pcbCap_C94
-						+ pcbCap_C95
-						+ pcbCap_C96
-						+ pcbCap_C97
-						+ pcbCap_C503
-						+ pcbCap_C504
-						+ pcbCap_C505
-						+ pcbCap_C506
-						+ pcbCap_C507
-						+ pcbCap_C508
-						+ pcbCap_C509
-						+ pcbCap_C510
-						+ pcbCap_C511
-						+ pcbCap_C512
-						+ pcbCap_C523
-						+ pcbCap_C524
-						+ pcbCap_C525
-						+ pcbCap_C526
-						+ pcbCap_C527
-						+ pcbCap_C528
-						+ pcbCap_C529
-						+ pcbCap_C530
-						+ pcbCap_C531
-						+ pcbCap_C532
-						+ pcbCap_C543
-						+ pcbCap_C544
-						+ pcbCap_C545
-						+ pcbCap_C546
-						+ pcbCap_C547
-						+ pcbCap_C548
-						+ pcbCap_C549
-						+ pcbCap_C550
-						+ pcbCap_C551
-						+ pcbCap_C552
-						+ pcbCap_C563
-						+ pcbCap_C564
-						+ pcbCap_C565
-						+ pcbCap_C566
-						+ pcbCap_C567
-						+ pcbCap_C568
-						+ pcbCap_C569
-						+ pcbCap_C570
-						+ pcbCap_C571
-						+ pcbCap_C572
-						+ pcbCap_C583
-						+ pcbCap_C584
-						+ pcbCap_C585
-						+ pcbCap_C586
-						+ pcbCap_C587
-						+ pcbCap_C588
-						+ pcbCap_C589
-						+ pcbCap_C590
-						+ pcbCap_C591
-						+ pcbCap_C592
-						+ pcbCap_C603
-						+ pcbCap_C604
-						+ pcbCap_C605
-						+ pcbCap_C606
-						+ pcbCap_C607
-						+ pcbCap_C608
-						+ pcbCap_C609
-						+ pcbCap_C610
-						+ pcbCap_C611
-						+ pcbCap_C612
-						+ pcbCap_C623
-						+ pcbCap_C624
-						+ pcbCap_C625
-						+ pcbCap_C626
-						+ pcbCap_C627
-						+ pcbCap_C628
-						+ pcbCap_C629
-						+ pcbCap_C630
-						+ pcbCap_C631
-						+ pcbCap_C632
-						+ pcbCap_C643
-						+ pcbCap_C644
-						+ pcbCap_C645
-						+ pcbCap_C646
-						+ pcbCap_C647
-						+ pcbCap_C648
-						+ pcbCap_C649
-						+ pcbCap_C650
-						+ pcbCap_C651
-						+ pcbCap_C652
-						+ pcbCap_C663
-						+ pcbCap_C664
-						+ pcbCap_C665
-						+ pcbCap_C666
-						+ pcbCap_C667
-						+ pcbCap_C668
-						+ pcbCap_C669
-						+ pcbCap_C670
-						+ pcbCap_C671
-						+ pcbCap_C672
-						+ pcbCap_C683
-						+ pcbCap_C684
-						+ pcbCap_C685
-						+ pcbCap_C686
-						+ pcbCap_C687
-						+ pcbCap_C688
-						+ pcbCap_C689
-						+ pcbCap_C690
-						+ pcbCap_C691
-						+ pcbCap_C692
-						+ pcbCap_C696
-						+ pcbCap_C697
-						+ pcbCap_C698
-						+ pcbCap_C699
-						+ pcbCap_C700
-						+ pcbCap_C701
-						+ pcbCap_C702
-						+ pcbCap_C703
-						+ pcbCap_C704
-						+ pcbCap_C705
-						+ pcbCap_C706
-						+ pcbCap_C707
-						+ pcbCap_C708
-						+ pcbCap_C709
-						+ pcbCap_C710
-						+ pcbCap_C711
-						+ pcbCap_C712
-						+ pcbCap_C713
-						+ pcbCap_C714
-						+ pcbCap_C715
-						+ pcbCap_C728
-						+ pcbCap_C729
-						+ pcbCap_C730
-						+ pcbCap_C731
-						+ pcbCap_C732
-						+ pcbCap_C733
-						+ pcbCap_C734
-						+ pcbCap_C735
-						+ pcbCap_C736
-						+ pcbCap_C737
-						+ pcbCap_C748
-						+ pcbCap_C749
-						+ pcbCap_C750
-						+ pcbCap_C751
-						+ pcbCap_C752
-						+ pcbCap_C753
-						+ pcbCap_C754
-						+ pcbCap_C755
-						+ pcbCap_C756
-						+ pcbCap_C757
-						+ pcbCap_C768
-						+ pcbCap_C769
-						+ pcbCap_C770
-						+ pcbCap_C771
-						+ pcbCap_C772
-						+ pcbCap_C773
-						+ pcbCap_C774
-						+ pcbCap_C775
-						+ pcbCap_C776
-						+ pcbCap_C777
-						+ pcbCap_C788
-						+ pcbCap_C789
-						+ pcbCap_C790
-						+ pcbCap_C791
-						+ pcbCap_C792
-						+ pcbCap_C793
-						+ pcbCap_C794
-						+ pcbCap_C795
-						+ pcbCap_C796
-						+ pcbCap_C797
-						+ pcbCap_C1042
-						+ pcbCap_C1043
-						+ pcbCap_C1044
-						+ pcbCap_C1134
-						+ pcbCap_C1135
-						+ pcbCap_C1136
-						+ pcbCap_C1137
-						+ pcbCap_C1138
-						+ pcbCap_C1139
-						+ pcbCap_C1140
-						+ pcbCap_C1141
-						+ pcbCap_C1142
-						+ pcbCap_C1143
-						+ pcbCap_C1144
-						+ pcbCap_C1145
-						+ pcbCap_C1146
-						+ pcbCap_C1147
-						+ pcbCap_C1148
-						+ pcbCap_C1149
-						+ pcbCap_C1150
-						+ pcbCap_C1151
-						+ pcbCap_C1152
-						+ pcbCap_C1153
-						+ pcbCap_C1154
-						+ pcbCap_C1155
-						+ pcbCap_C1156
-						+ pcbCap_C1157
-						+ pcbCap_C1158
-						+ pcbCap_C1159
-						+ pcbCap_C1160
-						+ pcbCap_C1161
-						+ pcbCap_C1162
-						+ pcbCap_C1163
-						+ pcbCap_C1164
-						+ pcbCap_C1165
-						+ pcbCap_C1166
-						+ pcbCap_C1167
-						+ pcbCap_C1168
-						+ pcbCap_C1169
-						+ pcbCap_C1170
-						+ pcbCap_C1171
-						+ pcbCap_C1172
-						+ pcbCap_C1173
-						+ pcbCap_C1174
-						+ pcbCap_C1175
-						+ pcbCap_C1176
-						+ pcbCap_C1177
-						+ pcbCap_C1178
-						+ pcbCap_C1179
-						+ pcbCap_C1180
-						+ pcbCap_C1181
-						+ pcbCap_C1182
-						+ pcbCap_C1183
-						+ pcbCap_C1184
-						+ pcbCap_C1185
-						+ pcbCap_C1186
-						+ pcbCap_C1187
-						+ pcbCap_C1188
-						+ pcbCap_C1189
-						+ pcbCap_C1190
-						+ pcbCap_C1191
-						+ pcbCap_C1192
-						+ pcbCap_C1193
-						+ pcbCap_C1194
-						+ pcbCap_C1195
-						+ pcbCap_C1196
-						+ pcbCap_C1197
-						+ pcbCap_C1198
-						+ pcbCap_C1199
-						+ pcbCap_C1200
-						+ pcbCap_C1201
-						+ pcbCap_C1202
-						+ pcbCap_C1203
-						+ pcbCap_C1204
-						+ pcbCap_C1205
-						+ pcbCap_C1206
-						+ pcbCap_C1207
-						+ pcbCap_C1208
-						+ pcbCap_C1209
-						+ pcbCap_C1210
-						+ pcbCap_C1211
-						+ pcbCap_C1212
-						+ pcbCap_C1213
-						+ pcbCap_C1214
-						+ pcbCap_C1215
-						+ pcbCap_C1216
-						+ pcbCap_C1217
-						+ pcbCap_C1218
-						+ pcbCap_C1219
-						+ pcbCap_C1220
-						+ pcbCap_C1221
-						+ pcbCap_C1222
-						+ pcbCap_C1223
-						+ pcbCap_C1224
-						+ pcbCap_C1225
-						+ pcbCap_C1226
-						+ pcbCap_C1227
-						+ pcbCap_C1228
-						+ pcbCap_C1229
-						+ pcbCap_C1230
-						+ pcbCap_C1231
-						+ pcbCap_C1232
-						+ pcbCap_C1233
-						+ pcbCap_C1234
-						+ pcbCap_C1235
-						+ pcbCap_C1236
-						+ pcbCap_C1237
-						+ pcbCap_C1238
-						+ pcbCap_C1239
-						+ pcbCap_C1240
-						+ pcbCap_C1241
-						+ pcbCap_C1242
-						+ pcbCap_C1243
-						+ pcbCap_C1244
-						+ pcbCap_C1245
-						+ pcbCap_C1246
-						+ pcbCap_C1247
-						+ pcbCap_C1248
-						+ pcbCap_C1249
-						+ pcbCap_C1250
-						+ pcbCap_C1251
-						+ pcbCap_C1252
-						+ pcbCap_C1253
-						+ pcbCap_C1254
-						+ pcbCap_C1255
-						+ pcbCap_C1256
-						+ pcbCap_C1257
-						+ pcbCap_C1258
-						+ pcbCap_C1259
-						+ pcbCap_C1260
-						+ pcbCap_C1261
-						+ pcbCap_C1262
-						+ pcbCap_C1263
-						+ pcbCap_C1264
-						+ pcbCap_C1265
-						+ pcbCap_C1266
-						+ pcbCap_C1267
-						+ pcbCap_C1268
-						+ pcbCap_C1269
-						+ pcbCap_C1270
-						+ pcbCap_C1271
-						+ pcbCap_C1272
-						+ pcbCap_C1273
-						+ pcbCap_C1274
-						+ pcbCap_C1275
-						+ pcbCap_C1276
-						+ pcbCap_C1277
-						+ pcbCap_C1278
-						+ pcbCap_C1279
-						+ pcbCap_C1280
-						+ pcbCap_C1281
-						+ pcbCap_C1282
-						+ pcbCap_C1283
-						+ pcbCap_C1284
-						+ pcbCap_C1285
-						+ pcbCap_C1286
-						+ pcbCap_C1287
-						+ pcbCap_C1288
-						+ pcbCap_C1289
-						+ pcbCap_C1290
-						+ pcbCap_C1291
-						+ pcbCap_C1292
-						+ pcbCap_C1293
-						+ pcbCap_C1294
-						+ pcbCap_C1295
-						+ pcbCap_C1296
-						+ pcbCap_C1309
-						+ pcbCap_C1310
-						+ pcbCap_C1311
-						+ pcbCap_C1312
-						+ pcbCap_C1313
-						+ pcbCap_C1314
-						+ pcbCap_C1315
-						+ pcbCap_C1316
-						+ pcbCap_C1317
-						+ pcbCap_C1318
-						+ pcbCap_C1319
-						+ pcbCap_C1320
-						+ pcbCap_C1321
-						+ pcbCap_C1322
-						+ pcbCap_C1323
-						+ pcbCap_C1324
-						+ pcbCap_C1325
-						+ pcbCap_C1326
-						+ pcbCap_C1327
-						+ pcbCap_C1328
-						+ pcbCap_C1329
-						+ pcbCap_C1330
-						+ pcbCap_C1331
-						+ pcbCap_C1332
-						+ pcbCap_C1333
-						+ pcbCap_C1334
-						+ pcbCap_C1335
-						+ pcbCap_C1336
-						+ pcbCap_C1337
-						+ pcbCap_C1338
-						+ pcbCap_C1339
-						+ pcbCap_C1340
-						+ pcbCap_C1341
-						+ pcbCap_C1342
-						+ pcbCap_C1343
-						+ pcbCap_C1344
-						+ ref_gnd
-						+ ACM3_122323_nne_cut_manip_IdEM_s377p
-					 
-						*** PCB cap ***
-							*** under PCB, under IP shadow 
-						XpcbCap_C503 	pcbCap_C503     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C504 	pcbCap_C504     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C505 	pcbCap_C505     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C506 	pcbCap_C506     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C507 	pcbCap_C507     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C508 	pcbCap_C508     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C509 	pcbCap_C509     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C510 	pcbCap_C510     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C511 	pcbCap_C511     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C512 	pcbCap_C512     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C523 	pcbCap_C523     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C524 	pcbCap_C524     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C525 	pcbCap_C525     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C526 	pcbCap_C526     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C527 	pcbCap_C527     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C528 	pcbCap_C528     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C529 	pcbCap_C529     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C530 	pcbCap_C530     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C531 	pcbCap_C531     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C532 	pcbCap_C532     ref_gnd 	str(mlcc_10uF_0402)		
-						XpcbCap_C552 	pcbCap_C552     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C583 	pcbCap_C583     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C584 	pcbCap_C584     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C585 	pcbCap_C585     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C586 	pcbCap_C586     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C587 	pcbCap_C587     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C588 	pcbCap_C588     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C589 	pcbCap_C589     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C590 	pcbCap_C590     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C591 	pcbCap_C591     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C592 	pcbCap_C592     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C603 	pcbCap_C603     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C604 	pcbCap_C604     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C605 	pcbCap_C605     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C606 	pcbCap_C606     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C607 	pcbCap_C607     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C608 	pcbCap_C608     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C609 	pcbCap_C609     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C610 	pcbCap_C610     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C611 	pcbCap_C611     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C612 	pcbCap_C612     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C631 	pcbCap_C631     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C632 	pcbCap_C632     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C706 	pcbCap_C706     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C707 	pcbCap_C707     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C708 	pcbCap_C708     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C709 	pcbCap_C709     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C710 	pcbCap_C710     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C711 	pcbCap_C711     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C712 	pcbCap_C712     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C713 	pcbCap_C713     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C714 	pcbCap_C714     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C715 	pcbCap_C715     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C728 	pcbCap_C728     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C729 	pcbCap_C729     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C730 	pcbCap_C730     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C731 	pcbCap_C731     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C732 	pcbCap_C732     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C733 	pcbCap_C733     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C734 	pcbCap_C734     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C735 	pcbCap_C735     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C736 	pcbCap_C736     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C737 	pcbCap_C737     ref_gnd 	str(mlcc_10uF_0402)	
-						XpcbCap_C777 	pcbCap_C777     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C797 	pcbCap_C797     ref_gnd		str(mlcc_10uF_0402) 
-						XpcbCap_C1238	pcbCap_C1238    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1244	pcbCap_C1244    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1245	pcbCap_C1245    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1246	pcbCap_C1246    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1247	pcbCap_C1247    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1248	pcbCap_C1248    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1276	pcbCap_C1276    ref_gnd 	str(mlcc_10uF_0402)	
+						+ ref_gnd 
+						+ ACM3_122323_nne_cut_reduce_v2_manip_s5p
 						
-						*** under PCB, outside IP shadow 
-						XpcbCap_C543 	pcbCap_C543     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C544 	pcbCap_C544     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C545 	pcbCap_C545     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C546 	pcbCap_C546     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C547 	pcbCap_C547     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C548 	pcbCap_C548     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C549 	pcbCap_C549     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C550 	pcbCap_C550     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C551 	pcbCap_C551     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C563 	pcbCap_C563     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C564 	pcbCap_C564     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C565 	pcbCap_C565     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C566 	pcbCap_C566     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C567 	pcbCap_C567     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C568 	pcbCap_C568     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C569 	pcbCap_C569     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C570 	pcbCap_C570     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C571 	pcbCap_C571     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C572 	pcbCap_C572     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C623 	pcbCap_C623     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C624 	pcbCap_C624     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C625 	pcbCap_C625     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C626 	pcbCap_C626     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C627 	pcbCap_C627     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C628 	pcbCap_C628     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C629 	pcbCap_C629     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C630 	pcbCap_C630     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C643 	pcbCap_C643     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C644 	pcbCap_C644     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C645 	pcbCap_C645     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C646 	pcbCap_C646     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C647 	pcbCap_C647     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C648 	pcbCap_C648     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C649 	pcbCap_C649     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C650 	pcbCap_C650     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C651 	pcbCap_C651     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C652 	pcbCap_C652     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C663 	pcbCap_C663     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C664 	pcbCap_C664     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C665 	pcbCap_C665     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C666 	pcbCap_C666     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C667 	pcbCap_C667     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C668 	pcbCap_C668     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C669 	pcbCap_C669     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C670 	pcbCap_C670     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C671 	pcbCap_C671     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C672 	pcbCap_C672     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C683 	pcbCap_C683     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C684 	pcbCap_C684     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C685 	pcbCap_C685     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C686 	pcbCap_C686     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C687 	pcbCap_C687     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C688 	pcbCap_C688     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C689 	pcbCap_C689     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C690 	pcbCap_C690     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C691 	pcbCap_C691     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C692 	pcbCap_C692     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C696 	pcbCap_C696     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C697 	pcbCap_C697     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C698 	pcbCap_C698     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C699 	pcbCap_C699     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C700 	pcbCap_C700     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C701 	pcbCap_C701     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C702 	pcbCap_C702     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C703 	pcbCap_C703     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C704 	pcbCap_C704     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C705 	pcbCap_C705     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C748 	pcbCap_C748     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C749 	pcbCap_C749     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C755 	pcbCap_C755     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C756 	pcbCap_C756     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C757 	pcbCap_C757     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C768 	pcbCap_C768     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C769 	pcbCap_C769     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C771 	pcbCap_C771     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C772 	pcbCap_C772     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C773 	pcbCap_C773     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C774 	pcbCap_C774     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C775 	pcbCap_C775     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C776 	pcbCap_C776     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C788 	pcbCap_C788     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C789 	pcbCap_C789     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C790 	pcbCap_C790     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C791 	pcbCap_C791     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C792 	pcbCap_C792     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C793 	pcbCap_C793     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C794 	pcbCap_C794     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C795 	pcbCap_C795     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C796 	pcbCap_C796     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1138	pcbCap_C1138    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1139	pcbCap_C1139    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1140	pcbCap_C1140    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1145	pcbCap_C1145    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1146	pcbCap_C1146    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1147	pcbCap_C1147    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1148	pcbCap_C1148    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1149	pcbCap_C1149    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1150	pcbCap_C1150    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1151	pcbCap_C1151    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1152	pcbCap_C1152    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1153	pcbCap_C1153    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1154	pcbCap_C1154    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1155	pcbCap_C1155    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1156	pcbCap_C1156    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1157	pcbCap_C1157    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1158	pcbCap_C1158    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1159	pcbCap_C1159    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1160	pcbCap_C1160    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1161	pcbCap_C1161    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1162	pcbCap_C1162    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1163	pcbCap_C1163    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1166	pcbCap_C1166    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1168	pcbCap_C1168    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1169	pcbCap_C1169    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1170	pcbCap_C1170    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1171	pcbCap_C1171    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1174	pcbCap_C1174    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1175	pcbCap_C1175    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1176	pcbCap_C1176    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1177	pcbCap_C1177    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1178	pcbCap_C1178    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1179	pcbCap_C1179    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1180	pcbCap_C1180    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1181	pcbCap_C1181    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1182	pcbCap_C1182    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1183	pcbCap_C1183    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1184	pcbCap_C1184    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1185	pcbCap_C1185    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1186	pcbCap_C1186    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1187	pcbCap_C1187    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1188	pcbCap_C1188    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1189	pcbCap_C1189    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1190	pcbCap_C1190    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1191	pcbCap_C1191    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1192	pcbCap_C1192    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1193	pcbCap_C1193    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1194	pcbCap_C1194    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1195	pcbCap_C1195    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1196	pcbCap_C1196    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1197	pcbCap_C1197    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1198	pcbCap_C1198    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1199	pcbCap_C1199    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1200	pcbCap_C1200    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1201	pcbCap_C1201    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1202	pcbCap_C1202    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1203	pcbCap_C1203    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1204	pcbCap_C1204    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1205	pcbCap_C1205    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1206	pcbCap_C1206    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1207	pcbCap_C1207    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1208	pcbCap_C1208    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1209	pcbCap_C1209    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1210	pcbCap_C1210    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1211	pcbCap_C1211    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1212	pcbCap_C1212    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1213	pcbCap_C1213    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1214	pcbCap_C1214    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1215	pcbCap_C1215    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1216	pcbCap_C1216    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1217	pcbCap_C1217    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1218	pcbCap_C1218    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1219	pcbCap_C1219    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1220	pcbCap_C1220    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1221	pcbCap_C1221    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1222	pcbCap_C1222    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1223	pcbCap_C1223    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1224	pcbCap_C1224    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1225	pcbCap_C1225    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1226	pcbCap_C1226    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1227	pcbCap_C1227    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1228	pcbCap_C1228    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1229	pcbCap_C1229    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1230	pcbCap_C1230    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1231	pcbCap_C1231    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1232	pcbCap_C1232    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1233	pcbCap_C1233    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1234	pcbCap_C1234    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1235	pcbCap_C1235    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1236	pcbCap_C1236    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1239	pcbCap_C1239    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1240	pcbCap_C1240    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1241	pcbCap_C1241    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1242	pcbCap_C1242    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1243	pcbCap_C1243    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1249	pcbCap_C1249    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1250	pcbCap_C1250    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1251	pcbCap_C1251    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1252	pcbCap_C1252    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1253	pcbCap_C1253    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1254	pcbCap_C1254    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1255	pcbCap_C1255    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1256	pcbCap_C1256    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1257	pcbCap_C1257    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1258	pcbCap_C1258    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1259	pcbCap_C1259    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1260	pcbCap_C1260    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1261	pcbCap_C1261    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1262	pcbCap_C1262    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1263	pcbCap_C1263    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1264	pcbCap_C1264    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1265	pcbCap_C1265    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1266	pcbCap_C1266    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1267	pcbCap_C1267    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1268	pcbCap_C1268    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1269	pcbCap_C1269    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1270	pcbCap_C1270    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1271	pcbCap_C1271    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1272	pcbCap_C1272    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1273	pcbCap_C1273    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1274	pcbCap_C1274    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1275	pcbCap_C1275    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1277	pcbCap_C1277    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1278	pcbCap_C1278    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1279	pcbCap_C1279    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1280	pcbCap_C1280    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1281	pcbCap_C1281    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1282	pcbCap_C1282    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1283	pcbCap_C1283    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1284	pcbCap_C1284    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1285	pcbCap_C1285    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1286	pcbCap_C1286    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1287	pcbCap_C1287    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1288	pcbCap_C1288    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1289	pcbCap_C1289    ref_gnd     str(mlcc_10uF_0402)
-
-						*** same side caps btw SoC and PMIC 
-						XpcbCap_C1342	pcbCap_C1342    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1340	pcbCap_C1340    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1334	pcbCap_C1334    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1337	pcbCap_C1337    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1336	pcbCap_C1336    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1343	pcbCap_C1343    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1341	pcbCap_C1341    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1331	pcbCap_C1331    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C752 	pcbCap_C752     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1167	pcbCap_C1167    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1339	pcbCap_C1339    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1172	pcbCap_C1172    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C750 	pcbCap_C750     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C754 	pcbCap_C754     ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1164	pcbCap_C1164    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1142	pcbCap_C1142    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1134	pcbCap_C1134    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1135	pcbCap_C1135    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1173	pcbCap_C1173    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1137	pcbCap_C1137    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1141	pcbCap_C1141    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1143	pcbCap_C1143    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1237	pcbCap_C1237    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1136	pcbCap_C1136    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1144	pcbCap_C1144    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C751 	pcbCap_C751     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1322	pcbCap_C1322    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1309	pcbCap_C1309    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1165	pcbCap_C1165    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1321	pcbCap_C1321    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1325	pcbCap_C1325    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1324	pcbCap_C1324    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1310	pcbCap_C1310    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1316	pcbCap_C1316    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1315	pcbCap_C1315    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1318	pcbCap_C1318    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1317	pcbCap_C1317    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1311	pcbCap_C1311    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1312	pcbCap_C1312    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1313	pcbCap_C1313    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1314	pcbCap_C1314    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1323	pcbCap_C1323    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C753 	pcbCap_C753     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C770 	pcbCap_C770     ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1319	pcbCap_C1319    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1320	pcbCap_C1320    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1326	pcbCap_C1326    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1327	pcbCap_C1327    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1328	pcbCap_C1328    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1330	pcbCap_C1330    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1344	pcbCap_C1344    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1332	pcbCap_C1332    ref_gnd 	str(mlcc_10uF_0402)
-						XpcbCap_C1333	pcbCap_C1333    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1329	pcbCap_C1329    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1335	pcbCap_C1335    ref_gnd     str(mlcc_10uF_0402)
-						XpcbCap_C1338	pcbCap_C1338    ref_gnd 	str(mlcc_10uF_0402)
-						
-						
-						*** bulk caps under PMIC 
-						* XpcbCap_C1295	pcbCap_C1295    ref_gnd 	str(mlcc_100uF_1210)
-						* XpcbCap_C95  	pcbCap_C95      ref_gnd 	str(mlcc_100uF_1210)
-						* XpcbCap_C88  	pcbCap_C88      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C89  	pcbCap_C89      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C91  	pcbCap_C91      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C94  	pcbCap_C94      ref_gnd 	str(mlcc_100uF_1210)
-						* XpcbCap_C96  	pcbCap_C96      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1293	pcbCap_C1293    ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1042	pcbCap_C1042    ref_gnd 	str(mlcc_100uF_1210)
-						* XpcbCap_C1291	pcbCap_C1291    ref_gnd     str(mlcc_100uF_1210)
-						
-						*** bulk caps same side as PMIC             str(mlcc_100uF_1210)
-						* XpcbCap_C87  	pcbCap_C87      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C86  	pcbCap_C86  	ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1044	pcbCap_C1044    ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1290	pcbCap_C1290    ref_gnd 	str(mlcc_100uF_1210)
-						* XpcbCap_C1294	pcbCap_C1294    ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C93  	pcbCap_C93      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1043	pcbCap_C1043    ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C97  	pcbCap_C97      ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1296	pcbCap_C1296    ref_gnd     str(mlcc_100uF_1210)
-						* XpcbCap_C1292	pcbCap_C1292    ref_gnd 	str(mlcc_100uF_1210)
-
-					.endif 	*** end of 231221 ACM3 PCB, this is a test
+					.endif 		*** end of 231221 ACM3 PCB for NNE , reduced to 5 ports 
 
 *************************************** Pkg ***********************************
 .if ( 0 )	*** pkg mock up Andes 0724, 1004
@@ -1371,7 +404,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 .endif  	*** end of pkg mock up Andes 0724 	
 
 
-.if ( 1 )	*** pkg mock up Andes 240117
+.if ( 0 )	*** pkg mock up Andes 240117
 	Xblk_pkg
 	+ bga_pkg 
 	+ pkgCap_C1 
@@ -1405,7 +438,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
 	XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
 	XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-												  ref_gnd 
+												  
 	XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
 	XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
 	XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
@@ -1431,8 +464,232 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	XpkgCap_C4_3_2         pkgCap_C4_3   ref_gnd   str(mlcc_10uF_0402)
 	XpkgCap_C4_4_2         pkgCap_C4_4   ref_gnd   str(mlcc_10uF_0402)
 	
+	.if ( 0 )  *** test to connect Ecap to bump 
+		XeCap_1
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+		
+		XeCap_2
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+		
+		XeCap_3
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+		
+	.endif 
+	
 
 .endif 		*** pkg mock up Andes 240117 end 
+
+
+.if ( 1 )	*** Zijie mock up 240207 w/  3x embedded ecap EC2047
+	Xblk_pkg
+	+ pkg_bump
+	+ pkg_bump_gpu
+	+ bga_pkg
+	+ pkgCap_C4_1
+	+ pkgCap_C4_2
+	+ pkgCap_C4_3
+	+ pkgCap_C4_4
+	+ pkgCap_C1 
+	+ pkgCap_C2
+	+ pkgCap_C3
+	+ pkgCap_C4
+	+ pkgCap_C5
+	+ pkgCap_C6
+	+ pkgCap_C7
+	+ pkgCap_C8
+	+ pkgCap_C9
+	+ pkgCap_C10
+	+ pkgCap_C3_1
+	+ pkgCap_C3_2
+	+ pkgCap_C3_3
+	+ pkgCap_C3_4
+	+ pkgCap_C3_5
+	+ pkgCap_C3_6
+	+ pkgCap_C3_7
+	+ pkgCap_C3_8
+	+ pkgCap_eCap_EC1_A1
+	+ pkgCap_eCap_EC1_A2
+	+ pkgCap_eCap_EC1_A3
+	+ pkgCap_eCap_EC1_A4
+	+ pkgCap_eCap_EC1_A5
+	+ pkgCap_eCap_EC1_A6
+	+ pkgCap_eCap_EC1_C1
+	+ pkgCap_eCap_EC1_C2
+	+ pkgCap_eCap_EC1_C3
+	+ pkgCap_eCap_EC1_C4
+	+ pkgCap_eCap_EC1_C5
+	+ pkgCap_eCap_EC1_C6
+	+ pkgCap_eCap_EC1_E1
+	+ pkgCap_eCap_EC1_E2
+	+ pkgCap_eCap_EC1_E3
+	+ pkgCap_eCap_EC1_E4
+	+ pkgCap_eCap_EC1_E5
+	+ pkgCap_eCap_EC1_E6
+	+ pkgCap_eCap_EC2_A1
+	+ pkgCap_eCap_EC2_A2
+	+ pkgCap_eCap_EC2_A3
+	+ pkgCap_eCap_EC2_A4
+	+ pkgCap_eCap_EC2_A5
+	+ pkgCap_eCap_EC2_A6
+	+ pkgCap_eCap_EC2_C1
+	+ pkgCap_eCap_EC2_C2
+	+ pkgCap_eCap_EC2_C3
+	+ pkgCap_eCap_EC2_C4
+	+ pkgCap_eCap_EC2_C5
+	+ pkgCap_eCap_EC2_C6
+	+ pkgCap_eCap_EC2_E1
+	+ pkgCap_eCap_EC2_E2
+	+ pkgCap_eCap_EC2_E3
+	+ pkgCap_eCap_EC2_E4
+	+ pkgCap_eCap_EC2_E5
+	+ pkgCap_eCap_EC2_E6
+	+ pkgCap_eCap_EC3_A1
+	+ pkgCap_eCap_EC3_A2
+	+ pkgCap_eCap_EC3_A3
+	+ pkgCap_eCap_EC3_A4
+	+ pkgCap_eCap_EC3_A5
+	+ pkgCap_eCap_EC3_A6
+	+ pkgCap_eCap_EC3_C1
+	+ pkgCap_eCap_EC3_C2
+	+ pkgCap_eCap_EC3_C3
+	+ pkgCap_eCap_EC3_C4
+	+ pkgCap_eCap_EC3_C5
+	+ pkgCap_eCap_EC3_C6
+	+ pkgCap_eCap_EC3_E1
+	+ pkgCap_eCap_EC3_E2
+	+ pkgCap_eCap_EC3_E3
+	+ pkgCap_eCap_EC3_E4
+	+ pkgCap_eCap_EC3_E5
+	+ pkgCap_eCap_EC3_E6	
+	+ ref_gnd
+	+ cpu_0206_2_IdEM
+	
+	*** pkg MLCC DSC 
+	XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+	XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+	XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+	XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+												 
+	XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+	XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+	XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+	XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+
+	XpkgCap_C3_1         pkgCap_C3_1   ref_gnd    pkgCap_C3_1   ref_gnd str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C3_2         pkgCap_C3_2   ref_gnd    pkgCap_C3_2   ref_gnd str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C3_3         pkgCap_C3_3   ref_gnd    pkgCap_C3_3   ref_gnd str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C3_4         pkgCap_C3_4   ref_gnd    pkgCap_C3_4   ref_gnd str(mlcc_1uF_0402_3T_ft)
+	
+	XpkgCap_C3_5         pkgCap_C3_5   ref_gnd   str(mlcc_1uF_0204)
+	XpkgCap_C3_6         pkgCap_C3_6   ref_gnd   str(mlcc_1uF_0204)
+	XpkgCap_C3_7         pkgCap_C3_7   ref_gnd   str(mlcc_1uF_0204)
+	XpkgCap_C3_8         pkgCap_C3_8   ref_gnd   str(mlcc_1uF_0204)
+	
+	XpkgCap_C4_1         pkgCap_C4_1   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_2         pkgCap_C4_2   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_3         pkgCap_C4_3   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_4         pkgCap_C4_4   ref_gnd   str(mlcc_10uF_0402)
+	*** add more 10uF caps 
+	XpkgCap_C4_1_2         pkgCap_C4_1   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_2_2         pkgCap_C4_2   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_3_2         pkgCap_C4_3   ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C4_4_2         pkgCap_C4_4   ref_gnd   str(mlcc_10uF_0402)
+	
+	*** embedded Ecap 
+	.if (is_use_ecap_ebed == 1) 
+		X_pkgEcap_1
+		+ pkgCap_eCap_EC1_A1
+		+ pkgCap_eCap_EC1_A2
+		+ pkgCap_eCap_EC1_A3
+		+ pkgCap_eCap_EC1_A4
+		+ pkgCap_eCap_EC1_A5
+		+ pkgCap_eCap_EC1_A6
+		+ pkgCap_eCap_EC1_C1
+		+ pkgCap_eCap_EC1_C2
+		+ pkgCap_eCap_EC1_C3
+		+ pkgCap_eCap_EC1_C4
+		+ pkgCap_eCap_EC1_C5
+		+ pkgCap_eCap_EC1_C6
+		+ pkgCap_eCap_EC1_E1
+		+ pkgCap_eCap_EC1_E2
+		+ pkgCap_eCap_EC1_E3
+		+ pkgCap_eCap_EC1_E4
+		+ pkgCap_eCap_EC1_E5
+		+ pkgCap_eCap_EC1_E6
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+
+		X_pkgEcap_2
+		+ pkgCap_eCap_EC2_A1
+		+ pkgCap_eCap_EC2_A2
+		+ pkgCap_eCap_EC2_A3
+		+ pkgCap_eCap_EC2_A4
+		+ pkgCap_eCap_EC2_A5
+		+ pkgCap_eCap_EC2_A6
+		+ pkgCap_eCap_EC2_C1
+		+ pkgCap_eCap_EC2_C2
+		+ pkgCap_eCap_EC2_C3
+		+ pkgCap_eCap_EC2_C4
+		+ pkgCap_eCap_EC2_C5
+		+ pkgCap_eCap_EC2_C6
+		+ pkgCap_eCap_EC2_E1
+		+ pkgCap_eCap_EC2_E2
+		+ pkgCap_eCap_EC2_E3
+		+ pkgCap_eCap_EC2_E4
+		+ pkgCap_eCap_EC2_E5
+		+ pkgCap_eCap_EC2_E6
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+		
+		X_pkgEcap_3
+		+ pkgCap_eCap_EC3_A1
+		+ pkgCap_eCap_EC3_A2
+		+ pkgCap_eCap_EC3_A3
+		+ pkgCap_eCap_EC3_A4
+		+ pkgCap_eCap_EC3_A5
+		+ pkgCap_eCap_EC3_A6
+		+ pkgCap_eCap_EC3_C1
+		+ pkgCap_eCap_EC3_C2
+		+ pkgCap_eCap_EC3_C3
+		+ pkgCap_eCap_EC3_C4
+		+ pkgCap_eCap_EC3_C5
+		+ pkgCap_eCap_EC3_C6
+		+ pkgCap_eCap_EC3_E1
+		+ pkgCap_eCap_EC3_E2
+		+ pkgCap_eCap_EC3_E3
+		+ pkgCap_eCap_EC3_E4
+		+ pkgCap_eCap_EC3_E5
+		+ pkgCap_eCap_EC3_E6
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
+		+ str(siCap_empwr_EC2047_4p8uF)
+	
+	.endif 
+	
+.endif 		*** Zijie mock up 240207 w/  3x embedded ecap EC2047 end 
 	
 *************************************** Die ***********************************
 *** approach 1: multi grp modeling 
@@ -1444,7 +701,8 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	R_bump_merge_0 pkg_bump_one	pkg_bump		1.n 
 	R_bump_merge_1 pkg_bump_one	pkg_bump_gpu	1.n 
 	
-	Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 544.n	R_die_1= 0.046m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
+	Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  575.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
+	* Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2092.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
 	
 .param is_ac_run = 0
 *************************************** Analysis I: AC simulation *************
@@ -1469,7 +727,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
 	.param tStep	= 10.p
-	.param tStop	= 5.u
+	.param tStop	= 8.u
 	.tran tStep tSTOP 
 
 	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)

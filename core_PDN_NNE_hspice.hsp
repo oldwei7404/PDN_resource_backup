@@ -43,7 +43,7 @@
 				
 				.param pwl_file_in_MA = str('./hspice_inc/curr_idle_0A.csv')	*** MA current NA as of 2024/1/17
 
-						.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp16clk_80W.txt.csv')	*** single current profile for whole NNE PA 
+						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp16clk_80W.txt.csv')	*** single current profile for whole NNE PA 
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp32clk_80W.txt.csv')	
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp64clk_80W.txt.csv')	
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp128clk_80W.txt.csv')	
@@ -52,6 +52,10 @@
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp32clk_80W_30W.txt.csv')	
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp64clk_80W_30W.txt.csv')	
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp128clk_80W_30W.txt.csv')	
+						
+						*.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_traceFrPD_240207.txt.csv')			*** 240207 Puru trace, 1us  
+						.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_traceFrPD_x0p762_240207.txt.csv')	*** 240207 Puru trace x 0.762 to simulate 80W, 1us  
+						
 		
 		*** idle current
 	*.inc ./hspice_inc/out_curr_profile_idle_20us_0A_noClk.txt
@@ -78,13 +82,13 @@
 	* .inc ./hspice_inc/ipd_partial_w_Ports_manip_IdEM_0p0001_wt0p5.cir		*** 240109 Zijie pkg w/ IPD	
 	*.inc ./hspice_inc/ecap_diff_dist_manip_order8_fixDC_s249p.cir			*** 240110 Zijie pkg w/ 3x diff Ecap + 1x embeded Ecap
 	* .inc  ./hspice_inc/dsc_lsc_0111_2_manip_order8_0p5wt.cir				*** 240112 Zijie pkg w/ LSC, DSC, L&R DSC 
-	*.inc  ./hspice_inc/Mam_MCM_L12_231215c_mod48_NNE_02_IdEM.cir			*** 240118 Andes pkg 
+    .inc  ./hspice_inc/Mam_MCM_L12_231215c_mod48_NNE_02_IdEM.cir			*** 240118 Andes pkg 
 	.inc  ./hspice_inc/nne_ecap_dsc_IdEM.cir								*** 240131 Zijie pkg mockup w/ DSC and embedded Ecap
 
 	***** define PCB model *****
 	* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
 		*.inc ./hspice_inc/ACM3_122323_nne_cut_manip_IdEM_s377p.cir					*** 231221 ACM3 PCB,   240126, accuracy not good btw 1~40MHz,  DO NOT USE
-	.inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB, reduced to 5 ports (mid freq accuracy issue ...)
+	.inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB, reduced to 5 ports 
 			* .inc ./hspice_inc/ACM3_NEWLAYOUT_01_30_4_3uF_4Phase_half10uFCAPSrev3_manip_IdEM.cir		*** 240131 ACM3 PCB, Kavoos provided reduced PCB model, w/ 10uF, and 1uF caps; do NOT use due to LF noise near 500kHz
 
 
@@ -92,7 +96,7 @@
 	.inc ./hspice_inc/Z_NNE_all_reducedModel_240202_manip_IdEM.cir
 	
 *************************************** Input params **************************
-.param Vdd 	= 0.785
+.param Vdd 	= 0.75
 
 .para Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
 .para Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
@@ -2981,10 +2985,10 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 	
 	
 	Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 928.n	R_die_1= 0.027m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)
-	* * Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1074.6n	R_die_1= 0.023m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)     *** add diffusion 1um
-	* * Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1118.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC
-	* * Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 4047.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC * MIM
-	* * Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 3359.n	R_die_1= 0.027m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** w/ MIM
+	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1074.6n	R_die_1= 0.023m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)     *** add diffusion 1um
+	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1118.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC
+	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 4047.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC * MIM
+	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 3359.n	R_die_1= 0.027m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** w/ MIM
 *** approach 2: single grp modeling	END
 
 .param is_ac_run = 0
@@ -3038,7 +3042,7 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
 	.param tStep	= 10.p
-	.param tStop	= 3.u     ** 35.u
+	.param tStop	= 1.u     ** 35.u
 	.tran tStep tSTOP 
 
 	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  v(bga_pkg)
