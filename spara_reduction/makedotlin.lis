@@ -1,0 +1,44 @@
+************************************************************************
+S-parameter Utility -- V-2023.12-2
+Copyright (C) 2008 - 2023 Synopsys,Inc. All rights reserved.
+This software and the associated documentation are confidential and
+proprietary to Synopsys, Inc. Your use or disclosure of this software
+is subject to the terms and conditions of a written license agreement
+between you, or your company, and Synopsys, Inc.
+************************************************************************
+
+command line: /global/apps/hspice_2023.12-2/hspice/linux64/sputil makedotlin.spu 
+
+License user information
+FLEXLM:   v8.5b
+USER:     dcheng
+HOSTNAME: us01odcvde33041
+HOSTID:   aadf02c3e1b5
+PID:      45920
+
+License file: 26585@us01hspicelmd
+license: hspice
+checkout number: 1
+expiration date: 31-jan-2025/2025.12
+ # in use/total: 2308/10000
+server: 26585@us01hspicelmd
+
+Parsing makedotlin.spu ...
+Reading TSTONEFILE Z_plot_NNE_PCB_vf_reduceModel.s5p......
+
+
+Touchstone File "Z_plot_NNE_PCB_vf_reduceModel.s5p"
+  Nport = 5
+  Nfreq = 451
+  Freq(1)Hz = 0
+  Freq(end)Hz = 1e+09
+  No noise parameter read. 
+
+s-parameters:  451 pts   0 - 1e+09
+ no noise parameter read  
+Creating .LIN netlist: example.sp
+ port count: 5, name/port ID [n], start port index: 1
+SPUTIL concluded
+CPU time : 0.164794 sec
+Wall time : 0.164795 sec
+Memory : 234.012 Mbytes

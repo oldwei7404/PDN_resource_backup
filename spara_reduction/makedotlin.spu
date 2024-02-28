@@ -1,0 +1,5 @@
+NPORT 5
+TSTONEFILE Z_plot_NNE_PCB_vf_reduceModel.s5p
+DATAFORMAT MA
+MAKE_DOT_LIN example.sp
+

@@ -1,0 +1,363 @@
+ ****** PrimeSim HSPICE -- V-2023.12-2 linux64 (Jan 31 2024 8697540) ******
+ ******  
+ *** lin ***
+
+ ****** operating point information tnom=  25.000 temp=  25.000 ******
+ ****** operating point status is all       simulation time is     0.     
+     node    =voltage
+n1=   0.           
+n2=   0.           
+n3=   0.           
+n4=   0.           
+n5=   0.           
+xp4.11=   0.           
+xp4.12=   0.           
+xp4.13=   0.           
+xp4.14=   0.           
+xp4.15=   0.           
+xp4.16=   0.           
+xp4.17=   0.           
+xp4.18=   0.           
+xp4.19=   0.           
+xp4.20=   0.           
+xp4.21=   0.           
+xp4.22=   0.           
+xp4.23=   0.           
+xp4.24=   0.           
+xp5.11=   0.           
+xp5.12=   0.           
+xp5.13=   0.           
+xp5.14=   0.           
+xp5.15=   0.           
+xp5.16=   0.           
+xp5.17=   0.           
+xp5.18=   0.           
+xp5.19=   0.           
+xp5.20=   0.           
+xp5.21=   0.           
+xp5.22=   0.           
+xp5.23=   0.           
+xp5.24=   0.           
+
+ ****  port elements
+
+subckt                      
+ element p1                  
+  volts      0.     
+  current    0.     
+  power      0.     
+
+subckt                      
+ element p2                  
+  volts      0.     
+  current    0.     
+  power      0.     
+
+subckt                      
+ element p3                  
+  volts      0.     
+  current    0.     
+  power      0.     
+
+
+     total port element power dissipation=    0.            watts
+
+ **** resistors
+
+subckt  xp4    
+ element xp4.r3                  
+  r value    4.4400m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r4                  
+  r value    6.9400 
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r5                  
+  r value  783.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r6                  
+  r value  132.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r7                  
+  r value   23.9000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r8                  
+  r value    5.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r9                  
+  r value    1.1000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r10                 
+  r value  124.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r11                 
+  r value   31.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r12                 
+  r value   17.9000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r13                 
+  r value    3.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r14                 
+  r value    3.0700m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r15                 
+  r value    3.4000 
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.r100                
+  r value    5.0000x
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r3                  
+  r value    4.4400m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r4                  
+  r value    6.9400 
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r5                  
+  r value  783.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r6                  
+  r value  132.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r7                  
+  r value   23.9000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r8                  
+  r value    5.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r9                  
+  r value    1.1000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r10                 
+  r value  124.0000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r11                 
+  r value   31.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r12                 
+  r value   17.9000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r13                 
+  r value    3.3000m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r14                 
+  r value    3.0700m
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r15                 
+  r value    3.4000 
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.r100                
+  r value    5.0000x
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+
+ **** inductors
+
+subckt  xp4    
+ element xp4.l2                  
+  l value  136.0000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l10                 
+  l value   32.8000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l11                 
+  l value   58.8000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l12                 
+  l value  229.0000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l13                 
+  l value   48.1000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l14                 
+  l value   25.5000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp4    
+ element xp4.l15                 
+  l value   37.7000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l2                  
+  l value  136.0000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l10                 
+  l value   32.8000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l11                 
+  l value   58.8000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l12                 
+  l value  229.0000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l13                 
+  l value   48.1000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l14                 
+  l value   25.5000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+
+subckt  xp5    
+ element xp5.l15                 
+  l value   37.7000p
+  v drop     0.     
+  current    0.     
+  power      0.     
+

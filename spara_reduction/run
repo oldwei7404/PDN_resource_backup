@@ -1,0 +1,3 @@
+
+>sputil makedotlin.spu
+>hspice d_example_modif.sp -o example_modif/example_modif
