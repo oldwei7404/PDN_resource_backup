@@ -115,12 +115,15 @@
 	* .param PCB_model = str('MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM')
 	
 	.inc ./hspice_inc/ACM3_CPU_PDN_2_24_2024.cir	*** ACM3 CPU PCB fr Kavoos 240225
+	.inc ./hspice_inc/ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct.cir	*** ACM3 CPU PCB fr Kavoos 240304, 105C deg
 
-			.inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
+			* .inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
 	
 	
 *************************************** Input params **************************
 .param is_use_ecap_ebed = 0		*** value: 0 or 1
+.param is_MIM = 0
+
 .param die_model_sig = 1		*** value: 0 or 1
 
 .param Vdd 	= 0.8
@@ -160,13 +163,21 @@ xblk_PMIC pmic_pwr ref_gnd PMIC_model vdd_pmic = 'Vdd'
 Rskt	bga_pcb		bga_pkg		0.				*** can add socket model 
 
 *************************************** PCB ***********************************
-.if ( 1 )	*** ACM3 CPU PCB fr Kavoos 240225
+.if ( 1 )	*** ACM3 CPU PCB fr Kavoos
+	* Xblk_PCB
+	* + pmic_pwr
+	* + pmic_pwr
+	* + bga_pcb
+	* + ref_gnd
+	* + ACM3_CPU_PDN_2_24_2024
+
+
 	Xblk_PCB
-	+ pmic_pwr
-	+ pmic_pwr
 	+ bga_pcb
-	+ ref_gnd
-	+ ACM3_CPU_PDN_2_24_2024
+	+ pmic_pwr
+	+ pmic_pwr
+	+ ref_gnd	
+	+ ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct
 	
 .endif 		*** ACM3 CPU PCB fr Kavoos 240225 end 
 
@@ -726,8 +737,12 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 	R_bump_merge_1 pkg_bump_one	pkg_bump_gpu	1.n 
 	
 	*** Cdie/Rdie 535nF/0.031mOhm from 240214 Andes 
-	Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  535.n	R_die_1= 0.031m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
-	* Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2052.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
+	.if (is_MIM == 0)
+		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  535.n	R_die_1= 0.031m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
+	.endif 
+	.if (is_MIM == 1) 
+		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2052.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
+	.endif 
 .endif 
 	
 .param is_ac_run = 0

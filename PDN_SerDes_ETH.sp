@@ -33,6 +33,7 @@
 * .param currSrc_vdd_d_tx 	= str('./inc_data/curr_profile_quiet.csv')
 * .param currSrc_vdd_d_rx 	= str('./inc_data/curr_profile_quiet.csv')
 
+*** 
 * .param currSrc_vdd_c_cmn 	= str('./inc_data/cmn_avdd_clk_current_ff.csv')
 * .param currSrc_vdd_c_tx 	= str('./inc_data/tx_avdd_clk_current_ff.csv')
 * .param currSrc_vdd_c_rx 	= str('./inc_data/rx_avdd_clk_current_ff.csv')
@@ -398,31 +399,35 @@ xblk_pkg
 	.probe tran v(bump_pwr_vdd_c) 	v(bump_pwr_vdd_d)	v(bump_pwr_vdd_h)	v(bump_pwr_vdd_h_cmn)
 	.probe x(xblk_pkg.a_6)   x(xblk_pkg.a_7) 	x(xblk_pkg.a_8)		x(xblk_pkg.a_5) 
 
-	.param vdd_meas_start = 0.n
-	.param vdd_meas_end   = 1000.n
-	.meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_c_vmax_t	WHEN	V(bump_pwr_vdd_c) = 'bump_pwr_vdd_c_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_c_vmin_t	WHEN	V(bump_pwr_vdd_c) = 'bump_pwr_vdd_c_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	.probe x(xblk_pkg.a_1)   x(xblk_pkg.a_2) 	x(xblk_pkg.a_3) x(xblk_pkg.a_4) 
+	.probe x(xblk_pkg.a_5) 	x(xblk_pkg.a_6) x(xblk_pkg.a_7) 	x(xblk_pkg.a_8) 
+	.probe x(xblk_PCB.a_19)  x(xblk_PCB.a_32)
+	
+	* .param vdd_meas_start = 0.n
+	* .param vdd_meas_end   = 1000.n
+	* .meas tran bump_pwr_vdd_c_p2p 	PP	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_c_vmax	MAX	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_c_vmin	MIN	V(bump_pwr_vdd_c)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_c_vmax_t	WHEN	V(bump_pwr_vdd_c) = 'bump_pwr_vdd_c_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_c_vmin_t	WHEN	V(bump_pwr_vdd_c) = 'bump_pwr_vdd_c_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
 
-	.meas tran bump_pwr_vdd_d_p2p 	PP	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_d_vmax	MAX	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_d_vmin	MIN	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_d_vmax_t	WHEN	V(bump_pwr_vdd_d) = 'bump_pwr_vdd_d_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_d_vmin_t	WHEN	V(bump_pwr_vdd_d) = 'bump_pwr_vdd_d_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_d_p2p 	PP	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_d_vmax	MAX	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_d_vmin	MIN	V(bump_pwr_vdd_d)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_d_vmax_t	WHEN	V(bump_pwr_vdd_d) = 'bump_pwr_vdd_d_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_d_vmin_t	WHEN	V(bump_pwr_vdd_d) = 'bump_pwr_vdd_d_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
 
-	.meas tran bump_pwr_vdd_h_p2p 	PP	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_vmax	MAX	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_vmin	MIN	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_vmax_t	WHEN	V(bump_pwr_vdd_h) = 'bump_pwr_vdd_h_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_vmin_t	WHEN	V(bump_pwr_vdd_h) = 'bump_pwr_vdd_h_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_p2p 	PP	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_vmax	MAX	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_vmin	MIN	V(bump_pwr_vdd_h)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_vmax_t	WHEN	V(bump_pwr_vdd_h) = 'bump_pwr_vdd_h_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_vmin_t	WHEN	V(bump_pwr_vdd_h) = 'bump_pwr_vdd_h_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
 
-	.meas tran bump_pwr_vdd_h_cmn_p2p 	PP	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_cmn_vmax	MAX	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_cmn_vmin	MIN	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_cmn_vmax_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
-	.meas tran bump_pwr_vdd_h_cmn_vmin_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_cmn_p2p 	PP	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_cmn_vmax	MAX	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_cmn_vmin	MIN	V(bump_pwr_vdd_h_cmn)	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_cmn_vmax_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmax' 	from='vdd_meas_start' to='vdd_meas_end'
+	* .meas tran bump_pwr_vdd_h_cmn_vmin_t	WHEN	V(bump_pwr_vdd_h_cmn) = 'bump_pwr_vdd_h_cmn_vmin' 	from='vdd_meas_start' to='vdd_meas_end'
 
 	
 .endif 
