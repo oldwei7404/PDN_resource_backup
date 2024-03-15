@@ -47,6 +47,8 @@
 * .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x1p75_PwrX1p65.txt.csv')		*** NOTE: 240131 current profile, time slow down by 1.75x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
 * .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x1_PwrX1p65.txt.csv')			*** NOTE: 240131 current profile, time slow down by 1.x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
 
+* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_Ting_8A_17ns_240314.txt.csv')	*** Ting, 4W * 150% / 0.75V, dt=17ns 
+
 	*** GPU profile
 * .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
 .param pwl_file_gpu = str('./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.csv')
@@ -55,17 +57,19 @@
 		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
 		
 	***** define die model *****
-* .inc ./hspice_inc/model_die_CPU.inc 
-* .inc ./hspice_inc/model_die_GPU.inc 
+					* .inc ./hspice_inc/model_die_CPU.inc 
+					* .inc ./hspice_inc/model_die_GPU.inc 
 
-					.subckt model_die_typ
-					+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84 pwl_file_in = str(pwl_file_quiet)	delay= 0.	
+.inc ./hspice_inc/cpm_cpu_3x4_240313.sp 	*** Andes 4x2 CPM model 240313
 
-					R_die_1_ 	pin_bump	2	R_die_1
-					R_die_2_	2		3	R_die_2
-					C_die_		3		ref_gnd	C_die 
-					R_leak_		pin_bump	ref_gnd	R_leak	
-					IcurrSrc	pin_bump	ref_gnd	PWL  pwlfile = str(pwl_file_in)  td= delay   *** add 'R' if repeat
+		.subckt model_die_typ
+		+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84 pwl_file_in = str(pwl_file_quiet)	delay= 0.	
+
+		R_die_1_ 	pin_bump	2	R_die_1
+		R_die_2_	2		3	R_die_2
+		C_die_		3		ref_gnd	C_die 
+		R_leak_		pin_bump	ref_gnd	R_leak	
+		IcurrSrc	pin_bump	ref_gnd	PWL  pwlfile = str(pwl_file_in)  td= delay   *** add 'R' if repeat
 					.ends
 
 	***** define pkg model *****
@@ -116,6 +120,9 @@
 	
 	.inc ./hspice_inc/ACM3_CPU_PDN_2_24_2024.cir	*** ACM3 CPU PCB fr Kavoos 240225
 	.inc ./hspice_inc/ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct.cir	*** ACM3 CPU PCB fr Kavoos 240304, 105C deg
+	.inc ./hspice_inc/ACM3_CPU_PDN_3_11_2024_105C_IdEM.cir			*** ACM3 CPU PCB from Kavoos 240311, 105C 
+	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uF_IdEM.cir		*** ACM3 CPU PCB, Jiangong, 240312, 105C, Hspice redu 
+	
 
 			* .inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
 	
@@ -124,19 +131,19 @@
 .param is_use_ecap_ebed = 0		*** value: 0 or 1
 .param is_MIM = 0
 
-.param die_model_sig = 1		*** value: 0 or 1
+.param die_model_sig = 0		*** value: 0 or 1
 
-.param Vdd 	= 0.8
+.param Vdd 	= -0.8
 
-.param CPU_die = str('model_die_lumped_cpu')
-.param GPU_die = str('model_die_lumped_gpu')
+	* .param CPU_die = str('model_die_lumped_cpu')
+	* .param GPU_die = str('model_die_lumped_gpu')
 
-.param Cdie_cpu	 = '271.n' 				
-.param Rdie_cpu	 = '0.055m'
+	* .param Cdie_cpu	 = '271.n' 				
+	* .param Rdie_cpu	 = '0.055m'
 .param Rleak_cpu = 0.232
 
-.param Cdie_gpu  = '263.n'	
-.param Rdie_gpu  = '0.057m'
+	* .param Cdie_gpu  = '263.n'	
+	* .param Rdie_gpu  = '0.057m'
 .param Rleak_gpu = 1.27
 
 
@@ -144,6 +151,12 @@
 	*.param Cdie_gpu	= '0.n'
 	*.param Rdie_gpu	= '1.e9m'
 	*.param Rleak_gpu= 1.e9
+	
+	
+	.param tStep	= 10.p
+	.param tStop	= 10.u
+	.tran tStep tSTOP 
+	
 *************************************** cap model *****************************
 .inc /data/home/jiangongwei/work/cap_models.hsp
 
@@ -164,22 +177,24 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 
 *************************************** PCB ***********************************
 .if ( 1 )	*** ACM3 CPU PCB fr Kavoos
-	* Xblk_PCB
-	* + pmic_pwr
-	* + pmic_pwr
-	* + bga_pcb
-	* + ref_gnd
-	* + ACM3_CPU_PDN_2_24_2024
-
-
 	Xblk_PCB
+	+ pmic_pwr
+	+ pmic_pwr
 	+ bga_pcb
-	+ pmic_pwr
-	+ pmic_pwr
-	+ ref_gnd	
-	+ ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct
+	+ ref_gnd
+	* + ACM3_CPU_PDN_2_24_2024
+	* + ACM3_CPU_PDN_3_11_2024_105C_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	+ acm3_cpu_pcb_240312_105C_100uF_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+
+
+	* Xblk_PCB
+	* + bga_pcb
+	* + pmic_pwr
+	* + pmic_pwr
+	* + ref_gnd	
+	* + ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct
 	
-.endif 		*** ACM3 CPU PCB fr Kavoos 240225 end 
+.endif 		*** ACM3 CPU PCB fr Kavoos end 
 
 
 .if ( 0 )	*** PCB 1018, 1025 (PMIC south or left, multiple pcb same set of ports) Andes mockup, PTH via, 1030 jgwei cap enhancement   
@@ -437,7 +452,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 .endif  	*** end of pkg mock up Andes 0724 	
 
 
-.if ( 0 )	*** pkg mock up Andes 240117
+.if ( 1 )	*** pkg mock up Andes 240117
 	Xblk_pkg
 	+ bga_pkg 
 	+ pkgCap_C1 
@@ -531,7 +546,7 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 .endif 		*** pkg mock up Andes 240117 end 
 
 
-.if ( 1 )	*** Zijie mock up 240207 w/  3x embedded ecap EC2047
+.if ( 0 )	*** Zijie mock up 240207 w/  3x embedded ecap EC2047
 	Xblk_pkg
 	+ pkg_bump
 	+ pkg_bump_gpu
@@ -727,8 +742,44 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 *************************************** Die ***********************************
 *** approach 1: multi grp modeling 
 .if (die_model_sig != 1 )
-Xblk_die 		pkg_bump		ref_gnd model_die_typ C_die= 'Cdie_cpu'	R_die_1= 'Rdie_cpu' R_die_2= 1.e-6	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpu)
-Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdie_gpu' R_die_2= 1.e-6	R_leak= 'Rleak_gpu'	pwl_file_in = str(pwl_file_gpu)
+	xblk_die
+	+ 			pkg_bump_cpu_0_0
+	+ ref_gnd	pkg_bump_cpu_1_0
+	+ ref_gnd 	pkg_bump_cpu_2_0
+	+ ref_gnd	pkg_bump_cpu_0_1
+	+ ref_gnd	pkg_bump_cpu_1_1 
+	+ ref_gnd	pkg_bump_cpu_2_1
+	+ ref_gnd	pkg_bump_gpu_0_2
+	+ ref_gnd	pkg_bump_gpu_1_2
+	+ ref_gnd	pkg_bump_gpu_2_2
+	+ ref_gnd	pkg_bump_gpu_0_3
+	+ ref_gnd	pkg_bump_gpu_1_3
+	+ ref_gnd 
+	+ adsPowerModel_cpu
+	
+	*** uncomment, if all CPU grps lumped 
+	r_cpu_short0 	pkg_bump 	pkg_bump_cpu_0_0	1.n 
+	r_cpu_short1 	pkg_bump 	pkg_bump_cpu_1_0	1.n 
+	r_cpu_short2 	pkg_bump 	pkg_bump_cpu_2_0	1.n 
+	r_cpu_short3 	pkg_bump 	pkg_bump_cpu_0_1	1.n 
+	r_cpu_short4 	pkg_bump 	pkg_bump_cpu_1_1	1.n 
+	r_cpu_short5 	pkg_bump 	pkg_bump_cpu_2_1	1.n 
+	
+	*** uncomment, if all GPU grps lumped 
+	r_gpu_short0 	pkg_bump_gpu 	pkg_bump_gpu_0_2	1.n 
+	r_gpu_short1 	pkg_bump_gpu 	pkg_bump_gpu_1_2	1.n 
+	r_gpu_short2 	pkg_bump_gpu 	pkg_bump_gpu_2_2	1.n 
+	r_gpu_short3 	pkg_bump_gpu 	pkg_bump_gpu_0_3	1.n 	
+	r_gpu_short4 	pkg_bump_gpu 	pkg_bump_gpu_1_3	1.n 
+	
+	*** uncomment, if CPU & GPU lumped 
+	r_cpu_gpu_short pkg_bump	pkg_bump_gpu	1.n
+	
+	IcurrSrc_single	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_cpugpuAll) 
+
+
+			* Xblk_die 		pkg_bump		ref_gnd model_die_typ C_die= 'Cdie_cpu'	R_die_1= 'Rdie_cpu' R_die_2= 1.e-6	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpu)
+			* Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdie_gpu' R_die_2= 1.e-6	R_leak= 'Rleak_gpu'	pwl_file_in = str(pwl_file_gpu)
 .endif 
 *** approach 2: single grp modeling	
 .if (die_model_sig == 1 )
@@ -737,11 +788,14 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 	R_bump_merge_1 pkg_bump_one	pkg_bump_gpu	1.n 
 	
 	*** Cdie/Rdie 535nF/0.031mOhm from 240214 Andes 
+	*** Cdie/Rdie 944nF, 0.039mOhm from 240314 Andes 
 	.if (is_MIM == 0)
-		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  535.n	R_die_1= 0.031m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
+				* Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  535.n	R_die_1= 0.031m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
+		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die=  944.n	R_die_1= 0.039m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)
 	.endif 
 	.if (is_MIM == 1) 
-		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2052.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
+				* Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2052.n	R_die_1= 0.043m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
+		Xblk_die 		pkg_bump_one	ref_gnd model_die_typ C_die= 2461.n	R_die_1= 0.039m  R_die_2= 1.n	R_leak= 'Rleak_cpu'	pwl_file_in = str(pwl_file_cpugpuAll)	*** MIM, + 50 * 43.33 * 0.7 
 	.endif 
 .endif 
 	
@@ -767,10 +821,6 @@ Xblk_die_gpu 	pkg_bump_gpu	ref_gnd model_die_typ C_die= 'Cdie_gpu'	R_die_1= 'Rdi
 
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
-	.param tStep	= 10.p
-	.param tStop	= 10.u
-	.tran tStep tSTOP 
-
 	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)
 	.probe x(Xblk_die.pin_bump)		
     .probe x(Xblk_pkg.a_3) 	
