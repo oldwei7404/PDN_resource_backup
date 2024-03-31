@@ -51,9 +51,10 @@
 
 .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_FSDB240327_2CoreX7_magX1p36_5us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore ramp x 7
 
-.param pwl_file_cpu2Core       	= str('./hspice_inc/curr_profile_CPU_FSDB240327_2Core_8us.txt.csv')			*** NOTE: 240327 Andes new profile, 2xcore only 
-.param pwl_file_cpu2Core_x1p2  	= str('./hspice_inc/curr_profile_CPU_FSDB240327_2Core_scale_1p2_8us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore only, scale by 1.2 to simulate pwr of 12 cores in 5 paritions
-.param pwl_file_cpu2Core_DSU 	= str('./hspice_inc/curr_profile_CPU_FSDB240327_DSU_2Core_8us.txt.csv')		*** NOTE: 240327 Andes new profile, 2xcore + DSU  
+* .param pwl_file_cpu2Core_x1p2  	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX4_2Core_scale1p2_8us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore only, scale by 1.2 to simulate pwr of 12 cores in 5 paritions
+* .param pwl_file_cpu2Core_DSU 	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX4_DSU_2Core_8us.txt.csv')		*** NOTE: 240327 Andes new profile, 2xcore + DSU  
+.param pwl_file_cpu2Core_x1p2  	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX6_2Core_scale1p2_11us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore only, scale by 1.2 to simulate pwr of 12 cores in 5 paritions, steady state duration x6
+.param pwl_file_cpu2Core_DSU 	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX6_DSU_2Core_11us.txt.csv')		*** NOTE: 240327 Andes new profile, 2xcore + DSU, steady state duration x6  
 
 	*** GPU profile
 * .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
@@ -130,7 +131,8 @@
 	.inc ./hspice_inc/ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct.cir	*** ACM3 CPU PCB fr Kavoos 240304, 105C deg
 	.inc ./hspice_inc/ACM3_CPU_PDN_3_11_2024_105C_IdEM.cir			*** ACM3 CPU PCB from Kavoos 240311, 105C 
 	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uF_IdEM.cir		*** ACM3 CPU PCB, Jiangong, 240312 0327, 105C, Hspice redu 
-	
+	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM.cir	*** added 6x220uF caps near BGA edge 
+	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM.cir	*** use 6x220uF bulk caps near PMIC
 
 			* .inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
 	
@@ -162,7 +164,7 @@
 	
 	
 	.param tStep	= 10.p
-	.param tStop	= 8.u
+	.param tStop	= 11.u
 	.tran tStep tSTOP 
 	
 *************************************** cap model *****************************
@@ -192,7 +194,9 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	+ ref_gnd
 	* + ACM3_CPU_PDN_2_24_2024
 	* + ACM3_CPU_PDN_3_11_2024_105C_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-	+ acm3_cpu_pcb_240312_105C_100uF_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	* + acm3_cpu_pcb_240312_105C_100uF_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	* + acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	+ acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
 
 
 	* Xblk_PCB
@@ -293,6 +297,23 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
 	XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
 	
+				* * *** exp to add 
+				* XpkgCap_C21_2        pkgCap_C21   ref_gnd   str(mlcc_1uF_0204)
+				* XpkgCap_C22_2        pkgCap_C22   ref_gnd   str(mlcc_1uF_0204)
+				* XpkgCap_C23_2        pkgCap_C23   ref_gnd   str(mlcc_1uF_0204)
+				* XpkgCap_C24_2        pkgCap_C24   ref_gnd   str(mlcc_1uF_0204)
+				
+				* XpkgCap_C17_3		pkgCap_C17	ref_gnd		str(mlcc_1uF_0201)
+				* XpkgCap_C18_3		pkgCap_C18	ref_gnd		str(mlcc_1uF_0201)
+				* XpkgCap_C19_3		pkgCap_C19	ref_gnd		str(mlcc_1uF_0201)
+				* XpkgCap_C20_3		pkgCap_C20	ref_gnd		str(mlcc_1uF_0201)	  
+				* XpkgCap_C21_3       pkgCap_C21  ref_gnd     str(mlcc_1uF_0201)
+				* XpkgCap_C22_3       pkgCap_C22  ref_gnd     str(mlcc_1uF_0201)
+				* XpkgCap_C23_3       pkgCap_C23  ref_gnd     str(mlcc_1uF_0201)
+				* XpkgCap_C24_3       pkgCap_C24  ref_gnd     str(mlcc_1uF_0201)
+				* XpkgCap_C25_3       pkgCap_C25  ref_gnd     str(mlcc_1uF_0201)
+				* XpkgCap_C26_3       pkgCap_C26  ref_gnd     str(mlcc_1uF_0201)				
+				
 	
 .endif 	*** Andes pkg 240327 ploc paritioned  end 
 
@@ -694,6 +715,33 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
 	IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
 	IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
+	
+	*** MIM cap *** 
+	.if (is_MIM == 1)
+		Cdie_MIM_cpu_2_1	    pkg_bump_cpu_2_1    pkg_bump_cpu_2_1_int   216.7n
+		Cdie_MIM_cpu_2_0	    pkg_bump_cpu_2_0    pkg_bump_cpu_2_0_int   216.7n
+		Cdie_MIM_cpu_1_1	    pkg_bump_cpu_1_1    pkg_bump_cpu_1_1_int   216.7n
+		Cdie_MIM_cpu_1_0	    pkg_bump_cpu_1_0    pkg_bump_cpu_1_0_int   216.7n
+		Cdie_MIM_cpu_0_1	    pkg_bump_cpu_0_1    pkg_bump_cpu_0_1_int   216.7n
+		Cdie_MIM_cpu_0_0	    pkg_bump_cpu_0_0    pkg_bump_cpu_0_0_int   216.7n
+		Cdie_MIM_gpu_1_3	    pkg_bump_gpu_1_3    pkg_bump_gpu_1_3_int   216.7n
+		Cdie_MIM_gpu_1_2	    pkg_bump_gpu_1_2    pkg_bump_gpu_1_2_int   216.7n
+		Cdie_MIM_gpu_0_3	    pkg_bump_gpu_0_3    pkg_bump_gpu_0_3_int   216.7n
+		Cdie_MIM_gpu_0_2	    pkg_bump_gpu_0_2    pkg_bump_gpu_0_2_int   216.7n
+		
+			Rdie_MIM_cpu_2_1	pkg_bump_cpu_2_1_int   ref_gnd  0.17m
+			Rdie_MIM_cpu_2_0	pkg_bump_cpu_2_0_int   ref_gnd  0.17m
+			Rdie_MIM_cpu_1_1	pkg_bump_cpu_1_1_int   ref_gnd  0.17m
+			Rdie_MIM_cpu_1_0	pkg_bump_cpu_1_0_int   ref_gnd  0.17m
+			Rdie_MIM_cpu_0_1	pkg_bump_cpu_0_1_int   ref_gnd  0.17m
+			Rdie_MIM_cpu_0_0	pkg_bump_cpu_0_0_int   ref_gnd  0.17m
+			Rdie_MIM_gpu_1_3	pkg_bump_gpu_1_3_int   ref_gnd  0.17m
+			Rdie_MIM_gpu_1_2	pkg_bump_gpu_1_2_int   ref_gnd  0.17m
+			Rdie_MIM_gpu_0_3	pkg_bump_gpu_0_3_int   ref_gnd  0.17m
+			Rdie_MIM_gpu_0_2	pkg_bump_gpu_0_2_int   ref_gnd  0.17m
+	
+    .endif 	
+	
 	
 							* *** uncomment, if all CPU grps lumped 
 							* r_cpu_short0 	pkg_bump 	pkg_bump_cpu_0_0	1.n 
