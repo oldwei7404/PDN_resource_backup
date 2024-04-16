@@ -59,7 +59,8 @@
 	*** GPU profile
 * .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
 * .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP40Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-20%, need 4 to build whole gpu pwr   
-.param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP20Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-10%, need 4 to build whole gpu pwr 
+* .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP20Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-10%, need 4 to build whole gpu pwr 
+.param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_12W_Rt100ns_RandPP30Pct_8us.txt.csv')		*** NOTE: 240328, GPU 12.3W, rise time 100ns, rand switch +-15%, need 4 to build whole gpu pwr 
 
 		*** idle current
 		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
@@ -131,8 +132,10 @@
 	.inc ./hspice_inc/ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct.cir	*** ACM3 CPU PCB fr Kavoos 240304, 105C deg
 	.inc ./hspice_inc/ACM3_CPU_PDN_3_11_2024_105C_IdEM.cir			*** ACM3 CPU PCB from Kavoos 240311, 105C 
 	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uF_IdEM.cir		*** ACM3 CPU PCB, Jiangong, 240312 0327, 105C, Hspice redu 
-	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM.cir	*** added 6x220uF caps near BGA edge 
-	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM.cir	*** use 6x220uF bulk caps near PMIC
+	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM.cir	*** added more 6x220uF caps near BGA edge 
+	.inc ./hspice_inc/acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM.cir	*** use 6x220uF bulk caps near PMIC, replacing 100uFs 
+	.inc ./hspice_inc/acm3_cpu_pcb_240402_105C_6x220uF_IdEM.cir				*** 240402, L9 added, L3/5/7/9 extended south of CPU, use 6x220uF bulk caps near PMIC
+	
 
 			* .inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
 	
@@ -143,7 +146,7 @@
 
 .param die_model_sig = 0		*** value: 0 for CPM, or 1 for single die 
 
-.param Vdd 	= -0.8
+.param Vdd 	= 0.8
 
 	* .param CPU_die = str('model_die_lumped_cpu')
 	* .param GPU_die = str('model_die_lumped_gpu')
@@ -186,7 +189,7 @@ xblk_PMIC pmic_pwr ref_gnd PMIC_model vdd_pmic = 'Vdd'
 Rskt	bga_pcb		bga_pkg		0.				*** can add socket model 
 
 *************************************** PCB ***********************************
-.if ( 1 )	*** ACM3 CPU PCB fr Kavoos
+.if ( 1 )	*** ACM3 CPU PCB 
 	Xblk_PCB
 	+ pmic_pwr
 	+ pmic_pwr
@@ -196,7 +199,8 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	* + ACM3_CPU_PDN_3_11_2024_105C_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
 	* + acm3_cpu_pcb_240312_105C_100uF_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
 	* + acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-	+ acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	* + acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
+	+ acm3_cpu_pcb_240402_105C_6x220uF_IdEM
 
 
 	* Xblk_PCB
@@ -266,37 +270,38 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	+ ref_gnd
 	+ Mam_MCM_L12_202403012ate_a_CPU_jgwei_IdEM
 	
-	XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-												  
-	XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C13          pkgCap_C13     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C14          pkgCap_C14     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C15          pkgCap_C15     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C16          pkgCap_C16     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)	
-	
-	XpkgCap_C9          pkgCap_C9    ref_gnd    pkgCap_C9   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C10         pkgCap_C10   ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C11         pkgCap_C11   ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C12         pkgCap_C12   ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	
-	XpkgCap_C17  		pkgCap_C17	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_C18  		pkgCap_C18	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_C19  		pkgCap_C19	ref_gnd		str(mlcc_1uF_0204)
-	XpkgCap_C20  		pkgCap_C20	ref_gnd		str(mlcc_1uF_0204)
-	
-	XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-	
+	.if ( 0 )	*** jgwei caps opt
+		XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+		XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+		XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+		XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
+													  
+		XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C13          pkgCap_C13     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C14          pkgCap_C14     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C15          pkgCap_C15     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
+		XpkgCap_C16          pkgCap_C16     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)	
+		
+		XpkgCap_C9          pkgCap_C9    ref_gnd    pkgCap_C9   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C10         pkgCap_C10   ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C11         pkgCap_C11   ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C12         pkgCap_C12   ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		
+		XpkgCap_C17  		pkgCap_C17	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_C18  		pkgCap_C18	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_C19  		pkgCap_C19	ref_gnd		str(mlcc_1uF_0204)
+		XpkgCap_C20  		pkgCap_C20	ref_gnd		str(mlcc_1uF_0204)
+		
+		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
+
 				* * *** exp to add 
 				* XpkgCap_C21_2        pkgCap_C21   ref_gnd   str(mlcc_1uF_0204)
 				* XpkgCap_C22_2        pkgCap_C22   ref_gnd   str(mlcc_1uF_0204)
@@ -313,7 +318,39 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 				* XpkgCap_C24_3       pkgCap_C24  ref_gnd     str(mlcc_1uF_0201)
 				* XpkgCap_C25_3       pkgCap_C25  ref_gnd     str(mlcc_1uF_0201)
 				* XpkgCap_C26_3       pkgCap_C26  ref_gnd     str(mlcc_1uF_0201)				
-				
+	.endif 
+
+	.if ( 1 ) *** Andes 240404 opt 
+		XpkgCap_C1	pkgCap_C1	ref_gnd		str(mlcc_1uF_0201)
+		XpkgCap_C2	pkgCap_C2	ref_gnd		str(mlcc_1uF_0201)
+		XpkgCap_C3	pkgCap_C3	ref_gnd		str(mlcc_1uF_0201)
+		XpkgCap_C4	pkgCap_C4	ref_gnd		str(mlcc_1uF_0201)
+		XpkgCap_C5	pkgCap_C5	ref_gnd		str(mlcc_1uF_0201)
+		XpkgCap_C6	pkgCap_C6	ref_gnd		str(mlcc_1uF_0201)
+		
+		XpkgCap_C7  pkgCap_C7     ref_gnd    pkgCap_C7    ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C8  pkgCap_C8     ref_gnd    pkgCap_C8    ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C9  pkgCap_C9     ref_gnd    pkgCap_C9    ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C10 pkgCap_C10    ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C11 pkgCap_C11    ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C12 pkgCap_C12    ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C13 pkgCap_C13    ref_gnd    pkgCap_C13   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C14 pkgCap_C14    ref_gnd    pkgCap_C14   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C15 pkgCap_C15    ref_gnd    pkgCap_C15   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C16 pkgCap_C16    ref_gnd    pkgCap_C16   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		XpkgCap_C17 pkgCap_C17    ref_gnd    pkgCap_C17   ref_gnd str(mlcc_1uF_0402_3T_ft)
+		
+		XpkgCap_C18         pkgCap_C18   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C19         pkgCap_C19   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C20         pkgCap_C20   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
+		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
+		
+	.endif 
 	
 .endif 	*** Andes pkg 240327 ploc paritioned  end 
 
@@ -711,10 +748,10 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		td = 48.n
 	IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		td = 60.n
 	
-	IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
-	IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
-	IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
-	IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 0.n 
+	IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 100.n 
+	IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 100.n 
+	IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 100.n 
+	IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		td = 100.n 
 	
 	*** MIM cap *** 
 	.if (is_MIM == 1)
