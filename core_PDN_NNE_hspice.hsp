@@ -46,15 +46,28 @@
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_x0p25_traceFrPD_240215.txt.csv')		*** *** 240215 Puru trace x 0.25, 3us
 			
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_ramped_trace_scaled_240306.txt.csv')		*** 1/4 of PA, Rahul 240313, 8us 
-				.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_ramped_trace_scaled_240306.txt.csv')		*** 1/4 of PA, Rahul 240313, 8us 
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_ramped_trace_scaled_240306.txt.csv')		*** 1/4 of gmt, Rahul 240313, 8us 	==> stead state 12A			
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_240318.txt.csv')		*** 1/4 of PA, Rahul 240318, 8us 
-				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_240318.txt.csv')		*** 1/4 of PA, Rahul 240318, 8us 		
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_240318.txt.csv')		*** 1/4 of gmt, Rahul 240318, 8us 	==> stead state 17A 	
 
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_2us.txt.csv')		*** 1/4 of PA, Brad trace 240325 2us	
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_2us_scaleBy0p7143.txt.csv') *** 1/4 of PA, Brad trace 240325 2us, mag scaled by 0.7143 to match 240306 profile 
-				.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240405_fr_PD_1100usRamp_200ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,  from /work/mammoth/pd/nne/4/steveny/PI/nne_pat_top/DVD_IPF_becky_0207rtl_newFP_newPG/reports/dynamic_analysis/pad.current
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr 
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up 
+				.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_wStall_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, added 8x3 clk stall, repeatable 
 				
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_w_rampDwn_flrChg_3us.txt.csv')   *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143, start floor at 10A
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_w_rampDwn_flr20Ax4_3us.txt.csv')   *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143, start floor at 20A
+				
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_mockup_currFlr10A_peak25A_50ns_4us.txt.csv')	*** 1/4 of PA, jgwei created to mockup ramp and floor current 
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_mockup_currFlr15A_peak25A_50ns_4us.txt.csv')	*** 1/4 of PA, jgwei created to mockup ramp and floor current 
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_mockup_currFlr2A_peak25A_84ns_4us.txt.csv')	*** 1/4 of PA, jgwei created to mockup ramp and floor current 
+		
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_4us.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A
+				.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_wStall_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len accommodate PA 8x3 clk stalling, repeatable
+				
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240405_fr_PD_1100usRamp_200ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,  from /work/mammoth/pd/nne/4/steveny/PI/nne_pat_top/DVD_IPF_becky_0207rtl_newFP_newPG/reports/dynamic_analysis/pad.current
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240406_fr_PD_8ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,
 				
 						
@@ -79,7 +92,9 @@
 						
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_240301.txt.csv')		*** 240301  trace, PA + GMEM 4us
 						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_sacled_240301.txt.csv')		*** 240301  trace, PA + GMEM 4us
-						.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_240306_8us.txt.csv')		*** 240306  trace, PA + GMEM 4us
+						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_240306_8us.txt.csv')		*** 240306  trace, PA + GMEM 4us
+						.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_w_GMT_240425.csv')		*** 240425  trace, curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us + curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us
+						
 						
 		*** idle current
 		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
@@ -115,7 +130,9 @@ C_lf lf 		ref_gnd	160.p
 .ends
 
 .inc ./hspice_inc/cpm_nne_4x2_240313.sp 			*** Andes 4x2 CPM model 240313
-.inc ./hspice_inc/cpm_maual_appx_nne_4x2_240317.sp	*** jgwei 4x2 CPM manual mockup based on CPM 
+.inc ./hspice_inc/cpm_nne_240426_Redu_IdEM.cir		*** 240426 CPM reduced model 
+* .inc ./hspice_inc/cpm_maual_appx_nne_4x2_240317.sp	*** jgwei 4x2 CPM manual mockup based on CPM 
+
 
 	***** define pkg model *****
 	* .inc ./hspice_inc/nne_pkg_230329_FCBGA_L12_mammoth_20230525ate_a_IdEM.cir	***  0526 Andes pkg w/ 28 + 35 DSC
@@ -134,6 +151,9 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/nne_4x2_Andes_redu_IdEM.cir 		*** Andes 140um 4x2 + bga model, MLCC only  
 	.inc ./hspice_inc/nne_4x2_6xEC2047_redu_IdEM.cir 	*** 240311 Zijie pkg w/ 6x EC2047 cap model, 140um pitch, 4x2 + bga model 
 	.inc ./hspice_inc/nne0415_cut_IdEM.cir 				*** 240416 Andes new pkg, total system DCR 0.215mOhm
+	.inc ./hspice_inc/nne0415_cut_Redu_IdEM_s9p_v2.cir		*** 240416 Andes new pkg reduced (for comparison with simplis)
+	.inc ./hspice_inc/nne0415_cut_Redu_2BgaGrp_IdEM.cir		*** 240506 Andes 240415 pkg, 2 ports for BGA 
+	.inc ./hspice_inc/nne0415_cut_BGAx6Grp_IdEM.cir			*** 240510 Andes 240415 pkg, 6 ports for BGA 
 	
 	
 
@@ -149,20 +169,25 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/acm3_nne_240320_discrt_105C_No100uF_IdEM.cir				*** jgwei 240314 ACM3, 105C, no 100uF
 		.inc ./hspice_inc/ACM3_105C_3_14_24_IdEM.cir								*** Kavoos 240314 ACM3 105C pcb 
 	.inc ./hspice_inc/acm3_nne_240320_discrt_105C_vf_no100uF_341x10uF_w_IVRports_manip_IdEM.cir	*** 240324 ACM3 105C, no 100uF, vertical feeding, 341x10uF caps
-
+	.inc ./hspice_inc/ACM3_04172024_NNE_PDN_220uF_IdEM.cir						*** ACM3 240417, 10x220uF, 105C
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga2Grp_s6p_IdEM.cir				*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 2 BGA grps 
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga3Grp_IdEM.cir					*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 3 BGA grps 
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM.cir								*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 6 BGA grps 
 
 	****** define reduced model *****
 	* .inc ./hspice_inc/Z_NNE_all_reducedModel_240202_manip_IdEM.cir
 	
 *************************************** Input params **************************
-.param Vdd 	= 0.75
-
-.param is_use_3T_cap_ft = 1		*** value: 0 or 1, note: this could be baked in pkg model 
+.param Vdd 	= 0.775
+.param induct_eqvlnt_r = 0.07m	*** DCR of inductor of ALL phases
 
 .param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
 .param is_MIM 		= 0
 
 .param die_model_sig = 0		*** value: 0 if multi grp model, 1 if single die grp model 
+.param single_bga_grp = 0		*** value: 0 if use multiple BGA grps, 1 if use single BGA grp
+
+.param is_use_3T_cap_ft = 1		*** value: 0 or 1, note: this could be baked in pkg model 
 
 	*** not used when CPM is enabled 
 	.para Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
@@ -180,7 +205,7 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 20.u     ** 35.u
+.param tStop	= 40.u     ** 35.u
 
 .param td_delay = 0.n
 	
@@ -244,35 +269,42 @@ C_lf lf 		ref_gnd	160.p
 .param siCap_empwr_EC1005_16600nF = str('ECAP_16600nF_12x10array')
 
 *************************************** PMIC **********************************
-
-Vref_gnd 	ref_gnd		0	0.				
-	*E_fdbk	ref_gnd	0	VCVS DELAY pmic_pwr pkg_bump_1_0  td=50.n	*** opt 2/2 VCVS to model feedback
+*** ref_gnd def.
+Vref_gnd 	ref_gnd		0	0.										*** normal gnd 
 
 .subckt PMIC_model
-+ pin_out ref_gnd vdd_pmic = 0.75
-	*** ideal voltage src 
-	VshortPMIC	pin_out	ref_gnd	vdd_pmic
++ pin_out ref_gnd fdbk_node vdd_pmic = 0.75
+	*** opt 1/3 ideal voltage src 
+		VshortPMIC	pin_out	ref_gnd	vdd_pmic
+	
+	*** opt 2/3, add feedback
+		* VshortPMIC_ref	pin_out_tmp	0 	vdd_pmic	*** ref contant voltage src 
+		
+		* VshortPMIC	pin_out	pin_tmp	vdd_pmic
+		* E_fdbk	    pin_tmp	ref_gnd VCVS DELAY pin_out_tmp fdbk_node  td=1500.n			*** VCVS to model feedback using low freq signal 
 			
-	*** voltage src waveform 
-	* Vpmic_wf pin_out ref_gnd PWL pwlfile =  './hspice_inc/volt_profile_adi_240327_25us.txt.csv'
+	*** opt 3/3 voltage src waveform 
+		* Vpmic_wf pin_out ref_gnd PWL pwlfile =  './hspice_inc/volt_profile_adi_240327_25us.txt.csv'
 	*** 
 .ends 
 
 
 *** opt 1 ideal PMIC w/o remote sense feedback
 .if ( 1 )
-	*VshortPMIC	pmic_pwr	ref_gnd	Vdd		*** can be switched to PMIC model 
-	xblk_PMIC pmic_pwr ref_gnd PMIC_model  vdd_pmic = 'Vdd'  		
+	xblk_PMIC pmic_pwr_raw ref_gnd pkg_bump_1_0_lf PMIC_model  vdd_pmic = 'Vdd'  		
 .endif 
 *** opt 2 EMpower simplified IVR equivalent model 	(remember to disable PMIC bulk caps on PCB)
 .if ( 0 )
 	VempowerVS	pmicEMpwrNode1	ref_gnd	Vdd		*** can be switched to PMIC model 
 	LempowerVS1  pmicEMpwrNode1  pmicEMpwrNode2  	'0.027778n * 0.9091'  
-	RempowerVS1  pmicEMpwrNode2  pmic_pwr			50.u 
+	RempowerVS1  pmicEMpwrNode2  pmic_pwr_raw			50.u 
 .endif 
 
+*** resistance of pmic output cap
+r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
+
 *************************************** Socket ********************************
-Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model 
+Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model 
 
 
 																									.if ( 0 )  	***  test reduced PCB+pkg for SIMPLIS  ==> low accuracy, do NOT use 
@@ -291,7 +323,7 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 					*** debug to skip PCB 
 					* R_short_pcb bga_pcb 	pmic_pwr	1.n
 
-.if ( 1 )		***  ACM3 PCB, reduced to 5 ports, POR 240216 a
+.if ( 1 )		***  ACM3 PCB, reduced to 5 ports
 
 					* Xblk_PCB 
 					* + bga_pcb
@@ -305,23 +337,94 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 					* * + ACM3_122323_nne_cut_reduce_v2_manip_s5p
 					* * + ACM3_bulk_top_and_centerbottom_caps_IdEM
 
-	Xblk_PCB 
-	+ pmic_pwr
-	+ pmic_pwr
-	+ pmic_pwr
-	+ pmic_pwr
-	+ bga_pcb
-	+ ref_gnd
-	* + ACM3_105C_3_14_24_IdEM
-	+ acm3_nne_240320_discrt_105C_IdEM	
-	* + acm3_nne_240320_discrt_105C_No100uF_IdEM
-	
-		* Xblk_PCB 
-		* + bga_pcb
-		* + pmic_pwr
-		* + ref_gnd
-		* + acm3_nne_240320_discrt_105C_vf_no100uF_341x10uF_w_IVRports_manip_IdEM
-	
+			* Xblk_PCB 	
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + bga_pcb
+			* + ref_gnd
+			* * + ACM3_105C_3_14_24_IdEM
+			* + acm3_nne_240320_discrt_105C_IdEM	
+			* * + acm3_nne_240320_discrt_105C_No100uF_IdEM
+
+
+	*** 6 BGA ports
+	.if (single_bga_grp != 1)
+		Xblk_PCB
+		+ bga_pcb_0 
+		+ pmic_pwr
+		+ pmic_pwr
+		+ pmic_pwr
+		+ pmic_pwr
+		+ bga_pcb_1
+		+ bga_pcb_2
+		+ bga_pcb_3
+		+ bga_pcb_4		
+		+ bga_pcb_5
+		+ ref_gnd
+		+ ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM
+	.endif 
+	.if (single_bga_grp == 1)
+		Xblk_PCB
+		+ bga_pcb
+		+ pmic_pwr
+		+ pmic_pwr
+		+ pmic_pwr
+		+ pmic_pwr
+		+ bga_pcb
+		+ bga_pcb
+		+ bga_pcb
+		+ bga_pcb
+		+ bga_pcb
+		+ ref_gnd	
+		+ ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM
+	.endif 
+			
+
+		*** 3 BGA ports
+		* .if (single_bga_grp != 1)
+			* Xblk_PCB 	
+			* + bga_pcb_0
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + bga_pcb_1
+			* + bga_pcb_2
+			* + ref_gnd
+			* + ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga3Grp_IdEM
+		* .endif 
+		* .if (single_bga_grp == 1)
+			* Xblk_PCB 	
+			* + bga_pcb
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + pmic_pwr
+			* + bga_pcb
+			* + bga_pcb
+			* + ref_gnd
+			* + ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga3Grp_IdEM
+		* .endif 
+
+					
+					* Xblk_PCB 	*** 2 BGA ports
+					* + bga_pcb		*_0
+					* + pmic_pwr
+					* + pmic_pwr
+					* + pmic_pwr
+					* + pmic_pwr
+					* + bga_pcb		*_1
+					* + ref_gnd
+					* + ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga2Grp_s6p_IdEM
+		
+						* Xblk_PCB 
+						* + bga_pcb
+						* + pmic_pwr
+						* + ref_gnd
+						* + acm3_nne_240320_discrt_105C_vf_no100uF_341x10uF_w_IVRports_manip_IdEM
+				
 .endif 		*** end of ACM3 PCB, reduced to 5 ports 
 
 
@@ -345,7 +448,24 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 												* + NNE_pkg_redu_240131_ZijiePkg_Ecap_Enabled_s2p_IdEM
 												* + nne_6x_ecap_0307_2__w_12xFeC2072ecap_redu_IdEM_s2p
 									.endif 		*** reduced model end 
-					
+
+.if ( 0 ) 	*** 240416 Andes pkg w/ 2 BGA grps 
+	Xblk_pkg
+	+ pkg_bump_0_0
+	+ pkg_bump_0_1
+	+ pkg_bump_0_2
+	+ pkg_bump_0_3
+	+ pkg_bump_1_0
+	+ pkg_bump_1_1
+	+ pkg_bump_1_2
+	+ pkg_bump_1_3
+	+ bga_pcb	*_0
+	+ bga_pcb	*_1
+	+ ref_gnd
+	+ nne0415_cut_Redu_2BgaGrp_IdEM
+
+.endif 	*** end: 240416 Andes pkg w/ 2 BGA grps 
+	
 .if ( 0 ) 	*** 4x2 reduced model 
 
 	.if ( is_use_ecap_ebed == 1)
@@ -375,105 +495,471 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 		+ pkg_bump_1_3
 		+ bga_pkg
 		+ ref_gnd
-		+ nne_4x2_Andes_redu_IdEM					
+		* + nne_4x2_Andes_redu_IdEM	
+		+ nne0415_cut_Redu_IdEM_s9p_v2		*** good correlation w/ full pkg & DSC
 	.endif 
 
 .endif 
 
-.if ( 1 )   *** 240416 Andes pkg 
-	Xblk_pkg
-	+ pkg_bump_0_0
-	+ pkg_bump_0_1
-	+ pkg_bump_0_2
-	+ pkg_bump_0_3
-	+ pkg_bump_1_0
-	+ pkg_bump_1_1
-	+ pkg_bump_1_2
-	+ pkg_bump_1_3
-	+ bga_pkg
-	+ bga_pkg
-	+ bga_pkg
-	+ pkgCap_C1
-	+ pkgCap_C2
-	+ pkgCap_C3
-	+ pkgCap_C4
-	+ pkgCap_C5
-	+ pkgCap_C6
-	+ pkgCap_C7
-	+ pkgCap_C8
-	+ pkgCap_C9
-	+ pkgCap_C9_2
-	+ pkgCap_C10
-	+ pkgCap_C10_2
-	+ pkgCap_C11
-	+ pkgCap_C11_2
-	+ pkgCap_C12
-	+ pkgCap_C12_2
-	+ pkgCap_C13
-	+ pkgCap_C13_2
-	+ pkgCap_C14
-	+ pkgCap_C14_2
-	+ pkgCap_C15
-	+ pkgCap_C15_2
-	+ pkgCap_C16
-	+ pkgCap_C16_2
-	+ pkgCap_C17
-	+ pkgCap_C17_2
-	+ pkgCap_C18
-	+ pkgCap_C18_2
-	+ pkgCap_C19
-	+ pkgCap_C19_2
-	+ pkgCap_C20
-	+ pkgCap_C20_2
-	+ pkgCap_C21
-	+ pkgCap_C21_2
-	+ pkgCap_C22
-	+ pkgCap_C22_2
-	+ pkgCap_C23
-	+ pkgCap_C23_2
-	+ pkgCap_C24
-	+ pkgCap_C24_2
-	+ pkgCap_C25
-	+ pkgCap_C25_2
-	+ pkgCap_C26
-	+ pkgCap_C26_2
-	+ pkgCap_C27
-	+ pkgCap_C27_2
-	+ pkgCap_C28
-	+ pkgCap_C29
-	+ pkgCap_C30
-	+ pkgCap_C31
-	+ pkgCap_C32
-	+ pkgCap_C33
-	+ pkgCap_C34
-	+ pkgCap_C35
-	+ pkgCap_C36
-	+ pkgCap_C37
-	+ pkgCap_C38
-	+ pkgCap_C39
-	+ pkgCap_C40
-	+ pkgCap_C41
-	+ pkgCap_C42
-	+ pkgCap_C43
-	+ pkgCap_C44
-	+ pkgCap_C45
-	+ pkgCap_C46
-	+ pkgCap_C47
-	+ pkgCap_C48
-	+ pkgCap_C49
-	+ pkgCap_C50
-	+ pkgCap_C51
-	+ pkgCap_C52
-	+ pkgCap_C53
-	+ pkgCap_C54
-	+ pkgCap_C55
-	+ pkgCap_C56
-	+ pkgCap_C57
-	+ pkgCap_C58
-	+ pkgCap_C59
-	+ pkgCap_C60
-	+ ref_gnd
-	+ nne0415_cut_IdEM
+.if ( 1 )   *** 240416 Andes pkg, 6x BGA grps  
+	.if (single_bga_grp != 1)
+		Xblk_pkg
+		+ pkg_bump_0_0
+		+ pkg_bump_0_1
+		+ pkg_bump_0_2
+		+ pkg_bump_0_3
+		+ pkg_bump_1_0
+		+ pkg_bump_1_1
+		+ pkg_bump_1_2
+		+ pkg_bump_1_3
+		+ pkgCap_C1
+		+ pkgCap_C2
+		+ pkgCap_C3
+		+ pkgCap_C4
+		+ pkgCap_C5
+		+ pkgCap_C6
+		+ pkgCap_C7
+		+ pkgCap_C8
+		+ pkgCap_C9
+		+ pkgCap_C9_2
+		+ pkgCap_C10
+		+ pkgCap_C10_2
+		+ pkgCap_C11
+		+ pkgCap_C11_2
+		+ pkgCap_C12
+		+ pkgCap_C12_2
+		+ pkgCap_C13
+		+ pkgCap_C13_2
+		+ pkgCap_C14
+		+ pkgCap_C14_2
+		+ pkgCap_C15
+		+ pkgCap_C15_2
+		+ pkgCap_C16
+		+ pkgCap_C16_2
+		+ pkgCap_C17
+		+ pkgCap_C17_2
+		+ pkgCap_C18
+		+ pkgCap_C18_2
+		+ pkgCap_C19
+		+ pkgCap_C19_2
+		+ pkgCap_C20
+		+ pkgCap_C20_2
+		+ pkgCap_C21
+		+ pkgCap_C21_2
+		+ pkgCap_C22
+		+ pkgCap_C22_2
+		+ pkgCap_C23
+		+ pkgCap_C23_2
+		+ pkgCap_C24
+		+ pkgCap_C24_2
+		+ pkgCap_C25
+		+ pkgCap_C25_2
+		+ pkgCap_C26
+		+ pkgCap_C26_2
+		+ pkgCap_C27
+		+ pkgCap_C27_2
+		+ pkgCap_C28
+		+ pkgCap_C29
+		+ pkgCap_C30
+		+ pkgCap_C31
+		+ pkgCap_C32
+		+ pkgCap_C33
+		+ pkgCap_C34
+		+ pkgCap_C35
+		+ pkgCap_C36
+		+ pkgCap_C37
+		+ pkgCap_C38
+		+ pkgCap_C39
+		+ pkgCap_C40
+		+ pkgCap_C41
+		+ pkgCap_C42
+		+ pkgCap_C43
+		+ pkgCap_C44
+		+ pkgCap_C45
+		+ pkgCap_C46
+		+ pkgCap_C47
+		+ pkgCap_C48
+		+ pkgCap_C49
+		+ pkgCap_C50
+		+ pkgCap_C51
+		+ pkgCap_C52
+		+ pkgCap_C53
+		+ pkgCap_C54
+		+ pkgCap_C55
+		+ pkgCap_C56
+		+ pkgCap_C57
+		+ pkgCap_C58
+		+ pkgCap_C59
+		+ pkgCap_C60
+			+ bga_pcb_0
+			+ bga_pcb_1
+			+ bga_pcb_2
+			+ bga_pcb_3
+			+ bga_pcb_4
+			+ bga_pcb_5
+		+ ref_gnd
+		+ nne0415_cut_BGAx6Grp_IdEM
+	.endif
+	.if (single_bga_grp == 1)
+		Xblk_pkg
+		+ pkg_bump_0_0
+		+ pkg_bump_0_1
+		+ pkg_bump_0_2
+		+ pkg_bump_0_3
+		+ pkg_bump_1_0
+		+ pkg_bump_1_1
+		+ pkg_bump_1_2
+		+ pkg_bump_1_3
+		+ pkgCap_C1
+		+ pkgCap_C2
+		+ pkgCap_C3
+		+ pkgCap_C4
+		+ pkgCap_C5
+		+ pkgCap_C6
+		+ pkgCap_C7
+		+ pkgCap_C8
+		+ pkgCap_C9
+		+ pkgCap_C9_2
+		+ pkgCap_C10
+		+ pkgCap_C10_2
+		+ pkgCap_C11
+		+ pkgCap_C11_2
+		+ pkgCap_C12
+		+ pkgCap_C12_2
+		+ pkgCap_C13
+		+ pkgCap_C13_2
+		+ pkgCap_C14
+		+ pkgCap_C14_2
+		+ pkgCap_C15
+		+ pkgCap_C15_2
+		+ pkgCap_C16
+		+ pkgCap_C16_2
+		+ pkgCap_C17
+		+ pkgCap_C17_2
+		+ pkgCap_C18
+		+ pkgCap_C18_2
+		+ pkgCap_C19
+		+ pkgCap_C19_2
+		+ pkgCap_C20
+		+ pkgCap_C20_2
+		+ pkgCap_C21
+		+ pkgCap_C21_2
+		+ pkgCap_C22
+		+ pkgCap_C22_2
+		+ pkgCap_C23
+		+ pkgCap_C23_2
+		+ pkgCap_C24
+		+ pkgCap_C24_2
+		+ pkgCap_C25
+		+ pkgCap_C25_2
+		+ pkgCap_C26
+		+ pkgCap_C26_2
+		+ pkgCap_C27
+		+ pkgCap_C27_2
+		+ pkgCap_C28
+		+ pkgCap_C29
+		+ pkgCap_C30
+		+ pkgCap_C31
+		+ pkgCap_C32
+		+ pkgCap_C33
+		+ pkgCap_C34
+		+ pkgCap_C35
+		+ pkgCap_C36
+		+ pkgCap_C37
+		+ pkgCap_C38
+		+ pkgCap_C39
+		+ pkgCap_C40
+		+ pkgCap_C41
+		+ pkgCap_C42
+		+ pkgCap_C43
+		+ pkgCap_C44
+		+ pkgCap_C45
+		+ pkgCap_C46
+		+ pkgCap_C47
+		+ pkgCap_C48
+		+ pkgCap_C49
+		+ pkgCap_C50
+		+ pkgCap_C51
+		+ pkgCap_C52
+		+ pkgCap_C53
+		+ pkgCap_C54
+		+ pkgCap_C55
+		+ pkgCap_C56
+		+ pkgCap_C57
+		+ pkgCap_C58
+		+ pkgCap_C59
+		+ pkgCap_C60
+			+ bga_pcb
+			+ bga_pcb
+			+ bga_pcb
+			+ bga_pcb
+			+ bga_pcb
+			+ bga_pcb
+		+ ref_gnd
+		+ nne0415_cut_BGAx6Grp_IdEM
+		
+	.endif
+
+	*** DSC 
+	XpkgCap_C1		pkgCap_C1  ref_gnd   str(mlcc_0p1uF_0201)	
+	XpkgCap_C2		pkgCap_C2  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C3		pkgCap_C3  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C4		pkgCap_C4  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C5		pkgCap_C5  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C6		pkgCap_C6  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C7		pkgCap_C7  ref_gnd   str(mlcc_0p1uF_0201)
+	XpkgCap_C8		pkgCap_C8  ref_gnd   str(mlcc_0p1uF_0201)
+	
+	XpkgCap_C9    pkgCap_C9   ref_gnd   pkgCap_C9_2  ref_gnd   str(mlcc_1uF_0402_3T_ft) 
+	XpkgCap_C10   pkgCap_C10  ref_gnd  pkgCap_C10_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C11   pkgCap_C11  ref_gnd  pkgCap_C11_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C12   pkgCap_C12  ref_gnd  pkgCap_C12_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C13   pkgCap_C13  ref_gnd  pkgCap_C13_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C14   pkgCap_C14  ref_gnd  pkgCap_C14_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C15   pkgCap_C15  ref_gnd  pkgCap_C15_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C16   pkgCap_C16  ref_gnd  pkgCap_C16_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C17   pkgCap_C17  ref_gnd  pkgCap_C17_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C18   pkgCap_C18  ref_gnd  pkgCap_C18_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C19   pkgCap_C19  ref_gnd  pkgCap_C19_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C20   pkgCap_C20  ref_gnd  pkgCap_C20_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C21   pkgCap_C21  ref_gnd  pkgCap_C21_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C22   pkgCap_C22  ref_gnd  pkgCap_C22_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C23   pkgCap_C23  ref_gnd  pkgCap_C23_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C24   pkgCap_C24  ref_gnd  pkgCap_C24_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C25   pkgCap_C25  ref_gnd  pkgCap_C25_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C26   pkgCap_C26  ref_gnd  pkgCap_C26_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	XpkgCap_C27   pkgCap_C27  ref_gnd  pkgCap_C27_2  ref_gnd   str(mlcc_1uF_0402_3T_ft)
+	
+	XpkgCap_C28   pkgCap_C28  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C29   pkgCap_C29  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C30   pkgCap_C30  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C31   pkgCap_C31  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C32   pkgCap_C32  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C33   pkgCap_C33  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C34   pkgCap_C34  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C35   pkgCap_C35  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C36   pkgCap_C36  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C37   pkgCap_C37  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C38   pkgCap_C38  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C39   pkgCap_C39  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C40   pkgCap_C40  ref_gnd  str(mlcc_0p015uF_0402)
+	XpkgCap_C41   pkgCap_C41  ref_gnd  str(mlcc_0p015uF_0402)
+	
+	XpkgCap_C42    pkgCap_C42  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C43    pkgCap_C43  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C44    pkgCap_C44  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C45    pkgCap_C45  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C46    pkgCap_C46  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C47    pkgCap_C47  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C48    pkgCap_C48  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C49    pkgCap_C49  ref_gnd   str(mlcc_10uF_0402)
+	XpkgCap_C50    pkgCap_C50  ref_gnd   str(mlcc_10uF_0402)	
+	XpkgCap_C51    pkgCap_C51   ref_gnd  str(mlcc_10uF_0402)	
+	XpkgCap_C52    pkgCap_C52   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C53    pkgCap_C53   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C54    pkgCap_C54   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C55    pkgCap_C55   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C56    pkgCap_C56   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C57    pkgCap_C57   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C58    pkgCap_C58   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C59    pkgCap_C59   ref_gnd  str(mlcc_10uF_0402)
+	XpkgCap_C60    pkgCap_C60   ref_gnd  str(mlcc_10uF_0402)
+
+	
+.endif  *** end 240416 Andes pkg, 6x BGA grps  
+
+.if ( 0 )   *** 240416 Andes pkg, 3x BGA grps  
+
+	.if (single_bga_grp != 1)
+		Xblk_pkg
+		+ pkg_bump_0_0
+		+ pkg_bump_0_1
+		+ pkg_bump_0_2
+		+ pkg_bump_0_3
+		+ pkg_bump_1_0
+		+ pkg_bump_1_1
+		+ pkg_bump_1_2
+		+ pkg_bump_1_3
+			+ bga_pcb_2
+			+ bga_pcb_0		*** NNE shadow
+			+ bga_pcb_1	
+		+ pkgCap_C1
+		+ pkgCap_C2
+		+ pkgCap_C3
+		+ pkgCap_C4
+		+ pkgCap_C5
+		+ pkgCap_C6
+		+ pkgCap_C7
+		+ pkgCap_C8
+		+ pkgCap_C9
+		+ pkgCap_C9_2
+		+ pkgCap_C10
+		+ pkgCap_C10_2
+		+ pkgCap_C11
+		+ pkgCap_C11_2
+		+ pkgCap_C12
+		+ pkgCap_C12_2
+		+ pkgCap_C13
+		+ pkgCap_C13_2
+		+ pkgCap_C14
+		+ pkgCap_C14_2
+		+ pkgCap_C15
+		+ pkgCap_C15_2
+		+ pkgCap_C16
+		+ pkgCap_C16_2
+		+ pkgCap_C17
+		+ pkgCap_C17_2
+		+ pkgCap_C18
+		+ pkgCap_C18_2
+		+ pkgCap_C19
+		+ pkgCap_C19_2
+		+ pkgCap_C20
+		+ pkgCap_C20_2
+		+ pkgCap_C21
+		+ pkgCap_C21_2
+		+ pkgCap_C22
+		+ pkgCap_C22_2
+		+ pkgCap_C23
+		+ pkgCap_C23_2
+		+ pkgCap_C24
+		+ pkgCap_C24_2
+		+ pkgCap_C25
+		+ pkgCap_C25_2
+		+ pkgCap_C26
+		+ pkgCap_C26_2
+		+ pkgCap_C27
+		+ pkgCap_C27_2
+		+ pkgCap_C28
+		+ pkgCap_C29
+		+ pkgCap_C30
+		+ pkgCap_C31
+		+ pkgCap_C32
+		+ pkgCap_C33
+		+ pkgCap_C34
+		+ pkgCap_C35
+		+ pkgCap_C36
+		+ pkgCap_C37
+		+ pkgCap_C38
+		+ pkgCap_C39
+		+ pkgCap_C40
+		+ pkgCap_C41
+		+ pkgCap_C42
+		+ pkgCap_C43
+		+ pkgCap_C44
+		+ pkgCap_C45
+		+ pkgCap_C46
+		+ pkgCap_C47
+		+ pkgCap_C48
+		+ pkgCap_C49
+		+ pkgCap_C50
+		+ pkgCap_C51
+		+ pkgCap_C52
+		+ pkgCap_C53
+		+ pkgCap_C54
+		+ pkgCap_C55
+		+ pkgCap_C56
+		+ pkgCap_C57
+		+ pkgCap_C58
+		+ pkgCap_C59
+		+ pkgCap_C60
+		+ ref_gnd
+		+ nne0415_cut_IdEM
+	.endif 
+	.if (single_bga_grp == 1)
+		Xblk_pkg
+		+ pkg_bump_0_0
+		+ pkg_bump_0_1
+		+ pkg_bump_0_2
+		+ pkg_bump_0_3
+		+ pkg_bump_1_0
+		+ pkg_bump_1_1
+		+ pkg_bump_1_2
+		+ pkg_bump_1_3
+			+ bga_pcb
+			+ bga_pcb		
+			+ bga_pcb	
+		+ pkgCap_C1
+		+ pkgCap_C2
+		+ pkgCap_C3
+		+ pkgCap_C4
+		+ pkgCap_C5
+		+ pkgCap_C6
+		+ pkgCap_C7
+		+ pkgCap_C8
+		+ pkgCap_C9
+		+ pkgCap_C9_2
+		+ pkgCap_C10
+		+ pkgCap_C10_2
+		+ pkgCap_C11
+		+ pkgCap_C11_2
+		+ pkgCap_C12
+		+ pkgCap_C12_2
+		+ pkgCap_C13
+		+ pkgCap_C13_2
+		+ pkgCap_C14
+		+ pkgCap_C14_2
+		+ pkgCap_C15
+		+ pkgCap_C15_2
+		+ pkgCap_C16
+		+ pkgCap_C16_2
+		+ pkgCap_C17
+		+ pkgCap_C17_2
+		+ pkgCap_C18
+		+ pkgCap_C18_2
+		+ pkgCap_C19
+		+ pkgCap_C19_2
+		+ pkgCap_C20
+		+ pkgCap_C20_2
+		+ pkgCap_C21
+		+ pkgCap_C21_2
+		+ pkgCap_C22
+		+ pkgCap_C22_2
+		+ pkgCap_C23
+		+ pkgCap_C23_2
+		+ pkgCap_C24
+		+ pkgCap_C24_2
+		+ pkgCap_C25
+		+ pkgCap_C25_2
+		+ pkgCap_C26
+		+ pkgCap_C26_2
+		+ pkgCap_C27
+		+ pkgCap_C27_2
+		+ pkgCap_C28
+		+ pkgCap_C29
+		+ pkgCap_C30
+		+ pkgCap_C31
+		+ pkgCap_C32
+		+ pkgCap_C33
+		+ pkgCap_C34
+		+ pkgCap_C35
+		+ pkgCap_C36
+		+ pkgCap_C37
+		+ pkgCap_C38
+		+ pkgCap_C39
+		+ pkgCap_C40
+		+ pkgCap_C41
+		+ pkgCap_C42
+		+ pkgCap_C43
+		+ pkgCap_C44
+		+ pkgCap_C45
+		+ pkgCap_C46
+		+ pkgCap_C47
+		+ pkgCap_C48
+		+ pkgCap_C49
+		+ pkgCap_C50
+		+ pkgCap_C51
+		+ pkgCap_C52
+		+ pkgCap_C53
+		+ pkgCap_C54
+		+ pkgCap_C55
+		+ pkgCap_C56
+		+ pkgCap_C57
+		+ pkgCap_C58
+		+ pkgCap_C59
+		+ pkgCap_C60
+		+ ref_gnd
+		+ nne0415_cut_IdEM	
+	.endif 
 	
 	*** DSC 
 	XpkgCap_C1		pkgCap_C1  ref_gnd   str(mlcc_0p1uF_0201)	
@@ -539,7 +1025,76 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 	XpkgCap_C58    pkgCap_C58   ref_gnd  str(mlcc_10uF_0402)
 	XpkgCap_C59    pkgCap_C59   ref_gnd  str(mlcc_10uF_0402)
 	XpkgCap_C60    pkgCap_C60   ref_gnd  str(mlcc_10uF_0402)
-	
+
+
+		*** Ecap embedded, NOTE: this is just mock up, NOT real connection, connected on bumps, Optimistic !!		
+		.if ( is_use_ecap_ebed == 1 )  *** use ecap embed
+			xECAP_16600nF_core_2
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_0
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ pkg_bump_1_1
+			+ ref_gnd
+			+ str(siCap_empwr_EC1005_16600nF)
+		.endif 
+
+		
 .endif 		*** 240416 Andes pkg end 
 
 .if ( 0 )   *** 240222 Andes pkg 140um bump pitch
@@ -997,18 +1552,33 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 	+ ref_gnd pkg_bump_1_0
 	+ ref_gnd	
 	+ adsPowerModel
-	* + cpm_maual_appx_nne_4x2_240317
+	* + cpm_maual_appx_nne_4x2_240317	*** do NOT use 
+
+			* xblk_die		*** reduced CPM, to correlate with SIMPLIS, good accuracy confirmed 
+			* + pkg_bump_1_0
+			* + pkg_bump_1_1
+			* + pkg_bump_1_2
+			* + pkg_bump_1_3 
+			* + pkg_bump_0_0
+			* + pkg_bump_0_1
+			* + pkg_bump_0_2
+			* + pkg_bump_0_3 
+			* + ref_gnd
+			* + cpm_nne_240426_Redu_IdEM
+
 	
-	IcurrSrc_0_0	pkg_bump_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 500n.   R 	*** add 'R' if repeat
-	IcurrSrc_0_1	pkg_bump_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 500n.   R 
-	IcurrSrc_0_2	pkg_bump_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 500n.   R
-	IcurrSrc_0_3	pkg_bump_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 500n.   R
+	IcurrSrc_0_0	pkg_bump_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 	*** add 'R' if repeat
+	IcurrSrc_0_1	pkg_bump_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 
+	IcurrSrc_0_2	pkg_bump_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
+	IcurrSrc_0_3	pkg_bump_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
 	
 	IcurrSrc_1_0	pkg_bump_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
 	IcurrSrc_1_1	pkg_bump_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
 	IcurrSrc_1_2	pkg_bump_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
 	IcurrSrc_1_3	pkg_bump_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
 
+	*** R_leak ***
+	
 
 										*** test to short bumps to PCB 
 											* R_0_bump_merge pkg_bump_one	pkg_bump_0_0	1.n 
@@ -1060,24 +1630,28 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 	R_7_bump_merge pkg_bump_one	pkg_bump_1_3	1.n
 	
     .if (is_MIM == 1) 
-		Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 3359.n	R_die_1= 0.027m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** w/ MIM
+		Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 3462.n	R_die_1= 0.018m R_die_2= 1.n	R_leak= 1.e6		pwl_file_in = str(pwl_file_All)		*** w/ MIM
 	.endif 
 	.if (is_MIM != 1 )
-	  Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 928.n	R_die_1= 0.027m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)
-	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1074.6n	R_die_1= 0.023m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)     *** add diffusion 1um
-	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1118.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC
-	* Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 4047.n	R_die_1= 0.022m R_die_2= 1.n	R_leak= 0.1		pwl_file_in = str(pwl_file_All)		*** merge with SoC * MIM
+	  Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1310.n	R_die_1= 0.018m R_die_2= 1.n	R_leak= 1.e6		pwl_file_in = str(pwl_file_All)
 	.endif 
 	
 .endif 
 *** approach 2: single grp modeling	END
 
 
-X_probe_filter
+X_probe_filter10
 + pkg_bump_1_0
 + ref_gnd
 + pkg_bump_1_0_hf 
 + pkg_bump_1_0_lf
++ meas_filter
+
+X_probe_filter13
++ pkg_bump_1_3
++ ref_gnd
++ pkg_bump_1_3_hf 
++ pkg_bump_1_3_lf
 + meas_filter
 
 
@@ -1132,11 +1706,15 @@ X_probe_filter
 .if ( is_ac_run != 1 )
 	.tran tStep tSTOP 
 
-	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  v(bga_pkg)
+	.probe tran v(pkg_bump_1_0) v(pkg_bump_1_3) v(pkg_bump_0_0) v(pkg_bump_0_3)  
+	.probe tran v(bga_pkg) v(bga_pcb) v(bga_pcb_0) v(bga_pcb_1) v(bga_pcb_2) v(bga_pcb_3) v(bga_pcb_4) v(bga_pcb_5)
 	* .probe tran v(pkg_bump_1_1) v(pkg_bump_1_2)
 	.probe tran v(pkg_bump_1_0_hf)  v(pkg_bump_1_0_lf)
+	.probe tran v(pkg_bump_1_3_hf)  v(pkg_bump_1_3_lf)
+	.probe tran v(pmic_pwr)
+	
 	.probe x(Xblk_die_1_0.pin_bump)	x(Xblk_PCB.a_1)	x(Xblk_pkg.a_1)
-	.probe x(Xblk_pkg.a_9) 
+	.probe x(Xblk_pkg.a_9)  x(Xblk_pkg.a_10)   x(Xblk_pkg.a_11) 
 	.probe x(xblk_PMIC.pin_out)
 
 
