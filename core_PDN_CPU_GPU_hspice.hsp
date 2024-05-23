@@ -111,6 +111,8 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/Mam_MCM_L12_202403012ate_a_CPU_jgwei_IdEM.cir	*** Andes 240328 ploc partitioned CPU GPU 
 	.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv0p87a_BPIv0072_20240417_1_20240417ate_a_CPU_cut_IdEM.cir	*** Andes 240424 CPU pkg, w/ L12 extended 
 	.inc ./hspice_inc/cpu_lsio_240502_IdEM.cir	** zijie added BGA balls to pkg 
+	.inc ./hspice_inc/CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p.cir
+	.inc ./hspice_inc/CPU_GPU_pkg_CPU_lsio_240522_BgaX4_reduModel_IdEM_s15p.cir
 		
 	***** define PCB model *****
 	*.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_CPU_PSI_RmLF_manip_IdEM0p5.cir 
@@ -219,10 +221,10 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 		Xblk_PCB
 		+ pmic_pwr
 		+ pmic_pwr
-		+ bga_pcb_south
-		+ bga_pcb_south
-		+ bga_pcb_north
-		+ bga_pcb_north
+		+ bga_pcb_south_col0
+		+ bga_pcb_south_col1
+		+ bga_pcb_north_col0
+		+ bga_pcb_north_col1
 		+ ref_gnd
 		+ ACM3_05072024_CPU_PDN_BGAgrpX4_IdEM
 	.endif 
@@ -263,7 +265,47 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 
 
 *************************************** Pkg ***********************************
-.if ( 1 )	*** Andes pkg 240507, Zijie added BGA on pkg, jgwei partition in SIwave  conform to CPM ploc numbering
+.if ( 1 )	*** pkg model used in SIMPLIS, agree well with unreduced model 
+	Xblk_pkg
+	+ pkg_bump_cpu_0_0 
+	+ pkg_bump_cpu_1_0
+	+ pkg_bump_cpu_2_0
+	+ pkg_bump_cpu_0_1
+	+ pkg_bump_cpu_1_1
+	+ pkg_bump_cpu_2_1 
+	+ pkg_bump_gpu_0_2
+	+ pkg_bump_gpu_1_2
+	+ pkg_bump_cpu_2_2
+	+ pkg_bump_gpu_0_3
+	+ pkg_bump_gpu_1_3	
+	+ bga_pcb_south_col0
+	+ bga_pcb_north_col0
+	+ bga_pcb_south_col1
+	+ bga_pcb_north_col1
+	+ ref_gnd
+	+ CPU_GPU_pkg_CPU_lsio_240522_BgaX4_reduModel_IdEM_s15p			
+
+
+
+		* Xblk_pkg
+		* + pkg_bump_cpu_0_0 
+		* + pkg_bump_cpu_1_0
+		* + pkg_bump_cpu_2_0
+		* + pkg_bump_cpu_0_1
+		* + pkg_bump_cpu_1_1
+		* + pkg_bump_cpu_2_1 
+		* + pkg_bump_gpu_0_2
+		* + pkg_bump_gpu_1_2
+		* + pkg_bump_cpu_2_2
+		* + pkg_bump_gpu_0_3
+		* + pkg_bump_gpu_1_3	
+		* + bga_pcb_south
+		* + bga_pcb_north
+		* + ref_gnd
+		* + CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p
+.endif 
+
+.if ( 0 )	*** Andes pkg 240507, Zijie added BGA on pkg, jgwei partition in SIwave  conform to CPM ploc numbering
 	.if (single_bga_grp != 1)
 		Xblk_pkg
 		+ bga_pcb_south
@@ -1172,7 +1214,9 @@ X_probe_filter
 
 *************************************** Analysis II: Transient simulation *****
 .if ( is_ac_run != 1 )
-	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg) v(bga_pcb_south) v(bga_pcb_north) v(bga_pcb)
+	.probe tran v(pkg_bump) 	v(pkg_bump_gpu) 	v(bga_pkg)  v(bga_pcb)  v(bga_pcb_south_col0) v(bga_pcb_north_col0) v(bga_pcb_south_col1) v(bga_pcb_north_col1)  
+	* .probe tran v(bga_pcb_south) v(bga_pcb_north)
+	
 	.probe tran v(pkg_bump_cpu_2_1)
 	.probe tran v(pkg_bump_cpu_2_2)
 	.probe tran v(pkg_bump_cpu_2_0)

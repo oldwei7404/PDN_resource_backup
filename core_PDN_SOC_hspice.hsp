@@ -13,7 +13,12 @@
 
 *** current profile 
 .param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
-.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max29A_flr5A_dt200ns_11us.txt.csv')
+* .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max29A_flr5A_dt200ns_11us.txt.csv')
+* .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_11us.txt.csv')
+* .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt400ns_11us.txt.csv')
+.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
+
+
 
 
 *** filter for measurement
@@ -47,7 +52,8 @@ C_lf lf 		ref_gnd	160.p
 .inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
 
 *** define PCB model 
-.inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
+	* .inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
+.inc ./hspice_inc/ACM3_05162024_SOC_PDN_4x100uF_IdEM.cir
 
 *** cap models 
 .inc ../cap_models.hsp
@@ -77,7 +83,7 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 11.u     ** 35.u
+.param tStop	= 60.u     ** 35.u
 
 .param td_delay = 0.n
 	
@@ -122,11 +128,18 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model 
 
 *** PCB 
+	* Xblk_PCB 
+	* + bga_pcb
+	* + pmic_pwr
+	* + ref_gnd 
+	* + acm3_pcb_soc_240419_IdEM
+
 Xblk_PCB 
-+ bga_pcb
 + pmic_pwr
++ bga_pcb
 + ref_gnd 
-+ acm3_pcb_soc_240419_IdEM
++ ACM3_05162024_SOC_PDN_4x100uF_IdEM
+
 
 *** pkg 
 Xblk_pkg
@@ -144,7 +157,7 @@ Xblk_pkg
 	+ adsPowerModel_SOC
 	
 	*** current profile 
-	IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  * td= 0.   R 
+	IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
 	
 	.if (is_MIM == 1)
 		C_SOC_MIM pkg_bump	ref_gnd	 ????n
