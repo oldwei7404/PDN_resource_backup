@@ -114,11 +114,12 @@ class DataFftProcess:
 
         DataSpectrum = fft(data_resample)
         freq_fft = np.fft.fftfreq(NumFFTSample, time_per_sample)
-       
+        len_pos = int (len(DataSpectrum) * 0.5 )
+
         plt.figure(figsize = (12, 6))
 
         plt.subplot(221)
-        plt.stem(freq_fft, np.abs(DataSpectrum), 'b', markerfmt=" ", basefmt="-b")
+        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum[0:len_pos]), 'b')
         plt.xlabel('Freq (Hz)')
         plt.xscale('log')
         plt.yscale('log')
@@ -145,7 +146,7 @@ class DataFftProcess:
         print('\n#INFO:' + str(cnt_setZero) + ' of ' + str(NumFFTSample) + ' set to 0.\n')
 
         plt.subplot(222)
-        plt.stem(freq_fft, np.abs(DataSpectrum_process), 'b', markerfmt=" ", basefmt="-b")
+        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum_process[0:len_pos]), 'b')
         plt.xlabel('Freq (Hz)')
         plt.xscale('log')
         plt.yscale('log')
