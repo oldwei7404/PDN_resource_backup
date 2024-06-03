@@ -123,11 +123,11 @@ class DataFftProcess:
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel('FFT Amplitude |X(freq)|')
-        plt.ylim(1.e-2, 1.e4)
+        plt.ylim(min(np.abs(DataSpectrum)), max(np.abs(DataSpectrum)))
         plt.title('FFT Orig')
 
         ### freq filter
-        DataSpectrum_process = DataSpectrum
+        DataSpectrum_process = np.copy(DataSpectrum)
         cnt_setZero = 0
         for freq_indx in range(0, NumFFTSample):
             freq_ = freq_fft[freq_indx]
@@ -145,12 +145,12 @@ class DataFftProcess:
         print('\n#INFO:' + str(cnt_setZero) + ' of ' + str(NumFFTSample) + ' set to 0.\n')
 
         plt.subplot(222)
-        plt.stem(freq_fft, np.abs(DataSpectrum), 'b', markerfmt=" ", basefmt="-b")
+        plt.stem(freq_fft, np.abs(DataSpectrum_process), 'b', markerfmt=" ", basefmt="-b")
         plt.xlabel('Freq (Hz)')
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel('FFT Amplitude |X(freq)|')
-        plt.ylim(1.e-2, 1.e4)
+        plt.ylim(min(np.abs(DataSpectrum)), max(np.abs(DataSpectrum)))
         plt.title('FFT after filtering')
 
         dataAftProcess= ifft(DataSpectrum_process)        
