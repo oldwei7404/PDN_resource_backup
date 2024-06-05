@@ -4,6 +4,7 @@
 ### 2) freq remove start, end OR freq kept start, end pairs
 
 import os, sys, getopt
+import math
 import matplotlib.pyplot as plt 
 import scipy.interpolate
 
@@ -18,9 +19,10 @@ class DataFftProcess:
     freqPair_Ed = []
     is_freqFilter_0_OR_Keep_1= 0 
     sampleRate_per_s = 1000.
-    freqResoltn = 1.e6
+    freqResoltn = 1.e9  ### default 1GHz, i.e., disabled
 
     ##
+    input_data_len_orig = 0
     input_time = []     ### unit: s
     input_data = []
     output_time = []
@@ -100,16 +102,32 @@ class DataFftProcess:
                 cln_str = fin.readline()              
             fin.close()
 
-        ### 0 padding if needed 
+        self.input_data_len_orig = len(self.input_time)
+      
+        print('#INFO: Input time data read in, time duration ' + str(self.input_time[-1]) + 's, data entry amount: ' + str(len(self.input_time)))
+
+    def data_repeat(self):
         OneOverFreqResoltn = 1./self.freqResoltn
         if (self.input_time[-1] < OneOverFreqResoltn):
-            self.input_time.append( self.input_time[-1] + (self.input_time[-1] - self.input_time[-2]) )
-            self.input_data.append(0.)
+            ### 0 padding if needed 
+            # self.input_time.append( self.input_time[-1] + (self.input_time[-1] - self.input_time[-2]) )
+            # self.input_data.append(0.)
 
-            self.input_time.append(OneOverFreqResoltn)
-            self.input_data.append(0.)
+            # self.input_time.append(OneOverFreqResoltn)
+            # self.input_data.append(0.)
 
-        print('#INFO: Input time data read in, data entry amount: ' + str(len(self.input_time)))
+            ### copy self multiple times if needed 
+            num_copy = math.ceil( OneOverFreqResoltn / self.input_time[-1]) - 1
+            if num_copy <=0:
+                return 
+
+            for cnt_cpy in range (0, num_copy):
+                time_st = self.input_time[-1] + (self.input_time[1] - self.input_time[0])
+                # print('#DEBUG '+str(self.input_time[-1]) )
+                for i_ in range(0, self.input_data_len_orig):
+                    self.input_time.append( time_st + self.input_time[i_] )
+                    self.input_data.append( self.input_data[i_] )
+            print('#INFO: Input time data copied '+ str(num_copy) +' times, at freq = ' + str( 1./self.input_time[self.input_data_len_orig-1] ) + 'Hz, final data entry amount: ' + str(len(self.input_time)))
 
     def FFT_analysis(self):
         time_len_in_s = self.input_time[-1] - self.input_time[0]
@@ -134,6 +152,7 @@ class DataFftProcess:
         plt.subplot(221)
         plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum[0:len_pos]), 'b')
         plt.xlabel('Freq (Hz)')
+        # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel('FFT Amplitude |X(freq)|')
@@ -161,6 +180,7 @@ class DataFftProcess:
         plt.subplot(222)
         plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum_process[0:len_pos]), 'b')
         plt.xlabel('Freq (Hz)')
+        # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel('FFT Amplitude |X(freq)|')
@@ -174,8 +194,9 @@ class DataFftProcess:
         plt.subplot(223)
         plt.plot(self.input_time, self.input_data, 'r')
         plt.xlabel('Time (s)')
+        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
         plt.ylabel('Amplitude')
-        plt.ylim(min_plot, max_plot)
+        # plt.ylim(min_plot, max_plot)
         plt.tight_layout()        
         plt.title('time signal orig')
 
@@ -183,8 +204,9 @@ class DataFftProcess:
         plt.subplot(224)
         plt.plot(time_samp, np.real(dataAftProcess), 'r')
         plt.xlabel('Time (s)')
+        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
         plt.ylabel('Amplitude')
-        plt.ylim(min_plot, max_plot)
+        # plt.ylim(min_plot, max_plot)
         plt.tight_layout()
         plt.title('time signal after filtering')
 
@@ -223,6 +245,7 @@ else:
 
 dataInstFFT = DataFftProcess(file_in_para)
 dataInstFFT.read_data()
+dataInstFFT.data_repeat()
 dataInstFFT.FFT_analysis()
 
 

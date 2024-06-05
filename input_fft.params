@@ -2,6 +2,7 @@
 #Input_Time_Domain_File          vout_simplis_2mS_6xBGA_pkg240521.csv
 #Input_Time_in_s                 1.
 #Analysis_Sample_Rate_PerSec     1.e9
+#Analysis_Spectrum_Resolt        1e4     
 #Freq_Filter_0_OR_Keep_1         0
 
 #Freq_Pair                       0. 1.e4 1.e5  1.e6   5.e6 1.e7   
@@ -10,8 +11,9 @@
 Input_Time_Domain_File          vout_simplis_2mS_6xBGA_pkg240521.csv
 Input_Time_in_s                 1.
 Analysis_Sample_Rate_PerSec     1.e9
-Analysis_Spectrum_Resolt        1e8
+
+Analysis_Spectrum_Resolt        1.e8 
 Freq_Filter_0_OR_Keep_1         0
 
 #Freq_Pair                       0. 1.e4 1.e5  1.e6   5.e6 1.e7   
-Freq_Pair                       10 1.e6  
+Freq_Pair                       0 1.e6  
