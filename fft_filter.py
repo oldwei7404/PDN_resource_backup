@@ -18,6 +18,7 @@ class DataFftProcess:
     freqPair_Ed = []
     is_freqFilter_0_OR_Keep_1= 0 
     sampleRate_per_s = 1000.
+    freqResoltn = 1.e6
 
     ##
     input_time = []     ### unit: s
@@ -48,6 +49,8 @@ class DataFftProcess:
                     self.unit_time_in_s = float(cln_str[1]) 
                 elif cln_str[0] == 'Analysis_Sample_Rate_PerSec':
                     self.sampleRate_per_s = float(cln_str[1])
+                elif cln_str[0] == 'Analysis_Spectrum_Resolt':
+                    self.freqResoltn = float(cln_str[1])
                 elif cln_str[0] == 'Freq_Filter_0_OR_Keep_1':
                     self.is_freqFilter_0_OR_Keep_1 = int(cln_str[1])
                 elif cln_str[0] == 'Freq_Pair':
@@ -94,8 +97,18 @@ class DataFftProcess:
                 self.input_time.append( time_s - time_ST )    ### nominal profile starts from 0
                 self.input_data.append( float(cln_str[1]) )     
 
-                cln_str = fin.readline()                
+                cln_str = fin.readline()              
             fin.close()
+
+        ### 0 padding if needed 
+        OneOverFreqResoltn = 1./self.freqResoltn
+        if (self.input_time[-1] < OneOverFreqResoltn):
+            self.input_time.append( self.input_time[-1] + (self.input_time[-1] - self.input_time[-2]) )
+            self.input_data.append(0.)
+
+            self.input_time.append(OneOverFreqResoltn)
+            self.input_data.append(0.)
+
         print('#INFO: Input time data read in, data entry amount: ' + str(len(self.input_time)))
 
     def FFT_analysis(self):
@@ -155,8 +168,8 @@ class DataFftProcess:
         plt.title('FFT after filtering')
 
         dataAftProcess= ifft(DataSpectrum_process)        
-        min_plot = min( min(self.input_data), min(dataAftProcess))
-        max_plot = max( max(self.input_data), max(dataAftProcess))
+        min_plot = min( min(self.input_data), min(np.real(dataAftProcess)))
+        max_plot = max( max(self.input_data), max(np.real(dataAftProcess)))
 
         plt.subplot(223)
         plt.plot(self.input_time, self.input_data, 'r')
@@ -168,7 +181,7 @@ class DataFftProcess:
 
 
         plt.subplot(224)
-        plt.plot(time_samp, dataAftProcess, 'r')
+        plt.plot(time_samp, np.real(dataAftProcess), 'r')
         plt.xlabel('Time (s)')
         plt.ylabel('Amplitude')
         plt.ylim(min_plot, max_plot)
