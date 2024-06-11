@@ -27,6 +27,7 @@ class DataFftProcess:
     input_data = []
     output_time = []
     output_data = []
+    num_copy = 0
 
     ##
     data_fft_coeff=[]
@@ -47,7 +48,7 @@ class DataFftProcess:
                 cln_str = cln_str_src.split()
                 if cln_str[0] == 'Input_Time_Domain_File':
                     self.input_fileName = cln_str[1]
-                elif cln_str[0] == 'Input_Time_in_s':
+                elif cln_str[0] == 'Input_Time_Unit_in_s':
                     self.unit_time_in_s = float(cln_str[1]) 
                 elif cln_str[0] == 'Analysis_Sample_Rate_PerSec':
                     self.sampleRate_per_s = float(cln_str[1])
@@ -106,6 +107,18 @@ class DataFftProcess:
       
         print('#INFO: Input time data read in, time duration ' + str(self.input_time[-1]) + 's, data entry amount: ' + str(len(self.input_time)))
 
+
+    def write_data_to_CSV(self, fileName):
+        fout = open(fileName, 'w')
+        fout.write('#Time(ns), filtered data\n')
+        for i in range(0, self.input_data_len_orig):
+            fout.write(str( self.output_time[i]) + ', ' + str(self.output_data[i]) + '\n')  
+            if (self.output_time[i] > self.input_time[self.input_data_len_orig -1] ):
+                break
+
+        fout.close()
+        print('#INFO: data output to CSV file: '+ fileName)
+
     def data_repeat(self):
         OneOverFreqResoltn = 1./self.freqResoltn
         if (self.input_time[-1] < OneOverFreqResoltn):
@@ -117,17 +130,21 @@ class DataFftProcess:
             # self.input_data.append(0.)
 
             ### copy self multiple times if needed 
-            num_copy = math.ceil( OneOverFreqResoltn / self.input_time[-1]) - 1
-            if num_copy <=0:
+            self.num_copy = math.ceil( OneOverFreqResoltn / self.input_time[-1]) - 1
+            if self.num_copy <=0:
                 return 
 
-            for cnt_cpy in range (0, num_copy):
+            if abs( self.input_data[-1] - self.input_data[0] ) > abs(self.input_data[0]) * 0.01 :
+                print('\n\n#WARNING: last data ' + str(self.input_data[-1]) + ' is outside of 1 pct range of first data '+ str( self.input_data[0]) +'\n\n')
+                
+
+            for cnt_cpy in range (0, self.num_copy):
                 time_st = self.input_time[-1] + (self.input_time[1] - self.input_time[0])
                 # print('#DEBUG '+str(self.input_time[-1]) )
                 for i_ in range(0, self.input_data_len_orig):
                     self.input_time.append( time_st + self.input_time[i_] )
                     self.input_data.append( self.input_data[i_] )
-            print('#INFO: Input time data copied '+ str(num_copy) +' times, at freq = ' + str( 1./self.input_time[self.input_data_len_orig-1] ) + 'Hz, final data entry amount: ' + str(len(self.input_time)))
+            print('#INFO: Input time data copied '+ str(self.num_copy) +' times, at freq = ' + str( 1./self.input_time[self.input_data_len_orig-1] ) + 'Hz, final data entry amount: ' + str(len(self.input_time)))
 
     def FFT_analysis(self):
         time_len_in_s = self.input_time[-1] - self.input_time[0]
@@ -155,6 +172,7 @@ class DataFftProcess:
         # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
         plt.yscale('log')
+        plt.grid()
         plt.ylabel('FFT Amplitude |X(freq)|')
         plt.ylim(min(np.abs(DataSpectrum)), max(np.abs(DataSpectrum)))
         plt.title('FFT Orig')
@@ -162,7 +180,8 @@ class DataFftProcess:
         ### freq filter
         DataSpectrum_process = np.copy(DataSpectrum)
         cnt_setZero = 0
-        for freq_indx in range(0, NumFFTSample):
+        NumFFTSample_tmp = int(NumFFTSample * 0.5)
+        for freq_indx in range(0, NumFFTSample_tmp):
             freq_ = freq_fft[freq_indx]
             is_freq_in_list = False 
 
@@ -172,7 +191,8 @@ class DataFftProcess:
                     break 
             
             if (self.is_freqFilter_0_OR_Keep_1 == 0 and is_freq_in_list == True) or (self.is_freqFilter_0_OR_Keep_1 == 1 and is_freq_in_list == False):
-                DataSpectrum_process[freq_indx] = 0.        ## set freq compotent at this freq to 0 
+                DataSpectrum_process[freq_indx] = 0.                    ## set freq compotent at this freq to 0 
+                DataSpectrum_process[NumFFTSample - freq_indx- 1] = 0.     ## symmetric freq also set to 0
                 cnt_setZero = cnt_setZero + 1
 
         print('\n#INFO:' + str(cnt_setZero) + ' of ' + str(NumFFTSample) + ' set to 0.\n')
@@ -183,6 +203,7 @@ class DataFftProcess:
         # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
         plt.yscale('log')
+        plt.grid()
         plt.ylabel('FFT Amplitude |X(freq)|')
         plt.ylim(min(np.abs(DataSpectrum)), max(np.abs(DataSpectrum)))
         plt.title('FFT after filtering')
@@ -190,27 +211,32 @@ class DataFftProcess:
         dataAftProcess= ifft(DataSpectrum_process)        
         min_plot = min( min(self.input_data), min(np.real(dataAftProcess)))
         max_plot = max( max(self.input_data), max(np.real(dataAftProcess)))
+        self.output_time = time_samp
+        self.output_data = np.real(dataAftProcess[0:self.input_data_len_orig])
 
         plt.subplot(223)
-        plt.plot(self.input_time, self.input_data, 'r')
+        plt.plot(self.input_time, self.input_data, 'r', label = 'orig.')
+        plt.plot(time_samp, np.real(dataAftProcess), 'b', label = 'processed')
         plt.xlabel('Time (s)')
         plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
         plt.ylabel('Amplitude')
+        plt.grid()
         # plt.ylim(min_plot, max_plot)
         plt.tight_layout()        
-        plt.title('time signal orig')
-
+        plt.title('time signal orig (red) vs. after filtering (blue)')
 
         plt.subplot(224)
-        plt.plot(time_samp, np.real(dataAftProcess), 'r')
+        plt.plot(time_samp, np.real(dataAftProcess), 'b')
         plt.xlabel('Time (s)')
         plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
         plt.ylabel('Amplitude')
+        plt.grid()
         # plt.ylim(min_plot, max_plot)
         plt.tight_layout()
         plt.title('time signal after filtering')
 
         plt.show()
+
 
 
 # Main function 
@@ -247,6 +273,7 @@ dataInstFFT = DataFftProcess(file_in_para)
 dataInstFFT.read_data()
 dataInstFFT.data_repeat()
 dataInstFFT.FFT_analysis()
+dataInstFFT.write_data_to_CSV(file_out_waveform)
 
 
 print ("#INFO: FFT manipulation exit normally")
