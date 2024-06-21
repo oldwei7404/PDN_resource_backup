@@ -16,10 +16,14 @@
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max29A_flr5A_dt200ns_11us.txt.csv')
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_11us.txt.csv')
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt400ns_11us.txt.csv')
-.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
+* .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
+.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max30A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
 
+.param pwl_file_SOC_PAR_0_0 = str('./hspice_inc/curr_profile_SOC_par_0_0_max9A_flr1A_dt200ns_Rand1A_11us.txt.csv')
+.param pwl_file_SOC_PAR_3_0 = str('./hspice_inc/curr_profile_SOC_par_3_0_max9p5A_flr1p5A_dt200ns_Rand1A_11us.txt.csv')
+.param pwl_file_SOC_PAR_1Of11 = str('./hspice_inc/curr_profile_SOC_par_misc_1Of11_max1p2A_flr0p22A_dt200ns_Rand0p1_11us.txt.csv')
 
-
+.param pwl_file_SOC_PAR_miscX11 = str('./hspice_inc/curr_profile_SOC_par_misc_max13A_flr2p5A_dt200ns_Rand1A_11us.txt.csv')
 
 *** filter for measurement
 .subckt meas_filter	
@@ -47,13 +51,19 @@ C_lf lf 		ref_gnd	160.p
 
 
 .inc ./hspice_inc/cpm_soc_modelOnly_240417.spice
+.inc ./hspice_inc/cpm_SOC_240612_modelOnly.spice
 
 *** define pkg model *****
 .inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
+.inc ./hspice_inc/Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM.cir
 
 *** define PCB model 
-	* .inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
+.inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
 .inc ./hspice_inc/ACM3_05162024_SOC_PDN_4x100uF_IdEM.cir
+.inc ./hspice_inc/ACM3_SOC_PDN_240612_BGAx13_4x100uF_IdEM.cir
+.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM.cir
+.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM.cir
+
 
 *** cap models 
 .inc ../cap_models.hsp
@@ -139,6 +149,25 @@ Xblk_PCB
 + bga_pcb
 + ref_gnd 
 + ACM3_05162024_SOC_PDN_4x100uF_IdEM
+* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM
+
+		* Xblk_PCB 
+		* + pmic_pwr
+		* + bga_PAR_5_2
+		* + bga_PAR_4_2
+		* + bga_PAR_3_2
+		* + bga_PAR_2_2
+		* + bga_PAR_1_2
+		* + bga_PAR_0_2
+		* + bga_PAR_3_1
+		* + bga_PAR_5_0
+		* + bga_PAR_4_0
+		* + bga_PAR_3_0
+		* + bga_PAR_2_0
+		* + bga_PAR_1_0
+		* + bga_PAR_0_0
+		* + ref_gnd 
+		* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM
 
 
 *** pkg 
@@ -148,30 +177,126 @@ Xblk_pkg
 + ref_gnd
 + nne0415_SOC_cut_IdEM
 
+		* Xblk_pkg
+		* + bump_PAR_0_0
+		* + bump_PAR_1_0
+		* + bump_PAR_2_0
+		* + bump_PAR_3_0
+		* + bump_PAR_4_0
+		* + bump_PAR_5_0
+		* + bump_PAR_3_1
+		* + bump_PAR_0_2
+		* + bump_PAR_1_2
+		* + bump_PAR_2_2
+		* + bump_PAR_3_2
+		* + bump_PAR_4_2
+		* + bump_PAR_5_2
+		* + bga_PAR_0_0
+		* + bga_PAR_1_0
+		* + bga_PAR_2_0
+		* + bga_PAR_3_0
+		* + bga_PAR_4_0
+		* + bga_PAR_5_0
+		* + bga_PAR_3_1
+		* + bga_PAR_0_2
+		* + bga_PAR_1_2
+		* + bga_PAR_2_2
+		* + bga_PAR_3_2
+		* + bga_PAR_4_2
+		* + bga_PAR_5_2
+		* + ref_gnd
+		* + Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM
+
 *** Die 
 *** approach 1: multi grp modeling or CPM 
 .if (die_model_sig != 1 )
-	xblk_die 
-	+ pkg_bump
-	+ ref_gnd
-	+ adsPowerModel_SOC
-	
-	*** current profile 
-	IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
-	
-	.if (is_MIM == 1)
-		C_SOC_MIM pkg_bump	ref_gnd	 ????n
-	
-	.endif 
-	
-.endif 
-
-X_probe_filter
+Xblk_die 
 + pkg_bump
 + ref_gnd
-+ pkg_bump_hf 
-+ pkg_bump_lf
-+ meas_filter
++ adsPowerModel_SOC
+.endif 
+
+*** current profile 
+IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
+
+* .if (is_MIM == 1)
+	* C_SOC_MIM pkg_bump	ref_gnd	 ????n
+
+* .endif 
+
+		* Xblk_die
+		* + bump_PAR_0_0  ref_gnd
+		* + bump_PAR_1_0  ref_gnd
+		* + bump_PAR_2_0  ref_gnd
+		* + bump_PAR_3_0  ref_gnd
+		* + bump_PAR_4_0  ref_gnd
+		* + bump_PAR_5_0  ref_gnd
+		* + bump_PAR_3_1  ref_gnd
+		* + bump_PAR_0_2  ref_gnd
+		* + bump_PAR_1_2  ref_gnd
+		* + bump_PAR_2_2  ref_gnd
+		* + bump_PAR_3_2  ref_gnd
+		* + bump_PAR_4_2  ref_gnd
+		* + bump_PAR_5_2  ref_gnd	
+		* + adsPowerModel_SOC_240612	
+		
+		* *** current src 
+		* IcurrSrc_SOC_PAR_0_0	bump_PAR_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_0_0)     R * td= 0.  
+		* IcurrSrc_SOC_PAR_1_0    bump_PAR_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)   R * td= 0.
+		* IcurrSrc_SOC_PAR_2_0    bump_PAR_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)   R * td= 0.
+		* IcurrSrc_SOC_PAR_3_0    bump_PAR_3_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_3_0)     R * td= 0.
+		* IcurrSrc_SOC_PAR_4_0    bump_PAR_4_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_5_0    bump_PAR_5_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_3_1    bump_PAR_3_1	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_0_2    bump_PAR_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_1_2    bump_PAR_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_2_2    bump_PAR_2_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_3_2    bump_PAR_3_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_4_2    bump_PAR_4_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		* IcurrSrc_SOC_PAR_5_2    bump_PAR_5_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		
+	
+
+				* *** short remaining paritions as one 
+				* r_bump_SOC_misc_0		bump_PAR_4_0	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_1		bump_PAR_5_0	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_2		bump_PAR_3_1	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_3		bump_PAR_0_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_4		bump_PAR_1_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_5		bump_PAR_2_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_6		bump_PAR_3_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_7		bump_PAR_4_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_8		bump_PAR_5_2	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_9		bump_PAR_1_0	bump_SOC_misc	1.n
+				* r_bump_SOC_misc_10		bump_PAR_2_0	bump_SOC_misc	1.n
+
+				* *** current src
+				* IcurrSrc_SOC_PAR_0_0	bump_PAR_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_0_0)  R * td= 0.  
+				* IcurrSrc_SOC_PAR_3_0	bump_PAR_3_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_3_0)  R * td= 0.
+				* IcurrSrc_SOC_misc	    bump_SOC_misc	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_miscX11)  R * td= 0.
+	
+	* .if (is_MIM == 1)
+		* C_MIM_SOC_PAR_0_0	 bump_PAR_0_0	ref_gnd	 ??
+		* C_MIM_SOC_PAR_1_0    bump_PAR_1_0	ref_gnd
+		* C_MIM_SOC_PAR_2_0    bump_PAR_2_0	ref_gnd
+		* C_MIM_SOC_PAR_3_0    bump_PAR_3_0	ref_gnd
+		* C_MIM_SOC_PAR_4_0    bump_PAR_4_0	ref_gnd
+		* C_MIM_SOC_PAR_5_0    bump_PAR_5_0	ref_gnd
+		* C_MIM_SOC_PAR_3_1    bump_PAR_3_1	ref_gnd
+		* C_MIM_SOC_PAR_0_2    bump_PAR_0_2	ref_gnd
+		* C_MIM_SOC_PAR_1_2    bump_PAR_1_2	ref_gnd
+		* C_MIM_SOC_PAR_2_2    bump_PAR_2_2	ref_gnd
+		* C_MIM_SOC_PAR_3_2    bump_PAR_3_2	ref_gnd
+		* C_MIM_SOC_PAR_4_2    bump_PAR_4_2	ref_gnd
+		* C_MIM_SOC_PAR_5_2    bump_PAR_5_2	ref_gnd
+	* .endif 
+
+* X_probe_filter
+* + pkg_bump
+* + ref_gnd
+* + pkg_bump_hf 
+* + pkg_bump_lf
+* + meas_filter
 
 
 *************************************** Analysis I: AC simulation *************
@@ -198,6 +323,8 @@ X_probe_filter
 	.probe tran v(pkg_bump) v(bga_pkg)
 	.probe tran v(pkg_bump_hf)  v(pkg_bump_lf)
 	.probe tran v(pmic_pwr)
+	
+	.probe tran v(bump_PAR_0_0)  v(bump_PAR_3_0)  v(bump_PAR_5_0)   v(bump_PAR_0_2)  v(bump_PAR_5_2)
 	
 	.probe x(Xblk_pkg.a_1) x(Xblk_pkg.a_2)
 	.probe x(xblk_PMIC.pin_out)

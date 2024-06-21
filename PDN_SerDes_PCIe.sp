@@ -6,6 +6,8 @@
 	*** PCB model 
 .inc 	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ACM2_PT00547399_A_01_PWR_cut_pcie_eth_usb_run3_v2_IdEM.cir
 .param PCB_model = str('ACM2_PT00547399_A_01_PWR_cut_pcie_eth_usb_run3_v2_IdEM')
+.inc 	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ACM3_06042024_HSIO_075_REV2_Discrete_IdEM.cir
+.inc 	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ACM3_06042024_HSIO_075_REV2_Discrete_Andes.cir
 
 	*** pkg model 
 .inc	/data/home/jiangongwei/work/PDN_SerDes/PDN_SerDes_PCIE/inc_data/ZJC_5_PDN_SerDes_cut_only_PCIE_IdEM.cir
@@ -18,37 +20,40 @@
 
 ***** current profile 231213
 	*** vddc *** 
-.param currSrc_vdd_c_cmn = str('./inc_data/profile_1213/i_avdd_clk_a0_cmn_WC.csv')
-* .param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L0_WC.csv')
-* .param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L2_WC.csv')
-* .param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L3_WC.csv')
-	.param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L0_WC.csv')
-	.param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L1_WC.csv')
-	.param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L2_WC.csv')
-	.param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L3_WC.csv')
+.param currSrc_vdd_c_cmn = str('./inc_data/profile_1213/i_avdd_clk_a0_cmn_WC.csv')				
+			
+.param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L0_WC.csv')						*** case 1
+.param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L1_WC.csv')
+.param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L2_WC.csv')
+.param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a0_lane_L3_WC.csv')	
+	* .param currSrc_vdd_c_ln0 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L0_WC.csv')			*** case 2
+	* .param currSrc_vdd_c_ln1 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L1_WC.csv')
+	* .param currSrc_vdd_c_ln2 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_c_ln3 = str('./inc_data/profile_1213/i_avdd_clk_a4_a0_a4_lane_L3_WC.csv')
 
 	* *** vddd *** 
 .param currSrc_vdd_d_cmn = str('./inc_data/profile_1213/i_avdd_a0_cmn_WC.csv')
-* .param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a0_lane_L0_WC.csv')
-* .param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a0_lane_L2_WC.csv')
-* .param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a0_lane_L3_WC.csv')
-	.param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L0_WC.csv')
-	.param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L1_WC.csv')
-	.param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L2_WC.csv')
-	.param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L3_WC.csv')
+
+.param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a0_lane_L0_WC.csv')
+.param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a0_lane_L1_WC.csv')
+.param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a0_lane_L2_WC.csv')
+.param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a0_lane_L3_WC.csv')
+	* .param currSrc_vdd_d_ln0 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L0_WC.csv')
+	* .param currSrc_vdd_d_ln1 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L1_WC.csv')
+	* .param currSrc_vdd_d_ln2 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_d_ln3 = str('./inc_data/profile_1213/i_avdd_a4_a0_a4_lane_L3_WC.csv')
  
 	*** vddh *** 
 .param currSrc_vdd_h_cmn = str('./inc_data/profile_1213/i_avdd_h_a0_cmn_WC.csv')
-* .param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L0_WC.csv')
-* .param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L1_WC.csv')
-* .param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L2_WC.csv')
-* .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L3_WC.csv')
-	.param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L0_WC.csv')
-	.param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L1_WC.csv')
-	.param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L2_WC.csv')
-	.param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L3_WC.csv')
+
+.param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L0_WC.csv')
+.param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L1_WC.csv')
+.param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L2_WC.csv')
+.param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a0_lane_L3_WC.csv')
+	* .param currSrc_vdd_h_ln0 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L0_WC.csv')
+	* .param currSrc_vdd_h_ln1 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L1_WC.csv')
+	* .param currSrc_vdd_h_ln2 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L2_WC.csv')
+	* .param currSrc_vdd_h_ln3 = str('./inc_data/profile_1213/i_avdd_h_a4_a0_a4_lane_L3_WC.csv')
 
 ***** current profiles 10/18
 	* *** vddc *** 
@@ -244,89 +249,168 @@ Vref_gnd 		ref_gnd		0	0.
 Vsrc_vdd_c_d	pwr_pmic_0p95		ref_gnd	Vdd_c_d		*** can be switched to PMIC model 
 Vsrc_vdd_h		pwr_pmic_pcie_1p8 	ref_gnd	Vdd_h		*** can be switched to PMIC model 
 
-	* ***** enable to debug, to short PCB (i.e., connect pkg directly to PMIC)
-	* r_debug_pcie_0p95_to_pmic 	bga_pwr_pcie_0p95		pwr_pmic_0p95	1.n
-	* r_debug_pcie_1p8_to_pmic 	bga_pwr_pcie_1p8		pwr_pmic_pcie_1p8	1.n
+					* ***** enable to debug, to short PCB (i.e., connect pkg directly to PMIC)
+					* r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+					* r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
+						 
+					* r_debug_pcie_0p95_to_pmic 	bga_pwr_pcie_0p95		pwr_pmic_0p95	1.n
+					* r_debug_pcie_1p8_to_pmic 	bga_pwr_pcie_1p8		pwr_pmic_pcie_1p8	1.n
 	
 ***** PCB 
-xblk_PCB
- + bga_pwr_eth_0p95
- + bga_pwr_pcie_0p95
- + bga_pwr_usb_0p95
- + bga_pwr_eth_1p8
- + bga_pwr_usb_1p8
- + bga_pwr_pcie_1p8				
- + capPcb_C2519
- + capPcb_C2546
- + capPcb_C2575
- + capPcb_C2580
- + capPcb_C2710
- + capPcb_C2711
- + capPcb_C2520
- + capPcb_C2521
- + capPcb_C2550
- + capPcb_C2551
- + capPcb_C2604
- + capPcb_C2605
- + pwr_pmic_0p95
- + capPcb_C2556
- + capPcb_C2557
- + capPcb_C2562
- + capPcb_C2565
- + capPcb_C2577
- + capPcb_C2584
- + capPcb_C2625
- + capPcb_C2690
- + capPcb_C2691
- + capPcb_C2697
- + capPcb_C2713
- + capPcb_C2736
- + pwr_pmic_1p8
- + capPcb_C2553
- + capPcb_C2559
- + capPcb_C2586
- + capPcb_C2631
- + capPcb_C2694
- + capPcb_C2717
- + pwr_pmic_pcie_1p8
- + ref_gnd
- + str(PCB_model)
- 
- xcapPcb_C2520	capPcb_C2520	ref_gnd		str(mlcc_1uF_0402)
- xcapPcb_C2521	capPcb_C2521	ref_gnd		str(mlcc_1uF_0402) 
- xcapPcb_C2550	capPcb_C2550	ref_gnd		str(mlcc_2p2uF_0603) 
- xcapPcb_C2551	capPcb_C2551	ref_gnd		str(mlcc_2p2uF_0603)  
- xcapPcb_C2604	capPcb_C2604	ref_gnd		str(mlcc_10uF_0402)
- xcapPcb_C2605	capPcb_C2605	ref_gnd		str(mlcc_10uF_0402)
-
- xcapPcb_C2553	capPcb_C2553	ref_gnd		str(mlcc_1uF_0402)
- xcapPcb_C2559	capPcb_C2559	ref_gnd		str(mlcc_1uF_0402) 
- xcapPcb_C2586	capPcb_C2586	ref_gnd		str(mlcc_2p2uF_0603) 
- xcapPcb_C2631	capPcb_C2631	ref_gnd		str(mlcc_2p2uF_0603)  
- xcapPcb_C2694	capPcb_C2694	ref_gnd		str(mlcc_10uF_0402)
- xcapPcb_C2717	capPcb_C2717	ref_gnd		str(mlcc_10uF_0402)
- 
-*****
-	***** filter 
-	 xModel_filter_vddc
+.if ( 0 )  *** ACM2 board 
+	xblk_PCB
+	 + bga_pwr_eth_0p95
 	 + bga_pwr_pcie_0p95
-	 + bga_pwr_pcie_0p95_vddc
+	 + bga_pwr_usb_0p95
+	 + bga_pwr_eth_1p8
+	 + bga_pwr_usb_1p8
+	 + bga_pwr_pcie_1p8				
+	 + capPcb_C2519
+	 + capPcb_C2546
+	 + capPcb_C2575
+	 + capPcb_C2580
+	 + capPcb_C2710
+	 + capPcb_C2711
+	 + capPcb_C2520
+	 + capPcb_C2521
+	 + capPcb_C2550
+	 + capPcb_C2551
+	 + capPcb_C2604
+	 + capPcb_C2605
+	 + pwr_pmic_0p95
+	 + capPcb_C2556
+	 + capPcb_C2557
+	 + capPcb_C2562
+	 + capPcb_C2565
+	 + capPcb_C2577
+	 + capPcb_C2584
+	 + capPcb_C2625
+	 + capPcb_C2690
+	 + capPcb_C2691
+	 + capPcb_C2697
+	 + capPcb_C2713
+	 + capPcb_C2736
+	 + pwr_pmic_1p8
+	 + capPcb_C2553
+	 + capPcb_C2559
+	 + capPcb_C2586
+	 + capPcb_C2631
+	 + capPcb_C2694
+	 + capPcb_C2717
+	 + pwr_pmic_pcie_1p8
 	 + ref_gnd
-	 + model_filter
-	 * + model_filter_22uF
+	 + str(PCB_model)
 	 
-	 * xModel_filter_vddd
-	 * + bga_pwr_pcie_0p95
-	 * + bga_pwr_pcie_0p95_vddd
-	 * + ref_gnd
-	 * + model_filter
-	 * * + model_filter_22uF
+	 xcapPcb_C2520	capPcb_C2520	ref_gnd		str(mlcc_1uF_0402)
+	 xcapPcb_C2521	capPcb_C2521	ref_gnd		str(mlcc_1uF_0402) 
+	 xcapPcb_C2550	capPcb_C2550	ref_gnd		str(mlcc_2p2uF_0603) 
+	 xcapPcb_C2551	capPcb_C2551	ref_gnd		str(mlcc_2p2uF_0603)  
+	 xcapPcb_C2604	capPcb_C2604	ref_gnd		str(mlcc_10uF_0402)
+	 xcapPcb_C2605	capPcb_C2605	ref_gnd		str(mlcc_10uF_0402)
+
+	 xcapPcb_C2553	capPcb_C2553	ref_gnd		str(mlcc_1uF_0402)
+	 xcapPcb_C2559	capPcb_C2559	ref_gnd		str(mlcc_1uF_0402) 
+	 xcapPcb_C2586	capPcb_C2586	ref_gnd		str(mlcc_2p2uF_0603) 
+	 xcapPcb_C2631	capPcb_C2631	ref_gnd		str(mlcc_2p2uF_0603)  
+	 xcapPcb_C2694	capPcb_C2694	ref_gnd		str(mlcc_10uF_0402)
+	 xcapPcb_C2717	capPcb_C2717	ref_gnd		str(mlcc_10uF_0402)
+	 
+	*****
+		***** filter 
+		 xModel_filter_vddc
+		 + bga_pwr_pcie_0p95
+		 + bga_pwr_pcie_0p95_vddc
+		 + ref_gnd
+		 + model_filter
+		 * + model_filter_22uF
+		 
+		 * xModel_filter_vddd
+		 * + bga_pwr_pcie_0p95
+		 * + bga_pwr_pcie_0p95_vddd
+		 * + ref_gnd
+		 * + model_filter
+		 * * + model_filter_22uF
 
 
- ***** shorting VDDC, VDDD to PCB 
-	 * r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
-	 r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
+	 ***** shorting VDDC, VDDD to PCB 
+		 * r_vddc bga_pwr_pcie_0p95_vddc	bga_pwr_pcie_0p95	1.n
+		 r_vddd bga_pwr_pcie_0p95_vddd	bga_pwr_pcie_0p95	1.n
 
+.endif *** ACM2 board end 
+
+.if ( 1 )  *** ACM3 board 0p75V only (plug to node 0p95V)
+	xblk_PCB
+	+ pwr_pmic_0p95
+	+ pwr_pmic_0p95
+	+ P0V75_C2C_A_C177
+	+ P0V75_C2C_A_C178
+	+ P0V75_C2C_A_C179
+	+ P0V75_C2C_A_C823
+	+ P0V75_C2C_A_FB_PORT1
+	+ P0V75_C2C_A_FB_PORT2
+	+ P0V75_C2C_CLK_A_C189
+	+ P0V75_C2C_CLK_A_C190
+	+ P0V75_C2C_CLK_A_C191
+	+ P0V75_C2C_CLK_A_C827
+	+ P0V75_C2C_CLK_A_PORT1
+	+ P0V75_C2C_CLK_A_PORT2
+	+ P0V75_ETH10G_A_C157
+	+ P0V75_ETH10G_A_C158
+	+ P0V75_ETH10G_A_C159
+	+ P0V75_ETH10G_A_C164
+	+ P0V75_ETH10G_A_FB_PORT1
+	+ P0V75_ETH10G_A_FB_PORT2
+	+ P0V75_ETH10G_CLK_A_C152
+	+ P0V75_ETH10G_CLK_A_C153
+	+ P0V75_ETH10G_CLK_A_C154
+	+ P0V75_ETH10G_CLK_A_C155
+	+ P0V75_ETH10G_CLK_A_FB_PORT1
+	+ P0V75_ETH10G_CLK_A_FB_PORT2
+	+ P0V75_HSIO_A_C2513
+	+ P0V75_HSIO_A_C2514
+	+ P0V75_HSIO_A_C2515
+	+ P0V75_HSIO_A_C2516
+	+ CapPcb_C182											* P0V75_PCIe_A_C182
+	+ CapPcb_C183											* P0V75_PCIe_A_C183
+	+ CapPcb_C184											* P0V75_PCIe_A_C184
+	+ CapPcb_C815											* P0V75_PCIe_A_C815
+	+ P0V75_PCIe_A_FB_PORT1
+	+ P0V75_PCIe_A_FB_PORT2
+	+ CapPcb_C169								* P0V75_PCIe_CLK_A_C169
+	+ CapPcb_C170								* P0V75_PCIe_CLK_A_C170
+	+ CapPcb_C171								* P0V75_PCIe_CLK_A_C171
+	+ CapPcb_C192								* P0V75_PCIe_CLK_A_C192
+	+ P0V75_PCIe_CLK_A_FB_PORT1
+	+ P0V75_PCIe_CLK_A_FB_PORT2
+	+ PORT_U68_NetL127_Group_U68_GND_Group
+	+ U14_U14_P0V75_C2C_A_Group_U14_GND_Group
+	+ U14_U14_P0V75_C2C_CLK_A_Group_U14_GND_Group
+	+ U14_U14_P0V75_ETH10G_A_Group_U14_GND_Group
+	+ U14_U14_P0V75_ETH10G_CLK_A_Group_U14_GND_Group
+	+ bga_pwr_pcie_0p95_vddd							* U14_U14_P0V75_PCIe_A_Group_U14_GND_Group
+	+ bga_pwr_pcie_0p95_vddc							* U14_U14_P0V75_PCIe_CLK_A_Group_U14_GND_Group
+	+ ref_gnd
+	+ ACM3_06042024_HSIO_075_REV2_Discrete_IdEM
+	* + ACM3_06042024_HSIO_075_REV2_Discrete_Andes
+ 
+	xCapPcb_C192  	CapPcb_C192	ref_gnd		str(mlcc_47uF_1206)
+	xCapPcb_C169  	CapPcb_C169	ref_gnd		str(mlcc_1uF_0402)
+	xCapPcb_C170  	CapPcb_C170	ref_gnd		str(mlcc_0p1uF_0402)
+	xCapPcb_C171  	CapPcb_C171	ref_gnd		str(mlcc_0p01uF_0201)
+											
+	xCapPcb_C815  	CapPcb_C815	ref_gnd		str(mlcc_0p1uF_0402)
+	xCapPcb_C182  	CapPcb_C182	ref_gnd		str(mlcc_1uF_0402)
+	xCapPcb_C183  	CapPcb_C183	ref_gnd		str(mlcc_0p1uF_0402)
+	xCapPcb_C184  	CapPcb_C184	ref_gnd		str(mlcc_0p01uF_0201)
+	
+	*** FB 0p75V rail
+	xFB_pcie_vddc			P0V75_PCIe_CLK_A_FB_PORT1	P0V75_PCIe_CLK_A_FB_PORT2 	str(ferrite_mod1)
+	* r_pcie_vddc_fb_short	P0V75_PCIe_CLK_A_FB_PORT1	P0V75_PCIe_CLK_A_FB_PORT2 	1.n					*** short FB 
+	
+	xFB_pcie_vddd			P0V75_PCIe_A_FB_PORT1	P0V75_PCIe_A_FB_PORT2 	str(ferrite_mod1)
+	* r_pcie_vddd_fb_short	P0V75_PCIe_A_FB_PORT1	P0V75_PCIe_A_FB_PORT2 	1.n							*** short FB
+
+ .endif	*** ACM3 board end  
 
  
  ***** pkg 

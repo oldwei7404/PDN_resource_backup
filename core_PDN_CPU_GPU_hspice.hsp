@@ -64,7 +64,9 @@
 * .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
 * .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP40Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-20%, need 4 to build whole gpu pwr   
 * .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP20Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-10%, need 4 to build whole gpu pwr 
-.param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_12W_Rt100ns_RandPP30Pct_8us.txt.csv')		*** NOTE: 240328, GPU 12.3W, rise time 100ns, rand switch +-15%, need 4 to build whole gpu pwr 
+* .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_12W_Rt100ns_RandPP30Pct_8us.txt.csv')		*** NOTE: 240328, GPU 12.3W, rise time 100ns, rand switch +-15%, need 4 to build whole gpu pwr 
+.param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPGPU_1Of4_240603.txt.csv')		*** NOTE: 240603, GPGPU pwr profile from Verisilicon, steady state 10W, scaled to TT 105C by Adrian 
+
 
 		*** idle current
 		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
@@ -1117,27 +1119,27 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	
 	*** MIM cap *** 
 	.if (is_MIM == 1)
-		Cdie_MIM_cpu_2_1	    pkg_bump_cpu_2_1    pkg_bump_cpu_2_1_int   216.7n
-		Cdie_MIM_cpu_2_0	    pkg_bump_cpu_2_0    pkg_bump_cpu_2_0_int   216.7n
-		Cdie_MIM_cpu_1_1	    pkg_bump_cpu_1_1    pkg_bump_cpu_1_1_int   216.7n
-		Cdie_MIM_cpu_1_0	    pkg_bump_cpu_1_0    pkg_bump_cpu_1_0_int   216.7n
-		Cdie_MIM_cpu_0_1	    pkg_bump_cpu_0_1    pkg_bump_cpu_0_1_int   216.7n
-		Cdie_MIM_cpu_0_0	    pkg_bump_cpu_0_0    pkg_bump_cpu_0_0_int   216.7n
-		Cdie_MIM_gpu_1_3	    pkg_bump_gpu_1_3    pkg_bump_gpu_1_3_int   216.7n
-		Cdie_MIM_gpu_1_2	    pkg_bump_gpu_1_2    pkg_bump_gpu_1_2_int   216.7n
-		Cdie_MIM_gpu_0_3	    pkg_bump_gpu_0_3    pkg_bump_gpu_0_3_int   216.7n
-		Cdie_MIM_gpu_0_2	    pkg_bump_gpu_0_2    pkg_bump_gpu_0_2_int   216.7n
+		Cdie_MIM_cpu_2_1	    pkg_bump_cpu_2_1    ref_gnd   160.n
+		Cdie_MIM_cpu_2_0	    pkg_bump_cpu_2_0    ref_gnd   160.n
+		Cdie_MIM_cpu_1_1	    pkg_bump_cpu_1_1    ref_gnd   160.n
+		Cdie_MIM_cpu_1_0	    pkg_bump_cpu_1_0    ref_gnd   160.n
+		Cdie_MIM_cpu_0_1	    pkg_bump_cpu_0_1    ref_gnd   160.n
+		Cdie_MIM_cpu_0_0	    pkg_bump_cpu_0_0    ref_gnd   160.n
+		Cdie_MIM_gpu_1_3	    pkg_bump_gpu_1_3    ref_gnd   160.n
+		Cdie_MIM_gpu_1_2	    pkg_bump_gpu_1_2    ref_gnd   160.n
+		Cdie_MIM_gpu_0_3	    pkg_bump_gpu_0_3    ref_gnd   160.n
+		Cdie_MIM_gpu_0_2	    pkg_bump_gpu_0_2    ref_gnd   160.n
 		
-			Rdie_MIM_cpu_2_1	pkg_bump_cpu_2_1_int   ref_gnd  0.17m
-			Rdie_MIM_cpu_2_0	pkg_bump_cpu_2_0_int   ref_gnd  0.17m
-			Rdie_MIM_cpu_1_1	pkg_bump_cpu_1_1_int   ref_gnd  0.17m
-			Rdie_MIM_cpu_1_0	pkg_bump_cpu_1_0_int   ref_gnd  0.17m
-			Rdie_MIM_cpu_0_1	pkg_bump_cpu_0_1_int   ref_gnd  0.17m
-			Rdie_MIM_cpu_0_0	pkg_bump_cpu_0_0_int   ref_gnd  0.17m
-			Rdie_MIM_gpu_1_3	pkg_bump_gpu_1_3_int   ref_gnd  0.17m
-			Rdie_MIM_gpu_1_2	pkg_bump_gpu_1_2_int   ref_gnd  0.17m
-			Rdie_MIM_gpu_0_3	pkg_bump_gpu_0_3_int   ref_gnd  0.17m
-			Rdie_MIM_gpu_0_2	pkg_bump_gpu_0_2_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_2_1	pkg_bump_cpu_2_1_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_2_0	pkg_bump_cpu_2_0_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_1_1	pkg_bump_cpu_1_1_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_1_0	pkg_bump_cpu_1_0_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_0_1	pkg_bump_cpu_0_1_int   ref_gnd  0.17m
+			* Rdie_MIM_cpu_0_0	pkg_bump_cpu_0_0_int   ref_gnd  0.17m
+			* Rdie_MIM_gpu_1_3	pkg_bump_gpu_1_3_int   ref_gnd  0.17m
+			* Rdie_MIM_gpu_1_2	pkg_bump_gpu_1_2_int   ref_gnd  0.17m
+			* Rdie_MIM_gpu_0_3	pkg_bump_gpu_0_3_int   ref_gnd  0.17m
+			* Rdie_MIM_gpu_0_2	pkg_bump_gpu_0_2_int   ref_gnd  0.17m
 	
     .endif 	
 	
