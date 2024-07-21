@@ -13,6 +13,12 @@ class hspice_batch_sim_generator:
     vdd_pwr = 0.75
     Is_Use_Ecap = 0 
     Is_Use_MIM = 0 
+
+    Is_TR_0_or_AC_1 = ''
+    tStep = ''
+    tStop = ''
+    td_delay = ''
+
     file_spice_template = ''
     path_linux_spice_file = ''
     
@@ -50,6 +56,14 @@ class hspice_batch_sim_generator:
                     self.file_spice_template = cln_str[1]
                 elif 'SPICE_Files_Linux_Path' in cln_str[0]:
                     self.path_linux_spice_file = cln_str[1]
+                elif 'Is_TR_0_or_AC_1' in cln_str[0]:
+                    self.Is_TR_0_or_AC_1 = cln_str[1]
+                elif 'tStep' in cln_str[0]:
+                    self.tStep = cln_str[1]
+                elif 'tStop' in cln_str[0]:
+                    self.tStop = cln_str[1]
+                elif 'td_delay' in cln_str[0]:
+                    self.td_delay = cln_str[1]    
                 
                 else: 
                     print('#ERROR Unknown parameters: ' + cln_str[0] + '\n')
@@ -92,7 +106,7 @@ class hspice_batch_sim_generator:
 ###
     def gene_spice_scripts(self):
         os.chdir(self.csv_file_dir)
-        file_list_sp = glob.glob('*.sp')
+        file_list_sp = glob.glob('*_hspice_auto_script_*.sp')
         if len(file_list_sp) != 0:  ### remove existing spice scripts
             for f_ in file_list_sp:
                 os.remove(f_)
@@ -101,13 +115,18 @@ class hspice_batch_sim_generator:
         for grp in range(0, self.num_profile_cluster):    ### loop all grps
             header = '.param Vdd 	= ' + str(self.vdd_pwr) + '\n\n'
             header = header + '.param is_use_ecap_ebed = ' + str(self.Is_Use_Ecap) + '\n'
-            header = header + '.param is_MIM = ' + str(self.Is_Use_MIM) + '\n\n'
+            header = header + '.param is_MIM = ' + str(self.Is_Use_MIM) + '\n'
+            header = header + '.param is_ac_run = ' + str(self.Is_TR_0_or_AC_1) + '\n'
+            header = header + '.param tStep	= ' + str(self.tStep) + '\n'
+            header = header + '.param tStop	= ' + str(self.tStop) + '\n'
+            header = header + '.param td_delay = ' + str(self.td_delay) + '\n\n'
+
             for key_ in self.curr_profile_pair:     ### loop each profile for a spice 
                 header = header + '.param ' + key_ +' = str(\'' + self.path_linux_spice_file + self.curr_profile_pair[key_][grp] + ' \')\n'
             # print(header)
 
             ### write spice script 
-            fileName_spice_out = date_str +'_spice_run_' + str(grp) + '.sp'
+            fileName_spice_out = date_str +'_hspice_auto_script_' + str(grp) + '.sp'
             with open(fileName_spice_out, 'a') as fout:
                 fout.write('*** START of auto generated section ***\n')
                 fout.write(header)
@@ -120,7 +139,7 @@ class hspice_batch_sim_generator:
 
                 fin_rd.close()
             fout.close()
-
+        print('#INFO: Spice scripts generation finished.')
 
 ### Main function 
 

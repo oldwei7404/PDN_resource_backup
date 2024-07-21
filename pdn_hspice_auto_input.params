@@ -2,6 +2,10 @@
 VDD_in_Volt    0.775
 Is_Use_Ecap    0
 Is_Use_MIM     0
+Is_TR_0_or_AC_1 0
+tStep         10.p
+tStop         10.u
+td_delay      0.n 
 
 SPICE_Template  core_PDN_NNE_template_hspice.hsp
 SPICE_Files_Linux_Path         ./
