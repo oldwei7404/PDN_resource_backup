@@ -1,0 +1,16 @@
+
+VDD_in_Volt    0.775
+Is_Use_Ecap    0
+Is_Use_MIM     0
+
+SPICE_Template  core_PDN_NNE_template_hspice.hsp
+SPICE_Files_Linux_Path         ./
+
+Profile_Name_In_Spice_Num1     pwl_file_in_PA
+Profile_Csv_Keyword_Num1           PA 
+
+Profile_Name_In_Spice_Num2     pwl_file_in_MA
+Profile_Csv_Keyword_Num2           GMT 
+
+Profile_Name_In_Spice_Num3     pwl_file_in_TEST
+Profile_Csv_Keyword_Num3           TEST 
