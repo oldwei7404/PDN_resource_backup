@@ -1,7 +1,7 @@
 import os, sys, getopt
 import glob
 # import math, cmath
-# import shutil
+import shutil
 from datetime import datetime
 import matplotlib.pyplot as plt
 
@@ -109,9 +109,18 @@ class hspice_batch_sim_generator:
         file_list_sp = glob.glob('*_hspice_auto_script_*.sp')
         if len(file_list_sp) != 0:  ### remove existing spice scripts
             for f_ in file_list_sp:
-                os.remove(f_)
+                os.remove(f_)        
 
         date_str = datetime.today().strftime('%Y_%m_%d')
+        date_str_num = datetime.today().strftime('%Y%m%d')
+
+        folder_rslt = 'results_' + date_str_num
+        if os.path.isdir(folder_rslt):
+            shutil.rmtree(folder_rslt)
+        os.makedirs(folder_rslt)
+
+        f_runScript = open('run_hspice_auto_'+ date_str_num + '.sh', "w")
+
         for grp in range(0, self.num_profile_cluster):    ### loop all grps
             header = '.param Vdd 	= ' + str(self.vdd_pwr) + '\n\n'
             header = header + '.param is_use_ecap_ebed = ' + str(self.Is_Use_Ecap) + '\n'
@@ -122,7 +131,7 @@ class hspice_batch_sim_generator:
             header = header + '.param td_delay = ' + str(self.td_delay) + '\n\n'
 
             for key_ in self.curr_profile_pair:     ### loop each profile for a spice 
-                header = header + '.param ' + key_ +' = str(\'' + self.path_linux_spice_file + self.curr_profile_pair[key_][grp] + ' \')\n'
+                header = header + '.param ' + key_ +' = str(\'' + self.path_linux_spice_file + self.curr_profile_pair[key_][grp] + '\')\n'
             # print(header)
 
             ### write spice script 
@@ -139,6 +148,10 @@ class hspice_batch_sim_generator:
 
                 fin_rd.close()
             fout.close()
+        
+            f_runScript.write('hspice  -i ' + fileName_spice_out + ' -o '+ folder_rslt + ' -n ' + date_str_num + str(grp) + '\n')
+
+        f_runScript.close()
         print('#INFO: Spice scripts generation finished.')
 
 ### Main function 
