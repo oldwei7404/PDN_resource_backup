@@ -135,7 +135,7 @@ class hspice_batch_sim_generator:
             # print(header)
 
             ### write spice script 
-            fileName_spice_out = date_str +'_hspice_auto_script_' + str(grp) + '.sp'
+            fileName_spice_out = date_str +'_hspice_auto_script_num' + str(grp) + '.sp'
             with open(fileName_spice_out, 'a') as fout:
                 fout.write('*** START of auto generated section ***\n')
                 fout.write(header)
@@ -148,8 +148,24 @@ class hspice_batch_sim_generator:
 
                 fin_rd.close()
             fout.close()
+
+            ### write tcl script 
+            plotData = 'pkg_bump_pa_ns_3'
+            fileName_tcl_out = date_str +'_wv_script_num' + str(grp) + '.tcl'
+            with open(fileName_tcl_out, 'w') as fout_tcl:
+                tcl_str = 'set file [sx_open_sim_file_read ' +  date_str +'_hspice_auto_script_num' + str(grp) + '.tr' + date_str_num +'] \n'
+                tcl_str = tcl_str + 'set sig1 [sx_signal pkg_bump_pa_ns_3]\n'
+                tcl_str = tcl_str + 'sx_export_precision 7\n'
+                tcl_str = tcl_str + 'sx_export_csv on\n'
+                tcl_str = tcl_str + 'sx_export_data' + ' "./' + date_str +'_num' + str(grp) + '___' +  plotData + '.csv" ' +  '$sig1\n'
+                fout_tcl.write(tcl_str)
+            fout_tcl.close()
+
         
             f_runScript.write('hspice  -i ' + fileName_spice_out + ' -o '+ folder_rslt + ' -n ' + date_str_num + str(grp) + '\n')
+            f_runScript.write('cd ' + folder_rslt  +'\n')
+            f_runScript.write('wv -ace_no_gui ' + fileName_tcl_out + '\n')
+            f_runScript.write('cd ..\n\n')
 
         f_runScript.close()
         print('#INFO: Spice scripts generation finished.')
