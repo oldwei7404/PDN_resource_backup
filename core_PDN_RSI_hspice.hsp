@@ -1,0 +1,213 @@
+* Top level spice file 
+
+.option post=1
+*.chkanode type=gate dv=0.5*pvdd report=active
+.option parhier = local 
+.option measform = 1
+.option lis_new
+.option post probe
+.param pi = 3.141592653
+
+*************************************** User defined functions ****************
+.param V_meas(node, ref) = 'v(node) - v(ref)'
+
+*** current profile 
+.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
+* .param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_3A_240628.txt.csv')
+* .param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_3A_dt500ns_240628.txt.csv')
+* .param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_3A_dt500ns_rand0.1A_240628.txt.csv')		*** peak pwr 2.3W
+* .param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_6p6A_dt500ns_rand0.1A_240821.txt.csv')		*** peak pwr 5W
+.param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_Andes_profile_2p3A_70ns_240912.txt.csv')		*** 20240912 Andes sign off profile, 2.3A/70ns
+
+
+*** filter for measurement
+.subckt meas_filter	
++ pin_in  ref_gnd 	hf  lf 
+
+E_meas pin_meas ref_gnd  pin_in ref_gnd	1.0
+
+C_hf pin_meas	hf  	160.p		
+R_hf hf         ref_gnd 1k
+
+R_lf pin_meas	lf		1k
+C_lf lf 		ref_gnd	160.p
+.ends meas_filter
+
+*** define die model *****
+.subckt model_die_lumped_nne_tile
+	+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84	pwl_file_in = str(pwl_file_quiet) delay = 0.
+
+	R_die_1_ 	pin_bump	2	R_die_1
+	R_die_2_	2		3	R_die_2
+	C_die_		3		ref_gnd	C_die 
+	R_leak_		pin_bump	ref_gnd	R_leak	
+	IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) td = delay    *** add 'R' if repeat
+.ends
+
+
+*** cpm model 
+.inc ./hspice_inc/cpm_rsi_modelOnly_240417.spice
+
+*** define pkg model *****
+.inc ./hspice_inc/lsio0617_RSI_IdEM.cir
+
+*** define PCB model 
+.inc ./hspice_inc/ACM3_06042024_RSI_075_IdEM.cir
+.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC.cir		*** 240912, Andes generated PCB 
+
+*** cap models 
+.inc /data/home/jiangongwei/work/cap_models.hsp
+
+*************************************** Input params **************************
+.param Vdd 	= 0.75				*** need to adjust based on PMIC side port def in subckt
+.param induct_eqvlnt_r = 0.001m	*** DCR of inductor of ALL phases
+
+.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param is_MIM 		= 0
+
+.param die_model_sig = 0		*** value: 0 if multi grp model, 1 if single die grp model 
+
+	*** not used when CPM is enabled 
+	.para Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
+	.para Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
+
+
+.param is_ac_run = 0		*** 1 if impedance, 0 if transient 
+
+.param tStep	= 10.p
+.param tStop	= 60.u     ** 35.u
+
+.param td_delay = 0.n
+	
+*************************************** End of User Input params **************
+
+*************************************** PMIC **********************************
+*** ref_gnd def.
+Vref_gnd 	ref_gnd		0	0.										*** normal gnd 
+
+.subckt PMIC_model
++ pin_out ref_gnd fdbk_node vdd_pmic = 0.75
+	*** opt 1/3 ideal voltage src 
+		VshortPMIC	pin_out	ref_gnd	vdd_pmic
+	
+	*** opt 2/3, add feedback
+		* VshortPMIC_ref	pin_out_tmp	0 	vdd_pmic	*** ref contant voltage src 
+		
+		* VshortPMIC	pin_out	pin_tmp	vdd_pmic
+		* E_fdbk	    pin_tmp	ref_gnd VCVS DELAY pin_out_tmp fdbk_node  td=1500.n			*** VCVS to model feedback using low freq signal 
+			
+	*** opt 3/3 voltage src waveform 
+		* Vpmic_wf pin_out ref_gnd PWL pwlfile =  './hspice_inc/volt_profile_adi_240327_25us.txt.csv'
+	*** 
+.ends 
+
+
+*** opt 1 ideal PMIC w/o remote sense feedback
+.if ( 1 )
+	xblk_PMIC pmic_pwr_raw ref_gnd pmic_pwr_raw PMIC_model  vdd_pmic = 'Vdd'  		
+.endif 
+*** opt 2 EMpower simplified IVR equivalent model 	(remember to disable PMIC bulk caps on PCB)
+.if ( 0 )
+	VempowerVS	pmicEMpwrNode1	ref_gnd	Vdd		*** can be switched to PMIC model 
+	LempowerVS1  pmicEMpwrNode1  pmicEMpwrNode2  	'0.027778n * 0.9091'  
+	RempowerVS1  pmicEMpwrNode2  pmic_pwr_raw			50.u 
+.endif 
+
+*** resistance of pmic output cap
+r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
+
+*************************************** Socket ********************************
+Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model 
+
+*** PCB 
+	Xblk_PCB
+	+ bga_pcb
+	+ pmic_pwr
+	+ pmic_pwr
+	+ ref_gnd
+	+ ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC	*** 240912 Andes PCB 
+
+		* Xblk_PCB 
+		* + capPcB_C798
+		* + capPcB_C800
+		* + capPcB_C1884
+		* + capPcB_C2414
+		* + capPcB_C2415
+		* + capPcB_C3273
+		* + capPcB_C3274
+		* + pmic_pwr
+		* + bga_pcb
+		* + ref_gnd 
+		* + ACM3_06042024_RSI_075_IdEM
+
+		* *** 240903 Andes caps 
+		* XcapPcB_C798      capPcB_C798    ref_gnd  str(mlcc_0p047uF_0402)
+		* XcapPcB_C800      capPcB_C800    ref_gnd  str(mlcc_10uF_0402)
+		* XcapPcB_C1884     capPcB_C1884   ref_gnd  str(mlcc_0p047uF_0402)
+		* XcapPcB_C3273     capPcB_C3273   ref_gnd  str(mlcc_10uF_0402)
+		* XcapPcB_C3273_2   capPcB_C3273   ref_gnd  str(mlcc_10uF_0402)	*** one more cap 
+		* XcapPcB_C3274     capPcB_C3274   ref_gnd  str(mlcc_0p047uF_0402)
+
+		* * XcapPcB_C798      capPcB_C798    ref_gnd  str(mlcc_0p1uF_0402)
+		* * XcapPcB_C800      capPcB_C800    ref_gnd  str(mlcc_1uF_0402)
+		* * XcapPcB_C1884     capPcB_C1884   ref_gnd  str(mlcc_0p1uF_0402)
+		* * XcapPcB_C3273     capPcB_C3273   ref_gnd  str(mlcc_0p047uF_0402)
+		* * XcapPcB_C3274     capPcB_C3274   ref_gnd  str(mlcc_10uF_0402)
+
+		* XcapPcB_C2414     capPcB_C2414   ref_gnd  str(mlcc_22uF_0805)
+		* XcapPcB_C2415     capPcB_C2415   ref_gnd  str(mlcc_22uF_0805)
+
+*** pkg 
+Xblk_pkg
++ pkg_bump
++ bga_pkg
++ ref_gnd
++ lsio0617_RSI_IdEM
+
+*** Die 
+*** approach 1: multi grp modeling or CPM 
+.if (die_model_sig != 1 )
+Xblk_die 
++ pkg_bump
++ ref_gnd
++ adsPowerModel_RSI
+.endif 
+
+*** current profile 
+IcurrSrc_RSI	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_RSI)  R * td= 0.   
+
+* .if (is_MIM == 1)
+	* C_RSI_MIM pkg_bump	ref_gnd	 ????n
+
+* .endif 
+
+*************************************** Analysis I: AC simulation *************
+.if ( is_ac_run == 1 )
+	.if ( 1 )
+		*** NOTE: DO not include port def if tran analysis later
+		P1 pkg_bump	ref_gnd	port=1	z0 = 0.1
+
+		
+		.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
+		**.probe  ac s11(db) s11(p) s21(db) s21(p) 
+		.probe ac zin(1)(m) zin(1)(p) 
+		
+		.ac 	dec 50 1. 1.G
+			
+	.endif 
+
+.endif 
+
+*************************************** Analysis II: Transient simulation *****
+.if ( is_ac_run != 1 )
+	.tran tStep tSTOP 
+
+	.probe tran v(pkg_bump) v(bga_pkg)
+	.probe tran v(pkg_bump_hf)  v(pkg_bump_lf)
+	.probe tran v(pmic_pwr)
+	
+	.probe x(Xblk_pkg.a_1) x(Xblk_pkg.a_2)
+	.probe x(xblk_PMIC.pin_out)
+
+.endif 
+	

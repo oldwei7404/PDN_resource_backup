@@ -17,7 +17,8 @@
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_11us.txt.csv')
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt400ns_11us.txt.csv')
 * .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max40A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
-.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max30A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
+* .param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_max30A_flr5A_dt200ns_rampDwn500ns_NoRand_11us.txt.csv')
+.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_240912_Andes_dIdt_18A_100ns_8us.txt.csv')		*** 240912, Andes sign off profile 
 
 .param pwl_file_SOC_PAR_0_0 = str('./hspice_inc/curr_profile_SOC_par_0_0_max9A_flr1A_dt200ns_Rand1A_11us.txt.csv')
 .param pwl_file_SOC_PAR_3_0 = str('./hspice_inc/curr_profile_SOC_par_3_0_max9p5A_flr1p5A_dt200ns_Rand1A_11us.txt.csv')
@@ -56,6 +57,7 @@ C_lf lf 		ref_gnd	160.p
 *** define pkg model *****
 .inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
 .inc ./hspice_inc/Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM.cir
+.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM.cir		*** 240823 based on Andes sign off pkg model 
 
 *** define PCB model 
 .inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
@@ -63,6 +65,7 @@ C_lf lf 		ref_gnd	160.p
 .inc ./hspice_inc/ACM3_SOC_PDN_240612_BGAx13_4x100uF_IdEM.cir
 .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM.cir
 .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM.cir
+.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps
 
 
 *** cap models 
@@ -138,18 +141,18 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model 
 
 *** PCB 
-	* Xblk_PCB 
-	* + bga_pcb
-	* + pmic_pwr
-	* + ref_gnd 
-	* + acm3_pcb_soc_240419_IdEM
+		* Xblk_PCB 
+		* + bga_pcb
+		* + pmic_pwr
+		* + ref_gnd 
+		* + acm3_pcb_soc_240419_IdEM
 
-Xblk_PCB 
-+ pmic_pwr
-+ bga_pcb
-+ ref_gnd 
-+ ACM3_05162024_SOC_PDN_4x100uF_IdEM
-* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM
+		* Xblk_PCB 
+		* + pmic_pwr
+		* + bga_pcb
+		* + ref_gnd 
+		* + ACM3_05162024_SOC_PDN_4x100uF_IdEM
+		* * + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM
 
 		* Xblk_PCB 
 		* + pmic_pwr
@@ -169,13 +172,53 @@ Xblk_PCB
 		* + ref_gnd 
 		* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM
 
+	Xblk_PCB 
+	+ pmic_pwr
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_2
+	+ bga_pkg_1
+	+ bga_pkg_1
+	+ bga_pkg_1
+	+ bga_pkg_0
+	+ bga_pkg_0
+	+ bga_pkg_0
+	+ ref_gnd 
+	+ ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM		
+		
 
 *** pkg 
-Xblk_pkg
-+ pkg_bump
-+ bga_pkg
-+ ref_gnd
-+ nne0415_SOC_cut_IdEM
+* Xblk_pkg
+* + pkg_bump
+* + bga_pkg
+* + ref_gnd
+* + nne0415_SOC_cut_IdEM
+
+	Xblk_pkg		*** 240823 sign off pkg based on Andes extraction 
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ bga_pkg_0
+	+ bga_pkg_1
+	+ bga_pkg_2
+	+ bga_pkg_3
+	+ ref_gnd
+	+ Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM	
+
 
 		* Xblk_pkg
 		* + bump_PAR_0_0
