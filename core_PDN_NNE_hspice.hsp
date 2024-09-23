@@ -58,15 +58,15 @@
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up 
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_wStall_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, added 8x3 clk stall, repeatable 
-			.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
+			* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
 				
 				
-				* .param pwl_file_in_PA = str('./hspice_inc/resnet_6_PA_profile.csv')	*** 1/4 PA, Brad 240823
-				* .param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823
+				.param pwl_file_in_PA = str('./hspice_inc/resnet_6_PA_profile.csv')	*** 1/4 PA, Brad 240823
+				.param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_IGI_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				
-				
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 80ns
 				
 						*** 200W peak power study
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_v0_200Wpeak_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak for 1us case, 13us, repeat ready 
@@ -98,10 +98,11 @@
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_wStall_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len accommodate PA 8x3 clk stalling, repeatable
-			.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
+			* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_x1Of4_240603.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len match PA Brad trace 240603, repeatable
 				
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2MA_2p5A_5A_80ns_len7us.txt.csv') *** 1/4 of MA, 2.4==>5A in 80ns
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240405_fr_PD_1100usRamp_200ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,  from /work/mammoth/pd/nne/4/steveny/PI/nne_pat_top/DVD_IPF_becky_0207rtl_newFP_newPG/reports/dynamic_analysis/pad.current
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240406_fr_PD_8ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,
@@ -167,8 +168,15 @@ C_lf lf 		ref_gnd	160.p
 	IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) td = delay    *** add 'R' if repeat
 .ends
 
+*** CPM w/o MIM 
 .inc ./hspice_inc/cpm_nne_240724_modelOnly.sp		*** 4x8 parition 
 .inc ./hspice_inc/cpm_nne_240523_modelOnly.spice
+
+*** CPM w/ MIM included 
+.inc ./hspice_inc/Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly.sp		*** 4x8, w/ MIM 
+.inc ./hspice_inc/cpm_nne_w_MIM_240929_reduce_IdEM.cir
+
+
 * .inc ./hspice_inc/cpm_nne_4x2_240313.sp 			*** Andes 4x2 CPM model 240313
 * .inc ./hspice_inc/cpm_nne_240426_Redu_IdEM.cir		*** 240426 CPM reduced model 
 * .inc ./hspice_inc/cpm_maual_appx_nne_4x2_240317.sp	*** jgwei 4x2 CPM manual mockup based on CPM 
@@ -232,11 +240,16 @@ C_lf lf 		ref_gnd	160.p
 .param Vdd 	= 0.775
 
 .param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
-.param is_MIM 			= 0
+.param is_MIM 			= 1
 
 .param die_model_sig 	= 0		*** value: 0 if multi grp model, 1 if single die grp model 
 .param single_bga_grp 	= 0		*** value: 0 if use multiple BGA grps, 1 if use single BGA grp
 .param is_use_3T_cap_ft = 1		*** value: 0 or 1, note: this could be baked in pkg model 
+
+*** MIM approximation, only work together with CPM w/o MIM
+.param 	r_MIM_per_par = 4.m		*** 4.m is the default recommended value 
+.param 	c_MIM_per_PA_par = 260.n
+.param 	c_MIM_per_MA_par = 212.n
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
 .param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
@@ -250,8 +263,8 @@ C_lf lf 		ref_gnd	160.p
 .param Vdd_shift_fr_pwl = 0.0
 		
 	*** not used when CPM is enabled 
-	.para Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
-	.para Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
+	.param Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
+	.param Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
 
 	*** Cdie Rdie based on MAM-242, tau = 24.26 (excluding MIM)
 	.param Cdie_PA 	= '130.3n * Cdie_coeff'		
@@ -265,13 +278,13 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 50.u    
+.param tStop	= 200.u    
 
 .param td_delay = 0.n
 .param td_delay_grp0 = 0.u
-.param td_delay_grp1 = 0.u
-.param td_delay_grp2 = 0.u
-.param td_delay_grp3 = 0.u	
+.param td_delay_grp1 = 1.u
+.param td_delay_grp2 = 2.u
+.param td_delay_grp3 = 3.u	
 *************************************** End of User Input params **************
 
 *************************************** cap model *****************************
@@ -601,7 +614,7 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 	* IcurrSrc_1_1	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
 	* IcurrSrc_1_2	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
 	* IcurrSrc_1_3	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
-
+	
 						* xblk_die		*** reduced CPM, to correlate with SIMPLIS, good accuracy confirmed 
 						* + pkg_bump_PA_ns_3
 						* + pkg_bump_PA_ns_2
@@ -664,9 +677,10 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 							* IcurrSrc_2_1	pkg_bump_PA_ns_2_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
 							* IcurrSrc_2_2	pkg_bump_PA_ns_1_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R 
 							* IcurrSrc_2_3	pkg_bump_PA_ns_0_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
-							
 
-	xblk_die 	*** 8+4 NNE grp, 240821 sign off 
+	
+.if (is_MIM != 1)
+	xblk_die 	*** 4x8 NNE CPM, w/o CPM , Andes 240821 sign off 
 	+         pkg_bump_MA_ns_0
 	+ ref_gnd pkg_bump_MA_ns_1
 	+ ref_gnd pkg_bump_MA_ns_2
@@ -701,13 +715,87 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 	+ ref_gnd pkg_bump_PA_ns_3
 	+ ref_gnd
 	+ adsPowerModel_nne_240724
+.endif 
 
-	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3      R 	*** add 'R' if repeat
+		* .if (is_MIM == 1)	*** can ONLY work with CPM w/o MIM, only enable when there is NO CPM model w/ MIM available
+							* *** double check CPM w/o MIM itself is correctly enabled  
+			* R_MIM_bump_MA_ns_3 pkg_bump_MA_ns_3		pkg_bump_MA_ns_3_	r_MIM_per_par
+			* C_MIM_bump_MA_ns_3 pkg_bump_MA_ns_3_	ref_gnd				c_MIM_per_MA_par
+			* R_MIM_bump_MA_ns_2 pkg_bump_MA_ns_2		pkg_bump_MA_ns_2_	r_MIM_per_par
+			* C_MIM_bump_MA_ns_2 pkg_bump_MA_ns_2_	ref_gnd				c_MIM_per_MA_par		
+			* R_MIM_bump_MA_ns_1 pkg_bump_MA_ns_1		pkg_bump_MA_ns_1_	r_MIM_per_par
+			* C_MIM_bump_MA_ns_1 pkg_bump_MA_ns_1_	ref_gnd				c_MIM_per_MA_par
+			* R_MIM_bump_MA_ns_0 pkg_bump_MA_ns_0		pkg_bump_MA_ns_0_	r_MIM_per_par
+			* C_MIM_bump_MA_ns_0 pkg_bump_MA_ns_0_	ref_gnd				c_MIM_per_MA_par
+			
+			* R_MIM_bump_PA_ns_3 pkg_bump_PA_ns_3		pkg_bump_PA_ns_3_	r_MIM_per_par
+			* C_MIM_bump_PA_ns_3 pkg_bump_PA_ns_3_	ref_gnd				c_MIM_per_PA_par
+			* R_MIM_bump_PA_ns_2 pkg_bump_PA_ns_2		pkg_bump_PA_ns_2_	r_MIM_per_par
+			* C_MIM_bump_PA_ns_2 pkg_bump_PA_ns_2_	ref_gnd				c_MIM_per_PA_par		
+			* R_MIM_bump_PA_ns_1 pkg_bump_PA_ns_1		pkg_bump_PA_ns_1_	r_MIM_per_par
+			* C_MIM_bump_PA_ns_1 pkg_bump_PA_ns_1_	ref_gnd				c_MIM_per_PA_par
+			* R_MIM_bump_PA_ns_0 pkg_bump_PA_ns_0		pkg_bump_PA_ns_0_	r_MIM_per_par
+			* C_MIM_bump_PA_ns_0 pkg_bump_PA_ns_0_	ref_gnd				c_MIM_per_PA_par		
+		* .endif 
+	
+	
+.if (is_MIM == 1)
+	xblk_die 	*** 4x8 NNE grp, Andes CPM w/MIM
+	+         pkg_bump_MA_ns_0
+	+ ref_gnd pkg_bump_MA_ns_1
+	+ ref_gnd pkg_bump_MA_ns_2
+	+ ref_gnd pkg_bump_MA_ns_3	
+	+ ref_gnd pkg_bump_MA_ns_0
+	+ ref_gnd pkg_bump_MA_ns_1
+	+ ref_gnd pkg_bump_MA_ns_2
+	+ ref_gnd pkg_bump_MA_ns_3	
+	+ ref_gnd pkg_bump_MA_ns_0
+	+ ref_gnd pkg_bump_MA_ns_1
+	+ ref_gnd pkg_bump_MA_ns_2
+	+ ref_gnd pkg_bump_MA_ns_3	
+	+ ref_gnd pkg_bump_MA_ns_0
+	+ ref_gnd pkg_bump_MA_ns_1
+	+ ref_gnd pkg_bump_MA_ns_2
+	+ ref_gnd pkg_bump_MA_ns_3	
+	+ ref_gnd pkg_bump_PA_ns_0
+	+ ref_gnd pkg_bump_PA_ns_1
+	+ ref_gnd pkg_bump_PA_ns_2
+	+ ref_gnd pkg_bump_PA_ns_3		
+	+ ref_gnd pkg_bump_PA_ns_0
+	+ ref_gnd pkg_bump_PA_ns_1
+	+ ref_gnd pkg_bump_PA_ns_2
+	+ ref_gnd pkg_bump_PA_ns_3	
+	+ ref_gnd pkg_bump_PA_ns_0
+	+ ref_gnd pkg_bump_PA_ns_1
+	+ ref_gnd pkg_bump_PA_ns_2
+	+ ref_gnd pkg_bump_PA_ns_3	
+	+ ref_gnd pkg_bump_PA_ns_0
+	+ ref_gnd pkg_bump_PA_ns_1
+	+ ref_gnd pkg_bump_PA_ns_2
+	+ ref_gnd pkg_bump_PA_ns_3
+	+ ref_gnd
+	+ adsPowerModel_NNE_4x8_w_MIM_240920_modelOnly
+
+			* xblk_die 	*** 4x8 NNE grp, Andes CPM w/MIM reduced model 	
+			* + pkg_bump_MA_ns_0
+			* + pkg_bump_MA_ns_1
+			* + pkg_bump_MA_ns_2
+			* + pkg_bump_MA_ns_3
+			* + pkg_bump_PA_ns_0
+			* + pkg_bump_PA_ns_1
+			* + pkg_bump_PA_ns_2
+			* + pkg_bump_PA_ns_3	
+			* + ref_gnd	
+			* + cpm_nne_w_MIM_240929_reduce_IdEM
+.endif
+
+*** current src 
+	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3   R 	*** add 'R' if repeat
 	IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2   R 
 	IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1   R
 	IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0   R
 
-	IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3      R 
+	IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3   R 
 	IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2   R
 	IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1   R 
 	IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0   R
@@ -729,18 +817,8 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 											
 											* R_bump_to_PCB  pkg_bump_one bga_pcb	1.n	
 										*** test to short bumps to PCB   end 
-	
-	.if (is_MIM == 1)
-		C_MIM_bump_0_0 pkg_bump_MA_ns_3	ref_gnd	273.3n
-		C_MIM_bump_0_1 pkg_bump_MA_ns_2	ref_gnd	273.3n
-		C_MIM_bump_0_2 pkg_bump_MA_ns_1	ref_gnd	273.3n
-		C_MIM_bump_0_3 pkg_bump_MA_ns_0	ref_gnd	273.3n
-		
-		C_MIM_bump_1_0 pkg_bump_PA_ns_3	ref_gnd	334.1n
-		C_MIM_bump_1_1 pkg_bump_PA_ns_2	ref_gnd	334.1n
-		C_MIM_bump_1_2 pkg_bump_PA_ns_1	ref_gnd	334.1n
-		C_MIM_bump_1_3 pkg_bump_PA_ns_0	ref_gnd	334.1n		
-	.endif 
+
+
 	
 					* Xblk_die_0_0	pkg_bump_MA_ns_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
 					* Xblk_die_0_1	pkg_bump_MA_ns_2	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
