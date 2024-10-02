@@ -10,7 +10,7 @@ import scipy.interpolate
 
 import numpy as np
 from numpy.fft import fft, ifft 
-
+from matplotlib.widgets import MultiCursor
 
 class DataFftProcess:
     input_fileName = ''
@@ -75,6 +75,8 @@ class DataFftProcess:
 
 
     def read_data(self):
+        stat_max = -1.e6
+        stat_min = 1.e6
         with open(r'%s'%self.input_fileName, 'r') as fin:
             cln_str = fin.readline()
             time_ST = 0
@@ -97,27 +99,41 @@ class DataFftProcess:
                     time_ST = time_s
                     time_st_fnd = True
 
+                data_ = float(cln_str[1])
                 self.input_time.append( time_s - time_ST )    ### nominal profile starts from 0
-                self.input_data.append( float(cln_str[1]) )     
+                self.input_data.append( data_ )     
+
+                if data_ > stat_max:
+                    stat_max = data_
+                if data_ < stat_min:
+                    stat_min = data_
 
                 cln_str = fin.readline()              
             fin.close()
 
         self.input_data_len_orig = len(self.input_time)
       
-        print('#INFO: Input time data read in, time duration ' + str(self.input_time[-1]) + 's, data entry amount: ' + str(len(self.input_time)))
+        print('#INFO: Input time data read in, time duration ' + str(self.input_time[-1]) + 's, data entry amount: ' + str(len(self.input_time)) + '. Max Val: ' + "{:.3f}".format(stat_max) + '. Min Val: ' + "{:.3f}".format(stat_min) )
 
 
     def write_data_to_CSV(self, fileName):
+        stat_max = -1.e6
+        stat_min = 1.e6
         fout = open(fileName, 'w')
         fout.write('#Time(ns), filtered data\n')
         for i in range(0, self.input_data_len_orig):
             fout.write(str( self.output_time[i]) + ', ' + str(self.output_data[i]) + '\n')  
+
+            if self.output_data[i] > stat_max:
+                stat_max = self.output_data[i]
+            if self.output_data[i] < stat_min:
+                stat_min = self.output_data[i]
+
             if (self.output_time[i] > self.input_time[self.input_data_len_orig -1] ):
                 break
 
         fout.close()
-        print('#INFO: data output to CSV file: '+ fileName)
+        print('#INFO: data output to CSV file: '+ fileName + '. Max Val: ' + "{:.3f}".format(stat_max) + '. Min Val: ' + "{:.3f}".format(stat_min) ) 
 
     def data_repeat(self):
         OneOverFreqResoltn = 1./self.freqResoltn
@@ -164,10 +180,10 @@ class DataFftProcess:
         freq_fft = np.fft.fftfreq(NumFFTSample, time_per_sample)
         len_pos = int (len(DataSpectrum) * 0.5 )
 
-        plt.figure(figsize = (12, 6))
+        fig = plt.figure(figsize = (12, 6))
 
-        plt.subplot(221)
-        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum[0:len_pos]), 'b')
+        plt1 = plt.subplot(221)
+        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum[0:len_pos]), 'k--')
         plt.xlabel('Freq (Hz)')
         # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
@@ -191,14 +207,14 @@ class DataFftProcess:
                     break 
             
             if (self.is_freqFilter_0_OR_Keep_1 == 0 and is_freq_in_list == True) or (self.is_freqFilter_0_OR_Keep_1 == 1 and is_freq_in_list == False):
-                DataSpectrum_process[freq_indx] = 0.                    ## set freq compotent at this freq to 0 
-                DataSpectrum_process[NumFFTSample - freq_indx- 1] = 0.     ## symmetric freq also set to 0
+                DataSpectrum_process[freq_indx] = 0.                        ## set freq compotent at this freq to 0 
+                DataSpectrum_process[NumFFTSample - freq_indx- 1] = 0.      ## symmetric freq also set to 0
                 cnt_setZero = cnt_setZero + 1
 
         print('\n#INFO:' + str(cnt_setZero) + ' of ' + str(NumFFTSample) + ' set to 0.\n')
 
-        plt.subplot(222)
-        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum_process[0:len_pos]), 'b')
+        plt2 = plt.subplot(222)
+        plt.plot(freq_fft[0:len_pos], np.abs(DataSpectrum_process[0:len_pos]), 'k--')
         plt.xlabel('Freq (Hz)')
         # plt.xlim(1, freq_fft[len_pos])
         plt.xscale('log')
@@ -212,9 +228,9 @@ class DataFftProcess:
         min_plot = min( min(self.input_data), min(np.real(dataAftProcess)))
         max_plot = max( max(self.input_data), max(np.real(dataAftProcess)))
         self.output_time = time_samp
-        self.output_data = np.real(dataAftProcess[0:self.input_data_len_orig])
+        self.output_data = np.real(dataAftProcess[0:self.input_data_len_orig+1])
 
-        plt.subplot(223)
+        plt3 = plt.subplot(223)
         plt.plot(self.input_time, self.input_data, 'r', label = 'orig.')
         plt.plot(time_samp, np.real(dataAftProcess), 'b', label = 'processed')
         plt.xlabel('Time (s)')
@@ -225,7 +241,7 @@ class DataFftProcess:
         plt.tight_layout()        
         plt.title('time signal orig (red) vs. after filtering (blue)')
 
-        plt.subplot(224)
+        plt4 = plt.subplot(224)
         plt.plot(time_samp, np.real(dataAftProcess), 'b')
         plt.xlabel('Time (s)')
         plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
@@ -234,6 +250,8 @@ class DataFftProcess:
         # plt.ylim(min_plot, max_plot)
         plt.tight_layout()
         plt.title('time signal after filtering')
+
+        # cursor = MultiCursor(fig.canvas, (plt1, plt2, plt3, plt4), color='r',lw=0.5, horizOn=True, vertOn=True)
 
         plt.show()
 
@@ -276,4 +294,4 @@ dataInstFFT.FFT_analysis()
 dataInstFFT.write_data_to_CSV(file_out_waveform)
 
 
-print ("#INFO: FFT manipulation exit normally")
+print ("#INFO: FFT manipulation exit normally\n\n")
