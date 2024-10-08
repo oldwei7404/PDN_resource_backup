@@ -58,6 +58,7 @@ C_lf lf 		ref_gnd	160.p
 .inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
 .inc ./hspice_inc/Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM.cir
 .inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM.cir		*** 240823 based on Andes sign off pkg model 
+.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM.cir	*** 241004 jgwei extracted model based on Andes SIW, jgwei pin
 
 *** define PCB model 
 .inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
@@ -76,7 +77,7 @@ C_lf lf 		ref_gnd	160.p
 .param induct_eqvlnt_r = 0.28m	*** DCR of inductor of ALL phases
 
 .param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
-.param is_MIM 		= 0
+.param is_MIM 			= 0
 
 .param die_model_sig = 0		*** value: 0 if multi grp model, 1 if single die grp model 
 
@@ -191,33 +192,57 @@ Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model
 	+ ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM		
 		
 
-*** pkg 
+*** pkg ***
 * Xblk_pkg
 * + pkg_bump
 * + bga_pkg
 * + ref_gnd
 * + nne0415_SOC_cut_IdEM
 
-	Xblk_pkg		*** 240823 sign off pkg based on Andes extraction 
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ bga_pkg_0
-	+ bga_pkg_1
-	+ bga_pkg_2
+	Xblk_pkg	*** 241004 130um jgwei extraction based on Andes SIW, jgwei pingrp 
 	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_3
+	+ bga_pkg_2
+	+ bga_pkg_1
+	+ bga_pkg_1
+	+ bga_pkg_0
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
+	+ pkg_bump
 	+ ref_gnd
-	+ Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM	
+	+ Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM
+
+	* Xblk_pkg		*** 240823 sign off pkg based on Andes extraction 
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + pkg_bump
+	* + bga_pkg_0
+	* + bga_pkg_1
+	* + bga_pkg_2
+	* + bga_pkg_3
+	* + ref_gnd
+	* + Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM	
 
 
 		* Xblk_pkg

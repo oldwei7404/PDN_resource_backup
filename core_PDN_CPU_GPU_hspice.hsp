@@ -82,8 +82,9 @@
 	***** define die model *****
 					* .inc ./hspice_inc/model_die_CPU.inc 
 					* .inc ./hspice_inc/model_die_GPU.inc 
+.inc ./hspice_inc/cpm_cpu_3x4_240313.sp 	*** Andes CPM model 240313
+.inc ./hspice_inc/Chip_Power_Model_SubCircuit_CPUGPU_w_MIM_240920_modelOnly.sp   *** Andes CPM 240923 for CPUGPU w/ MIM 140um
 
-.inc ./hspice_inc/cpm_cpu_3x4_240313.sp 	*** Andes 4x2 CPM model 240313
 
 		.subckt model_die_typ
 		+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84 pwl_file_in = str(pwl_file_quiet)	delay= 0.	
@@ -124,6 +125,7 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p.cir
 	.inc ./hspice_inc/CPU_GPU_pkg_CPU_lsio_240522_BgaX4_reduModel_IdEM_s15p.cir
 	.inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_240821_IdEM.cir		*** 240821 jgwei reduced pkg model based on Andes sign off cir 
+	.inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM.cir	*** 241004, 130um reduced pkg model based on Andes SIW, jgwei pingrps
 		
 	***** define PCB model *****
 	*.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_CPU_PSI_RmLF_manip_IdEM0p5.cir 
@@ -175,10 +177,13 @@ C_lf lf 		ref_gnd	160.p
 	
 *************************************** Input params **************************
 .param is_use_ecap_ebed = 0		*** value: 0 or 1
-.param is_MIM = 0
+.param is_MIM 			= 1
 
 .param die_model_sig = 0		*** value: 0 for CPM, or 1 for single die 
 .param single_bga_grp = 0		*** value: 0 if use multiple BGA grps, 1 if use single BGA grp
+
+.param r_MIM_per_par = 5.m 
+.param c_MIM_per_par = 128.n	
 
 .param Vdd 	= 0.75
 .param induct_eqvlnt_r = 0.14m	*** DCR of inductor of ALL phases
@@ -327,7 +332,8 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	+ bga_pcb_south_col1   *** out_0
 	+ bga_pcb_south_col0   *** out_1
 	+ ref_gnd
-	+ Z_plot_CPUGPU_pkg_ReduceModel_240821_IdEM
+	* + Z_plot_CPUGPU_pkg_ReduceModel_240821_IdEM
+	+ Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM
 
 		* Xblk_pkg
 		* + pkg_bump_cpu_0_0 
@@ -346,589 +352,6 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 		* + ref_gnd
 		* + CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p
 .endif 
-
-.if ( 0 )	*** Andes pkg 240507, Zijie added BGA on pkg, jgwei partition in SIwave  conform to CPM ploc numbering
-	.if (single_bga_grp != 1)
-		Xblk_pkg
-		+ bga_pcb_south
-		+ bga_pcb_north
-		+ pkg_bump_cpu_0_0 
-		+ pkg_bump_cpu_1_0
-		+ pkg_bump_cpu_2_0
-		+ pkg_bump_cpu_0_1
-		+ pkg_bump_cpu_1_1
-		+ pkg_bump_cpu_2_1 
-		+ pkg_bump_gpu_0_2
-		+ pkg_bump_gpu_1_2
-		+ pkg_bump_cpu_2_2
-		+ pkg_bump_gpu_0_3
-		+ pkg_bump_gpu_1_3
-		+ pkgCap_C1
-		+ pkgCap_C18
-		+ pkgCap_C19
-		+ pkgCap_C20
-		+ pkgCap_C21
-		+ pkgCap_C2
-		+ pkgCap_C3
-		+ pkgCap_C4
-		+ pkgCap_C5
-		+ pkgCap_C6
-		+ pkgCap_C7
-		+ pkgCap_C7
-		+ pkgCap_C8
-		+ pkgCap_C8
-		+ pkgCap_C9
-		+ pkgCap_C9
-		+ pkgCap_C10
-		+ pkgCap_C10
-		+ pkgCap_C11
-		+ pkgCap_C11
-		+ pkgCap_C12
-		+ pkgCap_C12
-		+ pkgCap_C13
-		+ pkgCap_C13
-		+ pkgCap_C14
-		+ pkgCap_C14
-		+ pkgCap_C15
-		+ pkgCap_C15
-		+ pkgCap_C16
-		+ pkgCap_C16
-		+ pkgCap_C17
-		+ pkgCap_C17
-		+ pkgCap_C22
-		+ pkgCap_C23
-		+ pkgCap_C24
-		+ pkgCap_C25
-		+ pkgCap_C26
-		+ ref_gnd
-		+ cpu_lsio_240502_IdEM
-	.endif 
-	.if (single_bga_grp == 1)
-		Xblk_pkg
-		+ bga_pcb
-		+ bga_pcb
-		+ pkg_bump_cpu_0_0 
-		+ pkg_bump_cpu_1_0
-		+ pkg_bump_cpu_2_0
-		+ pkg_bump_cpu_0_1
-		+ pkg_bump_cpu_1_1
-		+ pkg_bump_cpu_2_1 
-		+ pkg_bump_gpu_0_2
-		+ pkg_bump_gpu_1_2
-		+ pkg_bump_cpu_2_2
-		+ pkg_bump_gpu_0_3
-		+ pkg_bump_gpu_1_3
-		+ pkgCap_C1
-		+ pkgCap_C18
-		+ pkgCap_C19
-		+ pkgCap_C20
-		+ pkgCap_C21
-		+ pkgCap_C2
-		+ pkgCap_C3
-		+ pkgCap_C4
-		+ pkgCap_C5
-		+ pkgCap_C6
-		+ pkgCap_C7
-		+ pkgCap_C7
-		+ pkgCap_C8
-		+ pkgCap_C8
-		+ pkgCap_C9
-		+ pkgCap_C9
-		+ pkgCap_C10
-		+ pkgCap_C10
-		+ pkgCap_C11
-		+ pkgCap_C11
-		+ pkgCap_C12
-		+ pkgCap_C12
-		+ pkgCap_C13
-		+ pkgCap_C13
-		+ pkgCap_C14
-		+ pkgCap_C14
-		+ pkgCap_C15
-		+ pkgCap_C15
-		+ pkgCap_C16
-		+ pkgCap_C16
-		+ pkgCap_C17
-		+ pkgCap_C17
-		+ pkgCap_C22
-		+ pkgCap_C23
-		+ pkgCap_C24
-		+ pkgCap_C25
-		+ pkgCap_C26
-		+ ref_gnd
-		+ cpu_lsio_240502_IdEM	
-	.endif 
-
-	XpkgCap_C1	pkgCap_C1	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C2	pkgCap_C2	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C3	pkgCap_C3	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C4	pkgCap_C4	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C5	pkgCap_C5	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C6	pkgCap_C6	ref_gnd		str(mlcc_1uF_0201)
-	
-	XpkgCap_C7  pkgCap_C7     ref_gnd    pkgCap_C7    ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C8  pkgCap_C8     ref_gnd    pkgCap_C8    ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C9  pkgCap_C9     ref_gnd    pkgCap_C9    ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C10 pkgCap_C10    ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C11 pkgCap_C11    ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C12 pkgCap_C12    ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C13 pkgCap_C13    ref_gnd    pkgCap_C13   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C14 pkgCap_C14    ref_gnd    pkgCap_C14   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C15 pkgCap_C15    ref_gnd    pkgCap_C15   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C16 pkgCap_C16    ref_gnd    pkgCap_C16   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C17 pkgCap_C17    ref_gnd    pkgCap_C17   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	
-	XpkgCap_C18         pkgCap_C18   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C19         pkgCap_C19   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C20         pkgCap_C20   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-		
-	
-.endif 
-
-	
-.if ( 0 )	*** Andes pkg 240424, jgwei partition in SIwave  conform to CPM ploc numbering
-	Xblk_pkg
-	+ pkg_bump_cpu_0_0 
-	+ pkg_bump_cpu_1_0
-	+ pkg_bump_cpu_2_0
-	+ pkg_bump_cpu_0_1
-	+ pkg_bump_cpu_1_1
-	+ pkg_bump_cpu_2_1 
-	+ pkg_bump_gpu_0_2
-	+ pkg_bump_gpu_1_2
-	+ pkg_bump_cpu_2_2
-	+ pkg_bump_gpu_0_3
-	+ pkg_bump_gpu_1_3
-	+ bga_pkg
-	+ bga_pkg
-	+ pkgCap_C1
-	+ pkgCap_C18
-	+ pkgCap_C19
-	+ pkgCap_C20
-	+ pkgCap_C21
-	+ pkgCap_C2
-	+ pkgCap_C3
-	+ pkgCap_C4
-	+ pkgCap_C5
-	+ pkgCap_C6
-	+ pkgCap_C7
-	+ pkgCap_C7
-	+ pkgCap_C8
-	+ pkgCap_C8
-	+ pkgCap_C9
-	+ pkgCap_C9
-	+ pkgCap_C10
-	+ pkgCap_C10
-	+ pkgCap_C11
-	+ pkgCap_C11
-	+ pkgCap_C12
-	+ pkgCap_C12
-	+ pkgCap_C13
-	+ pkgCap_C13
-	+ pkgCap_C14
-	+ pkgCap_C14
-	+ pkgCap_C15
-	+ pkgCap_C15
-	+ pkgCap_C16
-	+ pkgCap_C16
-	+ pkgCap_C17
-	+ pkgCap_C17
-	+ pkgCap_C22
-	+ pkgCap_C23
-	+ pkgCap_C24
-	+ pkgCap_C25
-	+ pkgCap_C26
-	+ ref_gnd
-	+ Mam_MCM_L12_BH9_Ballv0p87a_BPIv0072_20240417_1_20240417ate_a_CPU_cut_IdEM
-	
-	.if ( 0 )	*** jgwei caps opt
-		XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-													  
-		XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C13          pkgCap_C13     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C14          pkgCap_C14     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C15          pkgCap_C15     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C16          pkgCap_C16     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)	
-		
-		XpkgCap_C9          pkgCap_C9    ref_gnd    pkgCap_C9   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C10         pkgCap_C10   ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C11         pkgCap_C11   ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C12         pkgCap_C12   ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		
-		XpkgCap_C17  		pkgCap_C17	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C18  		pkgCap_C18	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C19  		pkgCap_C19	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C20  		pkgCap_C20	ref_gnd		str(mlcc_1uF_0204)
-		
-		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-
-				* * *** exp to add 
-				* XpkgCap_C21_2        pkgCap_C21   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C22_2        pkgCap_C22   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C23_2        pkgCap_C23   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C24_2        pkgCap_C24   ref_gnd   str(mlcc_1uF_0204)
-				
-				* XpkgCap_C17_3		pkgCap_C17	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C18_3		pkgCap_C18	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C19_3		pkgCap_C19	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C20_3		pkgCap_C20	ref_gnd		str(mlcc_1uF_0201)	  
-				* XpkgCap_C21_3       pkgCap_C21  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C22_3       pkgCap_C22  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C23_3       pkgCap_C23  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C24_3       pkgCap_C24  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C25_3       pkgCap_C25  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C26_3       pkgCap_C26  ref_gnd     str(mlcc_1uF_0201)				
-	.endif 
-
-	.if ( 1 ) *** Andes 240404 opt 
-		XpkgCap_C1	pkgCap_C1	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C2	pkgCap_C2	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C3	pkgCap_C3	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C4	pkgCap_C4	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C5	pkgCap_C5	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C6	pkgCap_C6	ref_gnd		str(mlcc_1uF_0201)
-		
-		XpkgCap_C7  pkgCap_C7     ref_gnd    pkgCap_C7    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C8  pkgCap_C8     ref_gnd    pkgCap_C8    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C9  pkgCap_C9     ref_gnd    pkgCap_C9    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C10 pkgCap_C10    ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C11 pkgCap_C11    ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C12 pkgCap_C12    ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C13 pkgCap_C13    ref_gnd    pkgCap_C13   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C14 pkgCap_C14    ref_gnd    pkgCap_C14   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C15 pkgCap_C15    ref_gnd    pkgCap_C15   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C16 pkgCap_C16    ref_gnd    pkgCap_C16   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C17 pkgCap_C17    ref_gnd    pkgCap_C17   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		
-		XpkgCap_C18         pkgCap_C18   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C19         pkgCap_C19   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C20         pkgCap_C20   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-		
-	.endif 
-	
-.endif 	*** Andes pkg 240327 ploc paritioned  end 
-
-.if ( 0 )	*** Andes pkg 240327 ploc paritioned 
-	Xblk_pkg
-	+ pkg_bump_cpu_0_0 
-	+ pkg_bump_cpu_1_0
-	+ pkg_bump_cpu_2_0
-	+ pkg_bump_cpu_0_1
-	+ pkg_bump_cpu_1_1
-	+ pkg_bump_cpu_2_1 
-	+ pkg_bump_gpu_0_2
-	+ pkg_bump_gpu_1_2
-	+ pkg_bump_cpu_2_2
-	+ pkg_bump_gpu_0_3
-	+ pkg_bump_gpu_1_3
-	+ bga_pkg
-	+ pkgCap_C1
-	+ pkgCap_C2
-	+ pkgCap_C3
-	+ pkgCap_C4
-	+ pkgCap_C5
-	+ pkgCap_C6
-	+ pkgCap_C7
-	+ pkgCap_C8
-	+ pkgCap_C9
-	+ pkgCap_C10
-	+ pkgCap_C11
-	+ pkgCap_C12
-	+ pkgCap_C13
-	+ pkgCap_C14
-	+ pkgCap_C15
-	+ pkgCap_C16
-	+ pkgCap_C17
-	+ pkgCap_C18
-	+ pkgCap_C19
-	+ pkgCap_C20
-	+ pkgCap_C21
-	+ pkgCap_C22
-	+ pkgCap_C23
-	+ pkgCap_C24
-	+ pkgCap_C25
-	+ pkgCap_C26
-	+ ref_gnd
-	+ Mam_MCM_L12_202403012ate_a_CPU_jgwei_IdEM
-	
-	.if ( 0 )	*** jgwei caps opt
-		XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-		XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-													  
-		XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C13          pkgCap_C13     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C14          pkgCap_C14     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C15          pkgCap_C15     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-		XpkgCap_C16          pkgCap_C16     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)	
-		
-		XpkgCap_C9          pkgCap_C9    ref_gnd    pkgCap_C9   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C10         pkgCap_C10   ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C11         pkgCap_C11   ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C12         pkgCap_C12   ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		
-		XpkgCap_C17  		pkgCap_C17	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C18  		pkgCap_C18	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C19  		pkgCap_C19	ref_gnd		str(mlcc_1uF_0204)
-		XpkgCap_C20  		pkgCap_C20	ref_gnd		str(mlcc_1uF_0204)
-		
-		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-
-				* * *** exp to add 
-				* XpkgCap_C21_2        pkgCap_C21   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C22_2        pkgCap_C22   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C23_2        pkgCap_C23   ref_gnd   str(mlcc_1uF_0204)
-				* XpkgCap_C24_2        pkgCap_C24   ref_gnd   str(mlcc_1uF_0204)
-				
-				* XpkgCap_C17_3		pkgCap_C17	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C18_3		pkgCap_C18	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C19_3		pkgCap_C19	ref_gnd		str(mlcc_1uF_0201)
-				* XpkgCap_C20_3		pkgCap_C20	ref_gnd		str(mlcc_1uF_0201)	  
-				* XpkgCap_C21_3       pkgCap_C21  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C22_3       pkgCap_C22  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C23_3       pkgCap_C23  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C24_3       pkgCap_C24  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C25_3       pkgCap_C25  ref_gnd     str(mlcc_1uF_0201)
-				* XpkgCap_C26_3       pkgCap_C26  ref_gnd     str(mlcc_1uF_0201)				
-	.endif 
-
-	.if ( 1 ) *** Andes 240404 opt 
-		XpkgCap_C1	pkgCap_C1	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C2	pkgCap_C2	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C3	pkgCap_C3	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C4	pkgCap_C4	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C5	pkgCap_C5	ref_gnd		str(mlcc_1uF_0201)
-		XpkgCap_C6	pkgCap_C6	ref_gnd		str(mlcc_1uF_0201)
-		
-		XpkgCap_C7  pkgCap_C7     ref_gnd    pkgCap_C7    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C8  pkgCap_C8     ref_gnd    pkgCap_C8    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C9  pkgCap_C9     ref_gnd    pkgCap_C9    ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C10 pkgCap_C10    ref_gnd    pkgCap_C10   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C11 pkgCap_C11    ref_gnd    pkgCap_C11   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C12 pkgCap_C12    ref_gnd    pkgCap_C12   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C13 pkgCap_C13    ref_gnd    pkgCap_C13   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C14 pkgCap_C14    ref_gnd    pkgCap_C14   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C15 pkgCap_C15    ref_gnd    pkgCap_C15   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C16 pkgCap_C16    ref_gnd    pkgCap_C16   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		XpkgCap_C17 pkgCap_C17    ref_gnd    pkgCap_C17   ref_gnd str(mlcc_1uF_0402_3T_ft)
-		
-		XpkgCap_C18         pkgCap_C18   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C19         pkgCap_C19   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C20         pkgCap_C20   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C21         pkgCap_C21   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C22         pkgCap_C22   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C23         pkgCap_C23   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C24         pkgCap_C24   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C25         pkgCap_C25   ref_gnd   str(mlcc_10uF_0402)
-		XpkgCap_C26         pkgCap_C26   ref_gnd   str(mlcc_10uF_0402)
-		
-	.endif 
-	
-.endif 	*** Andes pkg 240327 ploc paritioned  end 
-
-.if ( 0 )	*** pkg mock up Andes 0724, 1004
-	Xblk_pkg
-	 + pkgCap_C142  ref_gnd
-	 + pkgCap_C143  ref_gnd
-	 + pkgCap_C144  ref_gnd
-	 + pkgCap_C145  ref_gnd
-	 + pkgCap_C146  ref_gnd
-	 + pkgCap_C147  ref_gnd
-	 + pkgCap_C148  ref_gnd
-	 + pkgCap_C149  ref_gnd
-	 + pkgCap_C150  ref_gnd
-	 + pkgCap_C151  ref_gnd
-	 + pkgCap_C200  ref_gnd
-	 + pkgCap_C201  ref_gnd
-	 + pkgCap_C202  ref_gnd
-	 + pkgCap_C203  ref_gnd
-	 + pkgCap_C204  ref_gnd
-	 + pkgCap_C205  ref_gnd
-	 + pkgCap_C206  ref_gnd
-	 + pkgCap_C207  ref_gnd
-	 + pkgCap_C79   ref_gnd
-	 + pkgCap_C82   ref_gnd
-	 + pkgCap_C83   ref_gnd
-	 + pkgCap_C84   ref_gnd
-	 + pkg_bump_gpu ref_gnd 	*** GPU 
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd		*** DSU 
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd
-	 + pkg_bump ref_gnd	 
-	 + bga_pkg		ref_gnd
-	 + bga_pkg		ref_gnd
-	 + str(pkg_model)
-
-	*** Pkg cap ***
-					*** commented out due to size 1108
-					* XpkgCap_C147  pkgCap_C147	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C148  pkgCap_C148	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C149  pkgCap_C149	ref_gnd		str(mlcc_1uF_0204)
-					* XpkgCap_C150  pkgCap_C150	ref_gnd		str(mlcc_1uF_0204)
-					* XpkgCap_C151  pkgCap_C151	ref_gnd		str(mlcc_1uF_0204)
-					* XpkgCap_C142  pkgCap_C142	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C143  pkgCap_C143	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C144  pkgCap_C144	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C145  pkgCap_C145	ref_gnd		str(mlcc_0p1uF_0204)
-					* XpkgCap_C146  pkgCap_C146	ref_gnd		str(mlcc_0p1uF_0204)
-
-	XpkgCap_C147  pkgCap_C147	ref_gnd		str(mlcc_0p1uF_0201)
-	XpkgCap_C148  pkgCap_C148	ref_gnd		str(mlcc_0p1uF_0201)
-	XpkgCap_C149  pkgCap_C149	ref_gnd		str(mlcc_0p01uF_0201)
-	XpkgCap_C150  pkgCap_C150	ref_gnd		str(mlcc_0p01uF_0201)
-	XpkgCap_C151  pkgCap_C151	ref_gnd		str(mlcc_0p01uF_0201)
-	XpkgCap_C142  pkgCap_C142	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C143  pkgCap_C143	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C144  pkgCap_C144	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C145  pkgCap_C145	ref_gnd		str(mlcc_1uF_0201)
-	XpkgCap_C146  pkgCap_C146	ref_gnd		str(mlcc_1uF_0201)
-	
-	XpkgCap_C200  pkgCap_C200	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C201  pkgCap_C201	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C202  pkgCap_C202	ref_gnd		str(mlcc_10uF_0402)	
-	XpkgCap_C203  pkgCap_C203	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C204  pkgCap_C204	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C205  pkgCap_C205	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C206  pkgCap_C206	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C207  pkgCap_C207	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C79   pkgCap_C79	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C82   pkgCap_C82	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C83   pkgCap_C83	ref_gnd		str(mlcc_10uF_0402)
-	XpkgCap_C84   pkgCap_C84	ref_gnd		str(mlcc_10uF_0402)
-
-	
-.endif  	*** end of pkg mock up Andes 0724 	
-
-
-.if ( 0 )	*** pkg mock up Andes 240117
-	Xblk_pkg
-	+ bga_pkg 
-	+ pkgCap_C1 
-	+ pkgCap_C2
-	+ pkgCap_C3
-	+ pkgCap_C4
-	+ pkgCap_C5
-	+ pkgCap_C6
-	+ pkgCap_C7
-	+ pkgCap_C8
-	+ pkgCap_C9
-	+ pkgCap_C10
-	+ pkgCap_C3_1
-	+ pkgCap_C3_2
-	+ pkgCap_C3_3
-	+ pkgCap_C3_4
-	+ pkgCap_C3_5
-	+ pkgCap_C3_6
-	+ pkgCap_C3_7
-	+ pkgCap_C3_8
-	+ pkgCap_C4_1
-	+ pkgCap_C4_2
-	+ pkgCap_C4_3
-	+ pkgCap_C4_4
-	+ pkg_bump_gpu
-	+ pkg_bump
-	+ ref_gnd
-	+ Mam_MCM_L12_231215c_mod48_CPU_GPU_02_IdEM_s25p
-	
-	XpkgCap_C1   		 pkgCap_C1     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C2           pkgCap_C2     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C3           pkgCap_C3     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-	XpkgCap_C4           pkgCap_C4     ref_gnd    ref_gnd  str(mlcc_0p1uF_0204_TDK)
-												  
-	XpkgCap_C5           pkgCap_C5     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C6           pkgCap_C6     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C7           pkgCap_C7     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-	XpkgCap_C8           pkgCap_C8     ref_gnd    ref_gnd  str(mlcc_0p047uF_0204_TDK)
-
-	XpkgCap_C3_1         pkgCap_C3_1   ref_gnd    pkgCap_C3_1   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C3_2         pkgCap_C3_2   ref_gnd    pkgCap_C3_2   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C3_3         pkgCap_C3_3   ref_gnd    pkgCap_C3_3   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	XpkgCap_C3_4         pkgCap_C3_4   ref_gnd    pkgCap_C3_4   ref_gnd str(mlcc_1uF_0402_3T_ft)
-	
-	XpkgCap_C3_5         pkgCap_C3_5   ref_gnd   str(mlcc_1uF_0204)
-	XpkgCap_C3_6         pkgCap_C3_6   ref_gnd   str(mlcc_1uF_0204)
-	XpkgCap_C3_7         pkgCap_C3_7   ref_gnd   str(mlcc_1uF_0204)
-	XpkgCap_C3_8         pkgCap_C3_8   ref_gnd   str(mlcc_1uF_0204)
-	
-	XpkgCap_C4_1         pkgCap_C4_1   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_2         pkgCap_C4_2   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_3         pkgCap_C4_3   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_4         pkgCap_C4_4   ref_gnd   str(mlcc_10uF_0402)
-	*** add more 10uF caps 
-	XpkgCap_C4_1_2         pkgCap_C4_1   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_2_2         pkgCap_C4_2   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_3_2         pkgCap_C4_3   ref_gnd   str(mlcc_10uF_0402)
-	XpkgCap_C4_4_2         pkgCap_C4_4   ref_gnd   str(mlcc_10uF_0402)
-	
-	.if ( 0 )  *** test to connect Ecap to bump 
-		XeCap_1
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ str(siCap_empwr_EC2047_4p8uF)
-		
-		XeCap_2
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ str(siCap_empwr_EC2047_4p8uF)
-		
-		XeCap_3
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one	pkg_bump_one
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ ref_gnd 	ref_gnd		ref_gnd		ref_gnd 	ref_gnd		ref_gnd 
-		+ str(siCap_empwr_EC2047_4p8uF)
-		
-	.endif 
-	
-
-.endif 		*** pkg mock up Andes 240117 end 
 
 
 .if ( 0 )	*** Zijie mock up 240207 w/  3x embedded ecap EC2047
@@ -1127,61 +550,80 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 *************************************** Die ***********************************
 *** approach 1: multi grp modeling 
 .if (die_model_sig != 1 )
-	xblk_die
-	+ 			pkg_bump_cpu_0_0
-	+ ref_gnd	pkg_bump_cpu_1_0
-	+ ref_gnd 	pkg_bump_cpu_2_0
-	+ ref_gnd	pkg_bump_cpu_0_1
-	+ ref_gnd	pkg_bump_cpu_1_1 
-	+ ref_gnd	pkg_bump_cpu_2_1
-	+ ref_gnd	pkg_bump_gpu_0_2
-	+ ref_gnd	pkg_bump_gpu_1_2
-	+ ref_gnd	pkg_bump_cpu_2_2
-	+ ref_gnd	pkg_bump_gpu_0_3
-	+ ref_gnd	pkg_bump_gpu_1_3
-	+ ref_gnd 
-	+ adsPowerModel_cpu
+
+	.if (is_MIM == 1)
+		xblk_die	
+		+ 			pkg_bump_cpu_0_0
+		+ ref_gnd	pkg_bump_cpu_1_0
+		+ ref_gnd 	pkg_bump_cpu_2_0
+		+ ref_gnd	pkg_bump_cpu_0_1
+		+ ref_gnd	pkg_bump_cpu_1_1 
+		+ ref_gnd	pkg_bump_cpu_2_1
+		+ ref_gnd	pkg_bump_gpu_0_2
+		+ ref_gnd	pkg_bump_gpu_1_2
+		+ ref_gnd	pkg_bump_cpu_2_2
+		+ ref_gnd	pkg_bump_gpu_0_3
+		+ ref_gnd	pkg_bump_gpu_1_3
+		+ ref_gnd 
+		+ Chip_Power_Model_SubCircuit_CPUGPU_w_MIM_240920_modelOnly		*** CPUGPU w/ MIM 240920
+	.endif 
+
+	.if (is_MIM != 1)
+		xblk_die
+		+ 			pkg_bump_cpu_0_0
+		+ ref_gnd	pkg_bump_cpu_1_0
+		+ ref_gnd 	pkg_bump_cpu_2_0
+		+ ref_gnd	pkg_bump_cpu_0_1
+		+ ref_gnd	pkg_bump_cpu_1_1 
+		+ ref_gnd	pkg_bump_cpu_2_1
+		+ ref_gnd	pkg_bump_gpu_0_2
+		+ ref_gnd	pkg_bump_gpu_1_2
+		+ ref_gnd	pkg_bump_cpu_2_2
+		+ ref_gnd	pkg_bump_gpu_0_3
+		+ ref_gnd	pkg_bump_gpu_1_3
+		+ ref_gnd 
+		+ adsPowerModel_cpu
+	.endif 
 	
-	IcurrSrc_cpu_2_1	pkg_bump_cpu_2_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_DSU)		  R   td = 0.n	
-	r_short_2_1_and_2_2 pkg_bump_cpu_2_2	pkg_bump_cpu_2_1	1.n                                            
-	IcurrSrc_cpu_2_0	pkg_bump_cpu_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 12.n 
+	IcurrSrc_cpu_2_1	pkg_bump_cpu_2_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_DSU)		  R   td = 0.n   *0.n	
+	r_short_2_1_and_2_2 pkg_bump_cpu_2_2	pkg_bump_cpu_2_1	1.n                                           
+	IcurrSrc_cpu_2_0	pkg_bump_cpu_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *12.n 
 																									      		
-	IcurrSrc_cpu_1_1	pkg_bump_cpu_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 24.n 
-	IcurrSrc_cpu_1_0	pkg_bump_cpu_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 36.n 
+	IcurrSrc_cpu_1_1	pkg_bump_cpu_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *24.n 
+	IcurrSrc_cpu_1_0	pkg_bump_cpu_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *36.n 
 																									      		
-	IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 48.n 
-	IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 60.n 
+	IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *48.n 
+	IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *60.n 
 																									      		
-	IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 100.n
-	IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 100.n
-	IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 100.n
-	IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 100.n
+	IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+	IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+	IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+	IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
 	
 	*** MIM cap *** 
-	.if (is_MIM == 1)
-		Cdie_MIM_cpu_2_1	    pkg_bump_cpu_2_1    ref_gnd   160.n
-		Cdie_MIM_cpu_2_0	    pkg_bump_cpu_2_0    ref_gnd   160.n
-		Cdie_MIM_cpu_1_1	    pkg_bump_cpu_1_1    ref_gnd   160.n
-		Cdie_MIM_cpu_1_0	    pkg_bump_cpu_1_0    ref_gnd   160.n
-		Cdie_MIM_cpu_0_1	    pkg_bump_cpu_0_1    ref_gnd   160.n
-		Cdie_MIM_cpu_0_0	    pkg_bump_cpu_0_0    ref_gnd   160.n
-		Cdie_MIM_gpu_1_3	    pkg_bump_gpu_1_3    ref_gnd   160.n
-		Cdie_MIM_gpu_1_2	    pkg_bump_gpu_1_2    ref_gnd   160.n
-		Cdie_MIM_gpu_0_3	    pkg_bump_gpu_0_3    ref_gnd   160.n
-		Cdie_MIM_gpu_0_2	    pkg_bump_gpu_0_2    ref_gnd   160.n
-		
-			* Rdie_MIM_cpu_2_1	pkg_bump_cpu_2_1_int   ref_gnd  0.17m
-			* Rdie_MIM_cpu_2_0	pkg_bump_cpu_2_0_int   ref_gnd  0.17m
-			* Rdie_MIM_cpu_1_1	pkg_bump_cpu_1_1_int   ref_gnd  0.17m
-			* Rdie_MIM_cpu_1_0	pkg_bump_cpu_1_0_int   ref_gnd  0.17m
-			* Rdie_MIM_cpu_0_1	pkg_bump_cpu_0_1_int   ref_gnd  0.17m
-			* Rdie_MIM_cpu_0_0	pkg_bump_cpu_0_0_int   ref_gnd  0.17m
-			* Rdie_MIM_gpu_1_3	pkg_bump_gpu_1_3_int   ref_gnd  0.17m
-			* Rdie_MIM_gpu_1_2	pkg_bump_gpu_1_2_int   ref_gnd  0.17m
-			* Rdie_MIM_gpu_0_3	pkg_bump_gpu_0_3_int   ref_gnd  0.17m
-			* Rdie_MIM_gpu_0_2	pkg_bump_gpu_0_2_int   ref_gnd  0.17m
-	
-    .endif 	
+	* .if (is_MIM == 1)	*** only supposed to work with die model w/o MIM 
+		* R_die_MIM_cpu_2_1	    pkg_bump_cpu_2_1    pkg_bump_cpu_2_1_   r_MIM_per_par
+		* C_die_MIM_cpu_2_1 		pkg_bump_cpu_2_1_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_cpu_2_0	    pkg_bump_cpu_2_0    pkg_bump_cpu_2_0_   r_MIM_per_par
+		* C_die_MIM_cpu_2_0 		pkg_bump_cpu_2_0_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_cpu_1_1	    pkg_bump_cpu_1_1    pkg_bump_cpu_1_1_   r_MIM_per_par
+		* C_die_MIM_cpu_1_1 		pkg_bump_cpu_1_1_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_cpu_1_0	    pkg_bump_cpu_1_0    pkg_bump_cpu_1_0_   r_MIM_per_par
+		* C_die_MIM_cpu_1_0 		pkg_bump_cpu_1_0_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_cpu_0_1	    pkg_bump_cpu_0_1    pkg_bump_cpu_0_1_   r_MIM_per_par
+		* C_die_MIM_cpu_0_1 		pkg_bump_cpu_0_1_	ref_gnd				c_MIM_per_par		
+		* R_die_MIM_cpu_0_0	    pkg_bump_cpu_0_0    pkg_bump_cpu_0_0_   r_MIM_per_par
+		* C_die_MIM_cpu_0_0 		pkg_bump_cpu_0_0_	ref_gnd				c_MIM_per_par
+
+		* R_die_MIM_gpu_1_3	    pkg_bump_gpu_1_3    pkg_bump_gpu_1_3_   r_MIM_per_par
+		* C_die_MIM_gpu_1_3 		pkg_bump_gpu_1_3_	ref_gnd				c_MIM_per_par	
+		* R_die_MIM_gpu_1_2	    pkg_bump_gpu_1_2    pkg_bump_gpu_1_2_   r_MIM_per_par
+		* C_die_MIM_gpu_1_2 		pkg_bump_gpu_1_2_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_gpu_0_3	    pkg_bump_gpu_0_3    pkg_bump_gpu_0_3_   r_MIM_per_par
+		* C_die_MIM_gpu_0_3 		pkg_bump_gpu_0_3_	ref_gnd				c_MIM_per_par
+		* R_die_MIM_gpu_0_2	    pkg_bump_gpu_0_2    pkg_bump_gpu_0_2_   r_MIM_per_par
+		* C_die_MIM_gpu_0_2 		pkg_bump_gpu_0_2_	ref_gnd				c_MIM_per_par
+    * .endif 	
 	
 	
 							* *** uncomment, if all CPU grps lumped 

@@ -58,11 +58,11 @@
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up 
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_wStall_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, added 8x3 clk stall, repeatable 
-			* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
+			.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
 				
 				
-				.param pwl_file_in_PA = str('./hspice_inc/resnet_6_PA_profile.csv')	*** 1/4 PA, Brad 240823
-				.param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823				
+				* .param pwl_file_in_PA = str('./hspice_inc/resnet_6_PA_profile.csv')	*** 1/4 PA, Brad 240823
+				* .param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_IGI_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				
@@ -98,7 +98,7 @@
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_wStall_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len accommodate PA 8x3 clk stalling, repeatable
-			* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
+			.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_x1Of4_240603.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len match PA Brad trace 240603, repeatable
 				
@@ -173,8 +173,8 @@ C_lf lf 		ref_gnd	160.p
 .inc ./hspice_inc/cpm_nne_240523_modelOnly.spice
 
 *** CPM w/ MIM included 
-.inc ./hspice_inc/Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly.sp		*** 4x8, w/ MIM 
-.inc ./hspice_inc/cpm_nne_w_MIM_240929_reduce_IdEM.cir
+.inc ./hspice_inc/Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly.sp		*** 4x8, w/ MIM, 140um
+.inc ./hspice_inc/cpm_nne_w_MIM_240929_reduce_IdEM.cir	*** reduced model of "Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly"
 
 
 * .inc ./hspice_inc/cpm_nne_4x2_240313.sp 			*** Andes 4x2 CPM model 240313
@@ -208,7 +208,7 @@ C_lf lf 		ref_gnd	160.p
 	
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM.cir		*** 240821 Andes 4x8 pkg cir, jgwei reduced model 
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM.cir		*** 240821 Andes 4x8 pkg cir, jgwei replaced DSC for MIM case, reduced model
-	.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir			*** 240903 Andes generated PCB model
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM.cir		*** 241004 130um micro pkg, jgwei reduced model based on Andes pkg SIW, jgwei pingrps
 
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -229,6 +229,7 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_manip_IdEM.cir
 	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_0x22uF_manip_IdEM.cir
 	
+	.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir			*** 240903 Andes generated PCB model
 	.inc ./hspice_inc/ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM.cir 	*** 240912, 6 phase layout, 105C 
 	
 					*** 
@@ -278,13 +279,13 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 200.u    
+.param tStop	= 10.u   *200.u    
 
 .param td_delay = 0.n
-.param td_delay_grp0 = 0.u
-.param td_delay_grp1 = 1.u
-.param td_delay_grp2 = 2.u
-.param td_delay_grp3 = 3.u	
+.param td_delay_grp0 = 0.u   *0.u
+.param td_delay_grp1 = 0.u   *1.u
+.param td_delay_grp2 = 0.u   *2.u
+.param td_delay_grp3 = 0.u   *3.u	
 *************************************** End of User Input params **************
 
 *************************************** cap model *****************************
@@ -464,8 +465,9 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 		+ bga_pcb_5
 		+ ref_gnd
 		* + NNE_pkg_240522_DSC_tdk_3t_reduModel_IdEM		
-		+ Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM
+		* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM
 		* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM	
+		+ Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM
 
 								* Xblk_pkg	*** 8+4 NNE grp 
 								* + pkg_bump_MA_ns_0
