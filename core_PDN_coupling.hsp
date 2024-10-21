@@ -1,0 +1,423 @@
+* Top level spice file 
+
+.option post=1
+*.chkanode type=gate dv=0.5*pvdd report=active
+.option parhier = local 
+.option measform = 1
+.option lis_new
+.option post probe
+.param pi = 3.141592653
+
+*************************************** User defined functions ****************
+.param V_meas(node, ref) = 'v(node) - v(ref)'
+
+*************************************** cap model *****************************
+.inc /data/home/jiangongwei/work/cap_models.hsp
+
+***** current profiles
+	*** NNE 
+.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
+.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
+	*** CPUGPU
+.param pwl_file_cpu2Core_x1p2  	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX6_2Core_scale1p2_11us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore only, scale by 1.2 to simulate pwr of 12 cores in 5 paritions, steady state duration x6
+.param pwl_file_cpu2Core_DSU 	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX6_DSU_2Core_11us.txt.csv')		*** NOTE: 240327 Andes new profile, 2xcore + DSU, steady state duration x6  
+.param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPGPU_1Of4_240603.txt.csv')		*** NOTE: 10W, 240603, GPGPU pwr profile from Verisilicon, steady state 10W, scaled to TT 105C by Adrian 
+	*** SOC 
+.param pwl_file_SOC = str('./hspice_inc/curr_profile_SOC_240912_Andes_dIdt_18A_100ns_8us.txt.csv')		*** 240912, Andes sign off profile 
+	*** RSI 
+.param pwl_file_RSI = str('./hspice_inc/curr_profile_RSI_Andes_profile_2p3A_70ns_240912.txt.csv')		*** 20240912 Andes sign off profile, 2.3A/70ns
+	*** AO 
+.param pwl_file_AO = str('./hspice_inc/curr_profile_AO_Andes_240912_0p24A_10ns.txt.csv')
+
+		*** idle current
+		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
+		
+		
+*** filter for measurement
+.subckt meas_filter	
++ pin_in  ref_gnd 	hf  lf 
+
+E_meas pin_meas ref_gnd  pin_in ref_gnd	1.0
+
+C_hf pin_meas	hf  	160.p		
+R_hf hf         ref_gnd 1k
+
+R_lf pin_meas	lf		1k
+C_lf lf 		ref_gnd	160.p
+.ends meas_filter
+
+***** die CPM model 
+	*** NNE 
+*** CPM w/o MIM 
+.inc ./hspice_inc/cpm_nne_240724_modelOnly.sp		*** 4x8 parition 
+
+*** CPM w/ MIM included 
+.inc ./hspice_inc/Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly.sp		*** 4x8, w/ MIM, 140um
+.inc ./hspice_inc/cpm_nne_w_MIM_240929_reduce_IdEM.cir	*** reduced model of "Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly"
+
+	*** CPUGPU
+.inc ./hspice_inc/cpm_cpu_3x4_240313.sp 	*** Andes CPM model 240313
+.inc ./hspice_inc/Chip_Power_Model_SubCircuit_CPUGPU_w_MIM_240920_modelOnly.sp   *** Andes CPM 240923 for CPUGPU w/ MIM 140um
+	
+	*** SOC 
+.inc ./hspice_inc/cpm_soc_modelOnly_240417.spice
+.inc ./hspice_inc/cpm_SOC_240612_modelOnly.spice
+	
+	*** RSI 
+.inc ./hspice_inc/cpm_rsi_modelOnly_240417.spice
+	
+	*** AO 
+.inc ./hspice_inc/cpm_ao_modelOnly_240419.spice
+
+***** pkg model 
+.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20241008_2_CorePI_IdEM.cir
+* .inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM.cir		*** 241004 130um micro pkg, jgwei reduced model based on Andes pkg SIW, jgwei pingrps
+* .inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM.cir	*** 241004, 130um reduced pkg model based on Andes SIW, jgwei pingrps
+* .inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM.cir	*** 241004 jgwei extracted model based on Andes SIW, jgwei pin
+* .inc ./hspice_inc/lsio0617_RSI_IdEM.cir
+* .inc ./hspice_inc/lsio0617_AO_IdEM.cir	
+
+
+
+***** PCB model 
+.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir		*** 240903 Andes generated PCB model
+.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC.cir		*** 240903, Andes generated PCB 
+.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps	
+.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC.cir		*** 240912, Andes generated PCB 
+.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs.cir		*** 240912 Andes sign off generated 
+
+
+***** 
+.param Vdd_nne 	= 0.775
+.param Vdd 	= 0.75
+
+.param tStep	= 10.p
+.param tStop	= 10.u   *200.u    
+
+.param td_delay = 0.n
+.param td_delay_grp0 = 0.u   *0.u
+.param td_delay_grp1 = 0.u   *1.u
+.param td_delay_grp2 = 0.u   *2.u
+.param td_delay_grp3 = 0.u   *3.u	
+
+.param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
+.param volt_src = str('./hspice_inc/volt_profile_adi_240327_25us.txt.csv')		*** for PMIC delay test only 
+.param Vdd_shift_fr_pwl = 0.0
+*************************************** PMIC **********************************
+*** ref_gnd def.
+Vref_gnd 	ref_gnd		0	0.										*** normal gnd 
+
+.subckt PMIC_model
++ pin_out ref_gnd fdbk_node opt = 1 vdd_pmic = 0.75 Vdd_shift= 0.0 t_delay = 0.n pwl_volt_in = str(volt_src)
+	*** opt 1/3 ideal voltage src
+		.if (opt == 1)
+			VshortPMIC	pin_out	ref_gnd	vdd_pmic
+		.endif 
+	*** opt 2/3, add feedback
+		.if (opt == 2)
+			VshortPMIC_ref	pin_out_tmp	0 	vdd_pmic	*** ref contant voltage src 
+			
+			VshortPMIC	pin_out	pin_tmp	vdd_pmic
+			E_fdbk	    pin_tmp	ref_gnd VCVS DELAY pin_out_tmp fdbk_node  TD=0.n			*** VCVS to model feedback using low freq signal 
+		.endif 
+	*** opt 3/3 voltage src waveform w/ shift 
+		.if (opt == 3)
+			Vpmic_wf     pin_out  pin_tmp  Vdd_shift					*** NOTE: shift waveform by constant voltage in V., use 0.0 if no shift 
+			Vpmic_wf_pwl pin_tmp  ref_gnd PWL pwlfile = str(pwl_volt_in)   td = t_delay 
+		.endif 
+	*** 
+.ends 
+
+*** opt 1 ideal PMIC w/o remote sense feedback
+.if ( 1 )
+	xblk_PMIC_nne pmic_pwr_nne ref_gnd pkg_bump_PA_ns_3_lf PMIC_model 
+	+ opt = 'PMIC_opt'  vdd_pmic = 'Vdd_nne' 	Vdd_shift = 'Vdd_shift_fr_pwl'		t_delay = 0.u 	pwl_volt_in = str(volt_src)		
+	
+	xblk_PMIC pmic_pwr ref_gnd pkg_bump_PA_ns_3_lf PMIC_model 
+	+ opt = 'PMIC_opt'  vdd_pmic = 'Vdd' 	Vdd_shift = 'Vdd_shift_fr_pwl'		t_delay = 0.u 	pwl_volt_in = str(volt_src)		
+.endif 
+
+
+***** PCB 
+	*** NNE 
+Xblk_PCB_nne		*** 240903 Andes generated model 
++ bga_pcb_nne   * + bga_pcb_0 
++ bga_pcb_nne   * + bga_pcb_1
++ bga_pcb_nne   * + bga_pcb_2
++ bga_pcb_nne   * + bga_pcb_3
++ bga_pcb_nne   * + bga_pcb_4		
++ bga_pcb_nne   * + bga_pcb_5
++ pmic_pwr_nne
++ pmic_pwr_nne
++ pmic_pwr_nne
++ pmic_pwr_nne
++ ref_gnd
++ ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC
+
+	*** CPU 
+Xblk_PCB_cpugpu
++ bga_pcb_cpu        * + bga_pcb_north_col1   *** cpu 
++ bga_pcb_cpu        * + bga_pcb_north_col0   *** gpu 
++ bga_pcb_cpu        * + bga_pcb_south_col1   *** out_0
++ bga_pcb_cpu        * + bga_pcb_south_col0   *** out_1
++ pmic_pwr
++ pmic_pwr
++ ref_gnd
++ ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC
+	
+	*** SOC 
+Xblk_PCB_soc 
++ pmic_pwr
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_3
++ bga_pcb_soc  * + bga_pcb_soc_2
++ bga_pcb_soc  * + bga_pcb_soc_1
++ bga_pcb_soc  * + bga_pcb_soc_1
++ bga_pcb_soc  * + bga_pcb_soc_1
++ bga_pcb_soc  * + bga_pcb_soc_0
++ bga_pcb_soc  * + bga_pcb_soc_0
++ bga_pcb_soc  * + bga_pcb_soc_0
++ ref_gnd 
++ ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM
+	
+
+	*** RSI 
+Xblk_PCB_rsi
++ bga_pcb_rsi
++ pmic_pwr
++ pmic_pwr
++ ref_gnd
++ ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC	*** 240912 Andes PCB 
+	
+	*** AO 
+Xblk_PCB_ao
++ bga_pcb_ao 
++ pmic_pwr
++ ref_gnd
++ ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs
+
+***** pkg 
+Xblk_pkg_cpl
++ bga_pcb_ao
++ bga_pcb_cpu
++ bga_pcb_nne
++ bga_pcb_rsi
++ bga_pcb_soc
++ pkg_bump_PA_ns_3
++ pkg_bump_gpu_1_3
++ pkg_bump_PA_ns_2
++ pkg_bump_gpu_0_3
++ pkg_bump_PA_ns_1
++ pkg_bump_PA_ns_0
++ pkg_bump_cpu_2_2
++ pkg_bump_MA_ns_3
++ pkg_bump_gpu_1_2
++ pkg_bump_MA_ns_2
++ pkg_bump_gpu_0_2
++ pkg_bump_MA_ns_1
++ pkg_bump_MA_ns_0
++ pkg_bump_cpu_2_1
++ pkg_bump_cpu_1_1 
++ pkg_bump_cpu_0_1
++ pkg_bump_cpu_2_0
++ pkg_bump_cpu_1_0
++ pkg_bump_cpu_0_0
++ pkg_bump_ao
++ pkg_bump_rsi
++ pkg_bump_soc
++ ref_gnd
++ Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20241008_2_CorePI_IdEM
+
+							* *** NNE 
+						* Xblk_pkg
+						* + pkg_bump_MA_ns_0
+						* + pkg_bump_MA_ns_1
+						* + pkg_bump_MA_ns_2
+						* + pkg_bump_MA_ns_3
+						* + pkg_bump_PA_ns_0
+						* + pkg_bump_PA_ns_1
+						* + pkg_bump_PA_ns_2
+						* + pkg_bump_PA_ns_3	
+						* + bga_pcb_0
+						* + bga_pcb_1
+						* + bga_pcb_2
+						* + bga_pcb_3
+						* + bga_pcb_4
+						* + bga_pcb_5
+						* + ref_gnd
+						* + Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM
+
+							* *** CPU 
+						* Xblk_pkg
+						* + pkg_bump_cpu_0_0 
+						* + pkg_bump_cpu_1_0
+						* + pkg_bump_cpu_2_0
+						* + pkg_bump_cpu_0_1
+						* + pkg_bump_cpu_1_1
+						* + pkg_bump_cpu_2_1 
+						* + pkg_bump_gpu_0_2
+						* + pkg_bump_gpu_1_2
+						* + pkg_bump_cpu_2_2
+						* + pkg_bump_gpu_0_3
+						* + pkg_bump_gpu_1_3	
+						* + bga_pcb_north_col1   *** cpu 
+						* + bga_pcb_north_col0   *** gpu 
+						* + bga_pcb_south_col1   *** out_0
+						* + bga_pcb_south_col0   *** out_1
+						* + ref_gnd
+						* + Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM
+
+							* *** SOC 
+						* Xblk_pkg	*** 241004 130um jgwei extraction based on Andes SIW, jgwei pingrp 
+						* + bga_pcb_soc_3
+						* + bga_pcb_soc_3
+						* + bga_pcb_soc_3
+						* + bga_pcb_soc_2
+						* + bga_pcb_soc_1
+						* + bga_pcb_soc_1
+						* + bga_pcb_soc_0
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + pkg_bump_soc
+						* + ref_gnd
+						* + Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM
+
+							* *** RSI 
+						* Xblk_pkg
+						* + pkg_bump_rsi
+						* + bga_pcb_rsi
+						* + ref_gnd
+						* + lsio0617_RSI_IdEM
+
+							* *** AO 
+						* Xblk_pkg
+						* + pkg_bump_ao
+						* + bga_pcb_ao
+						* + ref_gnd
+						* + lsio0617_AO_IdEM
+
+***** die & profile 
+	*** NNE 
+xblk_die_nne 	*** 4x8 NNE CPM, w/o CPM , Andes 240821 sign off 
++         pkg_bump_MA_ns_0
++ ref_gnd pkg_bump_MA_ns_1
++ ref_gnd pkg_bump_MA_ns_2
++ ref_gnd pkg_bump_MA_ns_3	
++ ref_gnd pkg_bump_MA_ns_0
++ ref_gnd pkg_bump_MA_ns_1
++ ref_gnd pkg_bump_MA_ns_2
++ ref_gnd pkg_bump_MA_ns_3	
++ ref_gnd pkg_bump_MA_ns_0
++ ref_gnd pkg_bump_MA_ns_1
++ ref_gnd pkg_bump_MA_ns_2
++ ref_gnd pkg_bump_MA_ns_3	
++ ref_gnd pkg_bump_MA_ns_0
++ ref_gnd pkg_bump_MA_ns_1
++ ref_gnd pkg_bump_MA_ns_2
++ ref_gnd pkg_bump_MA_ns_3	
++ ref_gnd pkg_bump_PA_ns_0
++ ref_gnd pkg_bump_PA_ns_1
++ ref_gnd pkg_bump_PA_ns_2
++ ref_gnd pkg_bump_PA_ns_3		
++ ref_gnd pkg_bump_PA_ns_0
++ ref_gnd pkg_bump_PA_ns_1
++ ref_gnd pkg_bump_PA_ns_2
++ ref_gnd pkg_bump_PA_ns_3	
++ ref_gnd pkg_bump_PA_ns_0
++ ref_gnd pkg_bump_PA_ns_1
++ ref_gnd pkg_bump_PA_ns_2
++ ref_gnd pkg_bump_PA_ns_3	
++ ref_gnd pkg_bump_PA_ns_0
++ ref_gnd pkg_bump_PA_ns_1
++ ref_gnd pkg_bump_PA_ns_2
++ ref_gnd pkg_bump_PA_ns_3
++ ref_gnd
++ adsPowerModel_nne_240724
+
+IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3   R 	*** add 'R' if repeat
+IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2   R 
+IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1   R
+IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0   R
+
+IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3   R 
+IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2   R
+IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1   R 
+IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0   R
+
+	*** CPU 
+xblk_die_cpugpu
++ 			pkg_bump_cpu_0_0
++ ref_gnd	pkg_bump_cpu_1_0
++ ref_gnd 	pkg_bump_cpu_2_0
++ ref_gnd	pkg_bump_cpu_0_1
++ ref_gnd	pkg_bump_cpu_1_1 
++ ref_gnd	pkg_bump_cpu_2_1
++ ref_gnd	pkg_bump_gpu_0_2
++ ref_gnd	pkg_bump_gpu_1_2
++ ref_gnd	pkg_bump_cpu_2_2
++ ref_gnd	pkg_bump_gpu_0_3
++ ref_gnd	pkg_bump_gpu_1_3
++ ref_gnd 
++ adsPowerModel_cpu
+
+* IcurrSrc_cpu_2_1	pkg_bump_cpu_2_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_DSU)		  R   td = 0.n   *0.n	
+* r_short_2_1_and_2_2 pkg_bump_cpu_2_2	pkg_bump_cpu_2_1	1.n                                           
+* IcurrSrc_cpu_2_0	pkg_bump_cpu_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *12.n 
+																											
+* IcurrSrc_cpu_1_1	pkg_bump_cpu_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *24.n 
+* IcurrSrc_cpu_1_0	pkg_bump_cpu_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *36.n 
+																											
+* IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *48.n 
+* IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *60.n 
+																											
+* IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+* IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+* IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+* IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+	
+	*** SOC 
+Xblk_die_soc  
++ pkg_bump_soc
++ ref_gnd
++ adsPowerModel_SOC
+
+* IcurrSrc_SOC	pkg_bump_soc	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
+	
+	*** RSI 
+Xblk_die_rsi 
++ pkg_bump_rsi
++ ref_gnd
++ adsPowerModel_RSI
+
+* IcurrSrc_RSI	pkg_bump_rsi	ref_gnd	PWL  pwlfile = str(pwl_file_RSI)  R * td= 0.
+	
+	*** AO 
+Xblk_die_ao 
++ pkg_bump_ao
++ ref_gnd
++ adsPowerModel_AO
+
+* IcurrSrc_AO	pkg_bump_ao	ref_gnd	PWL  pwlfile = str(pwl_file_AO)  R * td= 0.   
+	
+*************************************** Analysis II: Transient simulation *****
+
+.tran tStep tSTOP 
+
+.probe tran v(pkg_bump_PA_ns_3)   v(pkg_bump_cpu_0_0)
+.probe tran v(pkg_bump_soc)  v(pkg_bump_rsi) 	v(pkg_bump_ao)
+
+
