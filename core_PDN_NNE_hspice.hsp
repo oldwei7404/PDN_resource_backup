@@ -58,15 +58,20 @@
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up 
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_wStall_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, added 8x3 clk stall, repeatable 
-			.param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
+			* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_flr6A_8us_RptRdy.txt.csv') *** 1/4 of PA, Brad trace 240325 4us, mag scaled by 0.7143 to match 240306 profile, steady state extended to show PMIC curr, copy ramp down from ramp up, No stall, repeatable 
 				
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/resnet_6_PA_profile.csv')	*** 1/4 PA, Brad 240823
 				* .param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_IGI_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
+				.param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile.csv')	*** 1/4 PA, Brad 241031, 11us
+				.param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile.csv')	*** 1/4 IGI, Brad 241031, 11us 		
+				* .param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile_ScaleBy2.csv')	*** 1/4 PA, Brad 241031, 11us
+				* .param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile_ScaleBy2.csv')	*** 1/4 IGI, Brad 241031, 11us 			
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 80ns
+				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 160ns
 				
 						*** 200W peak power study
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_v0_200Wpeak_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak for 1us case, 13us, repeat ready 
@@ -98,11 +103,12 @@
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_wStall_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len accommodate PA 8x3 clk stalling, repeatable
-			.param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
+			* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_GMT_only_240325_8us_RptReady.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len NO accommodate PA 8x3 clk stalling, repeatable
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_GMT_x1Of4_240603.txt.csv')		*** 1/4 of GMT, jgwei created to mockup ramp ==> steady state pwr 12A, len match PA Brad trace 240603, repeatable
 				
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2MA_2p5A_5A_80ns_len7us.txt.csv') *** 1/4 of MA, 2.4==>5A in 80ns
+				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2MA_2p5A_5A_160ns_len7us.txt.csv') *** 1/4 of MA, 2.4==>5A in 80ns
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240405_fr_PD_1100usRamp_200ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,  from /work/mammoth/pd/nne/4/steveny/PI/nne_pat_top/DVD_IPF_becky_0207rtl_newFP_newPG/reports/dynamic_analysis/pad.current
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240406_fr_PD_8ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,
@@ -178,7 +184,7 @@ C_lf lf 		ref_gnd	160.p
 
 
 * .inc ./hspice_inc/cpm_nne_4x2_240313.sp 			*** Andes 4x2 CPM model 240313
-* .inc ./hspice_inc/cpm_nne_240426_Redu_IdEM.cir		*** 240426 CPM reduced model 
+.inc ./hspice_inc/cpm_nne_240426_Redu_IdEM.cir		*** 240426 CPM reduced model 
 * .inc ./hspice_inc/cpm_maual_appx_nne_4x2_240317.sp	*** jgwei 4x2 CPM manual mockup based on CPM 
 
 
@@ -209,6 +215,7 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM.cir		*** 240821 Andes 4x8 pkg cir, jgwei reduced model 
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM.cir		*** 240821 Andes 4x8 pkg cir, jgwei replaced DSC for MIM case, reduced model
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM.cir		*** 241004 130um micro pkg, jgwei reduced model based on Andes pkg SIW, jgwei pingrps
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_mockup_241102_IdEM.cir  *** 241102 130um pkg, Zijie mockup 
 
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -241,16 +248,8 @@ C_lf lf 		ref_gnd	160.p
 .param Vdd 	= 0.775
 
 .param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
-.param is_MIM 			= 1
+.param is_MIM 			= 0
 
-.param die_model_sig 	= 0		*** value: 0 if multi grp model, 1 if single die grp model 
-.param single_bga_grp 	= 0		*** value: 0 if use multiple BGA grps, 1 if use single BGA grp
-.param is_use_3T_cap_ft = 1		*** value: 0 or 1, note: this could be baked in pkg model 
-
-*** MIM approximation, only work together with CPM w/o MIM
-.param 	r_MIM_per_par = 4.m		*** 4.m is the default recommended value 
-.param 	c_MIM_per_PA_par = 260.n
-.param 	c_MIM_per_MA_par = 212.n
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
 .param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
@@ -273,13 +272,11 @@ C_lf lf 		ref_gnd	160.p
 	.param Rdie_PA 	= '0.186m * Rdie_coeff'
 	.param Rdie_MA 	= '0.239m * Rdie_coeff'
 	.param Rleak 	= 0.84
-		
-		* .param r_grid = 52e6.m			*** only applied when multi grp model, i.e. die_model_sig = 0 
 
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 10.u   *200.u    
+.param tStop	= 12.u   *200.u    
 
 .param td_delay = 0.n
 .param td_delay_grp0 = 0.u   *0.u
@@ -353,57 +350,54 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 					*** debug to skip PCB 
 					* R_short_pcb bga_pcb 	pmic_pwr	1.n
 
-.if ( 1 )		***  ACM3 PCB, reduced to 5 ports
-	*** 6 BGA ports
-	.if (single_bga_grp != 1)
-		* Xblk_PCB
-		* + bga_pcb_0 
-		* + pmic_pwr
-		* + pmic_pwr
-		* + pmic_pwr
-		* + pmic_pwr
-		* + bga_pcb_1
-		* + bga_pcb_2
-		* + bga_pcb_3
-		* + bga_pcb_4		
-		* + bga_pcb_5
-		* + ref_gnd
-		* + ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM
-		* * + ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_manip_IdEM		*** 
-		* * + ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_0x22uF_manip_IdEM ***
+Xblk_PCB		*** 240912 6x phase solution  
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ bga_pcb_0 
++ bga_pcb_1
++ bga_pcb_2
++ bga_pcb_3
++ bga_pcb_4		
++ bga_pcb_5
++ ref_gnd
++ ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM
 
-		Xblk_PCB		*** 240903 Andes generated model 
-		+ bga_pcb_0 
-		+ bga_pcb_1
-		+ bga_pcb_2
-		+ bga_pcb_3
-		+ bga_pcb_4		
-		+ bga_pcb_5
-		+ pmic_pwr
-		+ pmic_pwr
-		+ pmic_pwr
-		+ pmic_pwr
-		+ ref_gnd
-		+ ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC
+				* Xblk_PCB		*** 240903 Andes generated model 
+				* + bga_pcb_0 
+				* + bga_pcb_1
+				* + bga_pcb_2
+				* + bga_pcb_3
+				* + bga_pcb_4		
+				* + bga_pcb_5
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + ref_gnd
+				* + ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC
+						
+						* Xblk_PCB
+						* + bga_pcb_0 
+						* + pmic_pwr
+						* + pmic_pwr
+						* + pmic_pwr
+						* + pmic_pwr
+						* + bga_pcb_1
+						* + bga_pcb_2
+						* + bga_pcb_3
+						* + bga_pcb_4		
+						* + bga_pcb_5
+						* + ref_gnd
+						* + ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM
+						* * + ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_manip_IdEM		*** 
+						* * + ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_0x22uF_manip_IdEM ***
+
+
 	
-			* Xblk_PCB		*** 240912 6x phase solution  
-			* + pmic_pwr
-			* + pmic_pwr
-			* + pmic_pwr
-			* + pmic_pwr
-			* + pmic_pwr
-			* + pmic_pwr
-			* + bga_pcb_0 
-			* + bga_pcb_1
-			* + bga_pcb_2
-			* + bga_pcb_3
-			* + bga_pcb_4		
-			* + bga_pcb_5
-			* + ref_gnd
-			* + ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM
-		
-
-	.endif 	
 				* *** S-para (only for AC sim)
 				* .model pcb_spara_model S
 				* + TSTONEFILE = '/data/home/jiangongwei/work/PDN_core/hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6.s10p'
@@ -423,264 +417,134 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 				* + ref_gnd
 				* + mname = pcb_spara_model
 				* *** 
-				
-				
-	.if (single_bga_grp == 1)
-		Xblk_PCB
-		+ bga_pcb
-		+ pmic_pwr
-		+ pmic_pwr
-		+ pmic_pwr
-		+ pmic_pwr
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ ref_gnd	
-		+ ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM
-	.endif 
-		
-				
-.endif 		*** end of ACM3 PCB, reduced to 5 ports 
-
 
 *************************************** Pkg ***********************************
-.if ( 1 ) 	
-	.if (single_bga_grp != 1)
-		Xblk_pkg
-		+ pkg_bump_MA_ns_0
-		+ pkg_bump_MA_ns_1
-		+ pkg_bump_MA_ns_2
-		+ pkg_bump_MA_ns_3
-		+ pkg_bump_PA_ns_0
-		+ pkg_bump_PA_ns_1
-		+ pkg_bump_PA_ns_2
-		+ pkg_bump_PA_ns_3	
-		+ bga_pcb_0
-		+ bga_pcb_1
-		+ bga_pcb_2
-		+ bga_pcb_3
-		+ bga_pcb_4
-		+ bga_pcb_5
-		+ ref_gnd
-		* + NNE_pkg_240522_DSC_tdk_3t_reduModel_IdEM		
-		* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM
-		* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM	
-		+ Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM
 
-								* Xblk_pkg	*** 8+4 NNE grp 
-								* + pkg_bump_MA_ns_0
-								* + pkg_bump_MA_ns_1
-								* + pkg_bump_MA_ns_2
-								* + pkg_bump_MA_ns_3
-								* + pkg_bump_PA_ns_0
-								* + pkg_bump_PA_ns_1
-								* + pkg_bump_PA_ns_2
-								* + pkg_bump_PA_ns_3	
-								* + bga_pcb_0
-								* + bga_pcb_1
-								* + bga_pcb_2
-								* + bga_pcb_3
-								* + bga_pcb_4
-								* + bga_pcb_5
-								* + pkg_bump_PA_ns_0_edge
-								* + pkg_bump_PA_ns_1_edge
-								* + pkg_bump_PA_ns_2_edge
-								* + pkg_bump_PA_ns_3_edge
-								* + ref_gnd
-								* + NNE_pkg_240725_reduModel_IdEM
-	.endif 
+Xblk_pkg
++ pkg_bump_MA_ns_0
++ pkg_bump_MA_ns_1
++ pkg_bump_MA_ns_2
++ pkg_bump_MA_ns_3
++ pkg_bump_PA_ns_0
++ pkg_bump_PA_ns_1
++ pkg_bump_PA_ns_2
++ pkg_bump_PA_ns_3	
++ bga_pcb_0
++ bga_pcb_1
++ bga_pcb_2
++ bga_pcb_3
++ bga_pcb_4
++ bga_pcb_5
++ ref_gnd
+* + NNE_pkg_240522_DSC_tdk_3t_reduModel_IdEM		
+* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM
+* + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM	
++ Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM
+* + Z_plot_NNE_pkg_ReduceModel_4x2_130um_mockup_241102_IdEM
 
-	.if (single_bga_grp == 1)
-		Xblk_pkg
-		+ pkg_bump_MA_ns_0
-		+ pkg_bump_MA_ns_1
-		+ pkg_bump_MA_ns_2
-		+ pkg_bump_MA_ns_3
-		+ pkg_bump_PA_ns_0
-		+ pkg_bump_PA_ns_1
-		+ pkg_bump_PA_ns_2
-		+ pkg_bump_PA_ns_3	
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ ref_gnd
-		* + NNE_pkg_240522_DSC_tdk_3t_reduModel_IdEM		
-		+ Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240821_IdEM
-	.endif 
+						* Xblk_pkg	*** 8+4 NNE grp 
+						* + pkg_bump_MA_ns_0
+						* + pkg_bump_MA_ns_1
+						* + pkg_bump_MA_ns_2
+						* + pkg_bump_MA_ns_3
+						* + pkg_bump_PA_ns_0
+						* + pkg_bump_PA_ns_1
+						* + pkg_bump_PA_ns_2
+						* + pkg_bump_PA_ns_3	
+						* + bga_pcb_0
+						* + bga_pcb_1
+						* + bga_pcb_2
+						* + bga_pcb_3
+						* + bga_pcb_4
+						* + bga_pcb_5
+						* + pkg_bump_PA_ns_0_edge
+						* + pkg_bump_PA_ns_1_edge
+						* + pkg_bump_PA_ns_2_edge
+						* + pkg_bump_PA_ns_3_edge
+						* + ref_gnd
+						* + NNE_pkg_240725_reduModel_IdEM
 
-	*** Ecap embedded, NOTE: this is just mock up, NOT real connection, connected on bumps, Optimistic !!		
-		.if ( is_use_ecap_ebed == 1 )  *** use ecap embed
-			xECAP_16600nF_core_2
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_3_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ pkg_bump_PA_ns_2_
-			+ ref_gnd
-			+ str(siCap_empwr_EC1005_16600nF)
-			
-			*** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
-			r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	6.u
-			l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		4.p
-			r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	6.u
-			l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		4.p		
-			
-		.endif
+
+
+
+*** Ecap embedded, NOTE: this is just mock up, NOT real connection, connected on bumps, Optimistic !!		
+.if ( is_use_ecap_ebed == 1 )  *** use ecap embed
+	xECAP_16600nF_core_2
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_3_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ pkg_bump_PA_ns_2_
+	+ ref_gnd
+	+ str(siCap_empwr_EC1005_16600nF)
+	
+	*** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
+	r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	5.4u
+	l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		3.0p
+	r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	5.4u
+	l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		3.0p		
+	
+.endif	*** End If, is_use_ecap_ebed == 1
 		
-.endif 
+
 
 
 *************************************** Die ***********************************
-*** approach 1: multi grp modeling 
-.if (die_model_sig != 1 )
-
-	* xblk_die 
-	* +         pkg_bump_MA_ns_0
-	* + ref_gnd pkg_bump_MA_ns_1
-	* + ref_gnd pkg_bump_MA_ns_2
-	* + ref_gnd pkg_bump_MA_ns_3
-	* + ref_gnd pkg_bump_PA_ns_0
-	* + ref_gnd pkg_bump_PA_ns_1
-	* + ref_gnd pkg_bump_PA_ns_2
-	* + ref_gnd pkg_bump_PA_ns_3
-	* + ref_gnd	
-	* * + adsPowerModel
-	* + adsPowerModel_nne_240523
-	
-	* IcurrSrc_0_0	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 	*** add 'R' if repeat
-	* IcurrSrc_0_1	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 
-	* IcurrSrc_0_2	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
-	* IcurrSrc_0_3	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
-	
-	* IcurrSrc_1_0	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
-	* IcurrSrc_1_1	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
-	* IcurrSrc_1_2	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
-	* IcurrSrc_1_3	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
-	
-						* xblk_die		*** reduced CPM, to correlate with SIMPLIS, good accuracy confirmed 
-						* + pkg_bump_PA_ns_3
-						* + pkg_bump_PA_ns_2
-						* + pkg_bump_PA_ns_1
-						* + pkg_bump_PA_ns_0 
-						* + pkg_bump_MA_ns_3
-						* + pkg_bump_MA_ns_2
-						* + pkg_bump_MA_ns_1
-						* + pkg_bump_MA_ns_0 
-						* + ref_gnd
-						* + cpm_nne_240426_Redu_IdEM
-						
-							* xblk_die 	*** 8+4 NNE grp 
-							* +         pkg_bump_MA_ns_0
-							* + ref_gnd pkg_bump_MA_ns_1
-							* + ref_gnd pkg_bump_MA_ns_2
-							* + ref_gnd pkg_bump_MA_ns_3	
-							* + ref_gnd pkg_bump_MA_ns_0
-							* + ref_gnd pkg_bump_MA_ns_1
-							* + ref_gnd pkg_bump_MA_ns_2
-							* + ref_gnd pkg_bump_MA_ns_3	
-							* + ref_gnd pkg_bump_MA_ns_0
-							* + ref_gnd pkg_bump_MA_ns_1
-							* + ref_gnd pkg_bump_MA_ns_2
-							* + ref_gnd pkg_bump_MA_ns_3	
-							* + ref_gnd pkg_bump_MA_ns_0
-							* + ref_gnd pkg_bump_MA_ns_1
-							* + ref_gnd pkg_bump_MA_ns_2
-							* + ref_gnd pkg_bump_MA_ns_3	
-							* + ref_gnd pkg_bump_PA_ns_0
-							* + ref_gnd pkg_bump_PA_ns_1
-							* + ref_gnd pkg_bump_PA_ns_2
-							* + ref_gnd pkg_bump_PA_ns_3		
-							* + ref_gnd pkg_bump_PA_ns_0
-							* + ref_gnd pkg_bump_PA_ns_1
-							* + ref_gnd pkg_bump_PA_ns_2
-							* + ref_gnd pkg_bump_PA_ns_3	
-							* + ref_gnd pkg_bump_PA_ns_0
-							* + ref_gnd pkg_bump_PA_ns_1
-							* + ref_gnd pkg_bump_PA_ns_2
-							* + ref_gnd pkg_bump_PA_ns_3	
-							* + ref_gnd pkg_bump_PA_ns_0_edge
-							* + ref_gnd pkg_bump_PA_ns_1_edge
-							* + ref_gnd pkg_bump_PA_ns_2_edge
-							* + ref_gnd pkg_bump_PA_ns_3_edge
-							* + ref_gnd
-							* + adsPowerModel_nne_240724
-
-							* IcurrSrc_0_0	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 	*** add 'R' if repeat
-							* IcurrSrc_0_1	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 
-							* IcurrSrc_0_2	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
-							* IcurrSrc_0_3	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
-							
-							* IcurrSrc_1_0	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R 
-							* IcurrSrc_1_1	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R
-							* IcurrSrc_1_2	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R 
-							* IcurrSrc_1_3	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R
-							
-							* IcurrSrc_2_0	pkg_bump_PA_ns_3_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R 
-							* IcurrSrc_2_1	pkg_bump_PA_ns_2_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
-							* IcurrSrc_2_2	pkg_bump_PA_ns_1_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R 
-							* IcurrSrc_2_3	pkg_bump_PA_ns_0_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
-
-	
 .if (is_MIM != 1)
 	xblk_die 	*** 4x8 NNE CPM, w/o CPM , Andes 240821 sign off 
 	+         pkg_bump_MA_ns_0
@@ -717,29 +581,10 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 	+ ref_gnd pkg_bump_PA_ns_3
 	+ ref_gnd
 	+ adsPowerModel_nne_240724
+						
+	
 .endif 
 
-		* .if (is_MIM == 1)	*** can ONLY work with CPM w/o MIM, only enable when there is NO CPM model w/ MIM available
-							* *** double check CPM w/o MIM itself is correctly enabled  
-			* R_MIM_bump_MA_ns_3 pkg_bump_MA_ns_3		pkg_bump_MA_ns_3_	r_MIM_per_par
-			* C_MIM_bump_MA_ns_3 pkg_bump_MA_ns_3_	ref_gnd				c_MIM_per_MA_par
-			* R_MIM_bump_MA_ns_2 pkg_bump_MA_ns_2		pkg_bump_MA_ns_2_	r_MIM_per_par
-			* C_MIM_bump_MA_ns_2 pkg_bump_MA_ns_2_	ref_gnd				c_MIM_per_MA_par		
-			* R_MIM_bump_MA_ns_1 pkg_bump_MA_ns_1		pkg_bump_MA_ns_1_	r_MIM_per_par
-			* C_MIM_bump_MA_ns_1 pkg_bump_MA_ns_1_	ref_gnd				c_MIM_per_MA_par
-			* R_MIM_bump_MA_ns_0 pkg_bump_MA_ns_0		pkg_bump_MA_ns_0_	r_MIM_per_par
-			* C_MIM_bump_MA_ns_0 pkg_bump_MA_ns_0_	ref_gnd				c_MIM_per_MA_par
-			
-			* R_MIM_bump_PA_ns_3 pkg_bump_PA_ns_3		pkg_bump_PA_ns_3_	r_MIM_per_par
-			* C_MIM_bump_PA_ns_3 pkg_bump_PA_ns_3_	ref_gnd				c_MIM_per_PA_par
-			* R_MIM_bump_PA_ns_2 pkg_bump_PA_ns_2		pkg_bump_PA_ns_2_	r_MIM_per_par
-			* C_MIM_bump_PA_ns_2 pkg_bump_PA_ns_2_	ref_gnd				c_MIM_per_PA_par		
-			* R_MIM_bump_PA_ns_1 pkg_bump_PA_ns_1		pkg_bump_PA_ns_1_	r_MIM_per_par
-			* C_MIM_bump_PA_ns_1 pkg_bump_PA_ns_1_	ref_gnd				c_MIM_per_PA_par
-			* R_MIM_bump_PA_ns_0 pkg_bump_PA_ns_0		pkg_bump_PA_ns_0_	r_MIM_per_par
-			* C_MIM_bump_PA_ns_0 pkg_bump_PA_ns_0_	ref_gnd				c_MIM_per_PA_par		
-		* .endif 
-	
 	
 .if (is_MIM == 1)
 	xblk_die 	*** 4x8 NNE grp, Andes CPM w/MIM
@@ -792,70 +637,106 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 .endif
 
 *** current src 
-	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3   R 	*** add 'R' if repeat
-	IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2   R 
-	IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1   R
-	IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0   R
-
-	IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3   R 
-	IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2   R
-	IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1   R 
-	IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0   R
-
-							
-							
-	*** R_leak ***
+	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3  * R 	*** add 'R' if repeat
+	IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2  * R 
+	IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1  * R
+	IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0  * R
+																									   *
+	IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3  * R 
+	IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2  * R
+	IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1  * R 
+	IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0  * R
 	
 
-										*** test to short bumps to PCB 
-											* R_0_bump_merge pkg_bump_one	pkg_bump_MA_ns_3	1.n 
-											* R_1_bump_merge pkg_bump_one	pkg_bump_MA_ns_2	1.n 
-											* R_2_bump_merge pkg_bump_one	pkg_bump_MA_ns_1	1.n
-											* R_3_bump_merge pkg_bump_one	pkg_bump_MA_ns_0	1.n
-											* R_4_bump_merge pkg_bump_one	pkg_bump_PA_ns_3	1.n
-											* R_5_bump_merge pkg_bump_one	pkg_bump_PA_ns_2	1.n
-											* R_6_bump_merge pkg_bump_one	pkg_bump_PA_ns_1	1.n
-											* R_7_bump_merge pkg_bump_one	pkg_bump_PA_ns_0	1.n
+						* xblk_die 
+						* +         pkg_bump_MA_ns_0
+						* + ref_gnd pkg_bump_MA_ns_1
+						* + ref_gnd pkg_bump_MA_ns_2
+						* + ref_gnd pkg_bump_MA_ns_3
+						* + ref_gnd pkg_bump_PA_ns_0
+						* + ref_gnd pkg_bump_PA_ns_1
+						* + ref_gnd pkg_bump_PA_ns_2
+						* + ref_gnd pkg_bump_PA_ns_3
+						* + ref_gnd	
+						* * + adsPowerModel
+						* + adsPowerModel_nne_240523
+						
+						* IcurrSrc_0_0	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 	*** add 'R' if repeat
+						* IcurrSrc_0_1	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 
+						* IcurrSrc_0_2	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
+						* IcurrSrc_0_3	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
+						
+						* IcurrSrc_1_0	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
+						* IcurrSrc_1_1	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
+						* IcurrSrc_1_2	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R 
+						* IcurrSrc_1_3	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay   R
+						
+											* xblk_die		*** reduced CPM, to correlate with SIMPLIS, good accuracy confirmed 
+											* + pkg_bump_PA_ns_3
+											* + pkg_bump_PA_ns_2
+											* + pkg_bump_PA_ns_1
+											* + pkg_bump_PA_ns_0 
+											* + pkg_bump_MA_ns_3
+											* + pkg_bump_MA_ns_2
+											* + pkg_bump_MA_ns_1
+											* + pkg_bump_MA_ns_0 
+											* + ref_gnd
+											* + cpm_nne_240426_Redu_IdEM
 											
-											* R_bump_to_PCB  pkg_bump_one bga_pcb	1.n	
-										*** test to short bumps to PCB   end 
+												* xblk_die 	*** 8+4 NNE grp 
+												* +         pkg_bump_MA_ns_0
+												* + ref_gnd pkg_bump_MA_ns_1
+												* + ref_gnd pkg_bump_MA_ns_2
+												* + ref_gnd pkg_bump_MA_ns_3	
+												* + ref_gnd pkg_bump_MA_ns_0
+												* + ref_gnd pkg_bump_MA_ns_1
+												* + ref_gnd pkg_bump_MA_ns_2
+												* + ref_gnd pkg_bump_MA_ns_3	
+												* + ref_gnd pkg_bump_MA_ns_0
+												* + ref_gnd pkg_bump_MA_ns_1
+												* + ref_gnd pkg_bump_MA_ns_2
+												* + ref_gnd pkg_bump_MA_ns_3	
+												* + ref_gnd pkg_bump_MA_ns_0
+												* + ref_gnd pkg_bump_MA_ns_1
+												* + ref_gnd pkg_bump_MA_ns_2
+												* + ref_gnd pkg_bump_MA_ns_3	
+												* + ref_gnd pkg_bump_PA_ns_0
+												* + ref_gnd pkg_bump_PA_ns_1
+												* + ref_gnd pkg_bump_PA_ns_2
+												* + ref_gnd pkg_bump_PA_ns_3		
+												* + ref_gnd pkg_bump_PA_ns_0
+												* + ref_gnd pkg_bump_PA_ns_1
+												* + ref_gnd pkg_bump_PA_ns_2
+												* + ref_gnd pkg_bump_PA_ns_3	
+												* + ref_gnd pkg_bump_PA_ns_0
+												* + ref_gnd pkg_bump_PA_ns_1
+												* + ref_gnd pkg_bump_PA_ns_2
+												* + ref_gnd pkg_bump_PA_ns_3	
+												* + ref_gnd pkg_bump_PA_ns_0_edge
+												* + ref_gnd pkg_bump_PA_ns_1_edge
+												* + ref_gnd pkg_bump_PA_ns_2_edge
+												* + ref_gnd pkg_bump_PA_ns_3_edge
+												* + ref_gnd
+												* + adsPowerModel_nne_240724
+
+												* IcurrSrc_0_0	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 	*** add 'R' if repeat
+												* IcurrSrc_0_1	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R 
+												* IcurrSrc_0_2	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
+												* IcurrSrc_0_3	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= 0.   R
+												
+												* IcurrSrc_1_0	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R 
+												* IcurrSrc_1_1	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R
+												* IcurrSrc_1_2	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R 
+												* IcurrSrc_1_3	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_nonEdge)  td= td_delay   R
+												
+												* IcurrSrc_2_0	pkg_bump_PA_ns_3_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R 
+												* IcurrSrc_2_1	pkg_bump_PA_ns_2_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
+												* IcurrSrc_2_2	pkg_bump_PA_ns_1_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R 
+												* IcurrSrc_2_3	pkg_bump_PA_ns_0_edge	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA_Edge)  td= td_delay   R
 
 
-	
-					* Xblk_die_0_0	pkg_bump_MA_ns_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
-					* Xblk_die_0_1	pkg_bump_MA_ns_2	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
-					* Xblk_die_0_2	pkg_bump_MA_ns_1	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
-					* Xblk_die_0_3	pkg_bump_MA_ns_0	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_MA'	R_die_1= 'Rdie_MA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_MA)
-					* Xblk_die_1_0	pkg_bump_PA_ns_3	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA) delay = 0.p		* 1500.p
-					* Xblk_die_1_1	pkg_bump_PA_ns_2	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA) delay = 0.p		* 1000.p
-					* Xblk_die_1_2	pkg_bump_PA_ns_1	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA) delay = 0.p		* 500.p
-					* Xblk_die_1_3	pkg_bump_PA_ns_0	ref_gnd	model_die_lumped_nne_tile	C_die= 'Cdie_PA'	R_die_1= 'Rdie_PA' 	R_die_2= 1.e-5	R_leak= 'Rleak'		pwl_file_in = str(pwl_file_in_PA) delay = 0.p
-
-.endif 
-*** approach 1: multi grp modeling END  	
-
-*** approach 2: single grp modeling	
-.if (die_model_sig == 1 )
-	*** all bump grps connected to single die model 
-	R_0_bump_merge pkg_bump_one	pkg_bump_MA_ns_3	1.n 
-	R_1_bump_merge pkg_bump_one	pkg_bump_MA_ns_2	1.n 
-	R_2_bump_merge pkg_bump_one	pkg_bump_MA_ns_1	1.n
-	R_3_bump_merge pkg_bump_one	pkg_bump_MA_ns_0	1.n
-	R_4_bump_merge pkg_bump_one	pkg_bump_PA_ns_3	1.n
-	R_5_bump_merge pkg_bump_one	pkg_bump_PA_ns_2	1.n
-	R_6_bump_merge pkg_bump_one	pkg_bump_PA_ns_1	1.n
-	R_7_bump_merge pkg_bump_one	pkg_bump_PA_ns_0	1.n
-	
-    .if (is_MIM == 1) 
-		Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 3462.n	R_die_1= 0.018m R_die_2= 1.n	R_leak= 1.e6		pwl_file_in = str(pwl_file_All)		*** w/ MIM
-	.endif 
-	.if (is_MIM != 1 )
-	  Xblk_die_0_0	pkg_bump_one	ref_gnd	model_die_lumped_nne_tile	C_die= 1310.n	R_die_1= 0.018m R_die_2= 1.n	R_leak= 1.e6		pwl_file_in = str(pwl_file_All)
-	.endif 
-	
-.endif 
-*** approach 2: single grp modeling	END
-
+ 
+*** filter for measurement 	
 
 X_probe_filter10
 + pkg_bump_PA_ns_3
@@ -871,22 +752,14 @@ X_probe_filter13
 + pkg_bump_PA_ns_0_lf
 + meas_filter
 
-.if (single_bga_grp !=1 )
-	X_probe_filter_bga_0
-	+ bga_pcb_0
-	+ ref_gnd
-	+ bga_pcb_0_hf 
-	+ bga_pcb_0_lf
-	+ meas_filter
-.endif 
-.if (single_bga_grp ==1 )
-	X_probe_filter_bga
-	+ bga_pcb
-	+ ref_gnd
-	+ bga_pcb_hf 
-	+ bga_pcb_lf
-	+ meas_filter
-.endif 
+
+X_probe_filter_bga_0
++ bga_pcb_0
++ ref_gnd
++ bga_pcb_0_hf 
++ bga_pcb_0_lf
++ meas_filter
+
 
 *************************************** Analysis I: AC simulation *************
 .if ( is_ac_run == 1 )

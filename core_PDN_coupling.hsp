@@ -80,11 +80,13 @@ C_lf lf 		ref_gnd	160.p
 
 
 ***** PCB model 
-.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir		*** 240903 Andes generated PCB model
-.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC.cir		*** 240903, Andes generated PCB 
-.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps	
-.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC.cir		*** 240912, Andes generated PCB 
-.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs.cir		*** 240912 Andes sign off generated 
+.inc ./hspice_inc/ACM3_HF_072424_corePDN_5rails_IdEM.cir
+
+* .inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir		*** 240903 Andes generated PCB model
+* .inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC.cir		*** 240903, Andes generated PCB 
+* .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps	
+* .inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC.cir		*** 240912, Andes generated PCB 
+* .inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs.cir		*** 240912 Andes sign off generated 
 
 
 ***** 
@@ -139,66 +141,80 @@ Vref_gnd 	ref_gnd		0	0.										*** normal gnd
 
 
 ***** PCB 
-	*** NNE 
-Xblk_PCB_nne		*** 240903 Andes generated model 
-+ bga_pcb_nne   * + bga_pcb_0 
-+ bga_pcb_nne   * + bga_pcb_1
-+ bga_pcb_nne   * + bga_pcb_2
-+ bga_pcb_nne   * + bga_pcb_3
-+ bga_pcb_nne   * + bga_pcb_4		
-+ bga_pcb_nne   * + bga_pcb_5
-+ pmic_pwr_nne
-+ pmic_pwr_nne
-+ pmic_pwr_nne
-+ pmic_pwr_nne
-+ ref_gnd
-+ ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC
-
-	*** CPU 
-Xblk_PCB_cpugpu
-+ bga_pcb_cpu        * + bga_pcb_north_col1   *** cpu 
-+ bga_pcb_cpu        * + bga_pcb_north_col0   *** gpu 
-+ bga_pcb_cpu        * + bga_pcb_south_col1   *** out_0
-+ bga_pcb_cpu        * + bga_pcb_south_col0   *** out_1
+Xblk_PCB_cpl
 + pmic_pwr
 + pmic_pwr
-+ ref_gnd
-+ ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC
-	
-	*** SOC 
-Xblk_PCB_soc 
++ pmic_pwr_nne
 + pmic_pwr
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_3
-+ bga_pcb_soc  * + bga_pcb_soc_2
-+ bga_pcb_soc  * + bga_pcb_soc_1
-+ bga_pcb_soc  * + bga_pcb_soc_1
-+ bga_pcb_soc  * + bga_pcb_soc_1
-+ bga_pcb_soc  * + bga_pcb_soc_0
-+ bga_pcb_soc  * + bga_pcb_soc_0
-+ bga_pcb_soc  * + bga_pcb_soc_0
-+ ref_gnd 
-+ ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM
-	
-
-	*** RSI 
-Xblk_PCB_rsi
++ pmic_pwr
++ bga_pcb_ao
 + bga_pcb_rsi
-+ pmic_pwr
-+ pmic_pwr
++ bga_pcb_cpu
++ bga_pcb_nne
++ bga_pcb_soc
 + ref_gnd
-+ ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC	*** 240912 Andes PCB 
-	
-	*** AO 
-Xblk_PCB_ao
-+ bga_pcb_ao 
-+ pmic_pwr
-+ ref_gnd
-+ ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs
++ ACM3_HF_072424_corePDN_5rails_IdEM
+
+					* *** NNE 
+				* Xblk_PCB_nne		*** 240903 Andes generated model 
+				* + bga_pcb_nne   * + bga_pcb_0 
+				* + bga_pcb_nne   * + bga_pcb_1
+				* + bga_pcb_nne   * + bga_pcb_2
+				* + bga_pcb_nne   * + bga_pcb_3
+				* + bga_pcb_nne   * + bga_pcb_4		
+				* + bga_pcb_nne   * + bga_pcb_5
+				* + pmic_pwr_nne
+				* + pmic_pwr_nne
+				* + pmic_pwr_nne
+				* + pmic_pwr_nne
+				* + ref_gnd
+				* + ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC
+
+					* *** CPU 
+				* Xblk_PCB_cpugpu
+				* + bga_pcb_cpu        * + bga_pcb_north_col1   *** cpu 
+				* + bga_pcb_cpu        * + bga_pcb_north_col0   *** gpu 
+				* + bga_pcb_cpu        * + bga_pcb_south_col1   *** out_0
+				* + bga_pcb_cpu        * + bga_pcb_south_col0   *** out_1
+				* + pmic_pwr
+				* + pmic_pwr
+				* + ref_gnd
+				* + ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC
+					
+					* *** SOC 
+				* Xblk_PCB_soc 
+				* + pmic_pwr
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_3
+				* + bga_pcb_soc  * + bga_pcb_soc_2
+				* + bga_pcb_soc  * + bga_pcb_soc_1
+				* + bga_pcb_soc  * + bga_pcb_soc_1
+				* + bga_pcb_soc  * + bga_pcb_soc_1
+				* + bga_pcb_soc  * + bga_pcb_soc_0
+				* + bga_pcb_soc  * + bga_pcb_soc_0
+				* + bga_pcb_soc  * + bga_pcb_soc_0
+				* + ref_gnd 
+				* + ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM
+					
+
+					* *** RSI 
+				* Xblk_PCB_rsi
+				* + bga_pcb_rsi
+				* + pmic_pwr
+				* + pmic_pwr
+				* + ref_gnd
+				* + ACM3_HF_20240730c_ebd_PSI_RSI_wAll_Caps_RLC	*** 240912 Andes PCB 
+					
+					* *** AO 
+				* Xblk_PCB_ao
+				* + bga_pcb_ao 
+				* + pmic_pwr
+				* + ref_gnd
+				* + ACM3_HF_20240730c_ebd_PSI_AO_wAll_Caps_RLCs
 
 ***** pkg 
 Xblk_pkg_cpl
@@ -348,15 +364,15 @@ xblk_die_nne 	*** 4x8 NNE CPM, w/o CPM , Andes 240821 sign off
 + ref_gnd
 + adsPowerModel_nne_240724
 
-IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3   R 	*** add 'R' if repeat
-IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2   R 
-IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1   R
-IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0   R
+* IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3   R 	*** add 'R' if repeat
+* IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2   R 
+* IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1   R
+* IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0   R
 
-IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3   R 
-IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2   R
-IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1   R 
-IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0   R
+* IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3   R 
+* IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2   R
+* IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1   R 
+* IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0   R
 
 	*** CPU 
 xblk_die_cpugpu
@@ -374,20 +390,20 @@ xblk_die_cpugpu
 + ref_gnd 
 + adsPowerModel_cpu
 
-* IcurrSrc_cpu_2_1	pkg_bump_cpu_2_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_DSU)		  R   td = 0.n   *0.n	
-* r_short_2_1_and_2_2 pkg_bump_cpu_2_2	pkg_bump_cpu_2_1	1.n                                           
-* IcurrSrc_cpu_2_0	pkg_bump_cpu_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *12.n 
+IcurrSrc_cpu_2_1	pkg_bump_cpu_2_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_DSU)		  R   td = 0.n   *0.n	
+r_short_2_1_and_2_2 pkg_bump_cpu_2_2	pkg_bump_cpu_2_1	1.n                                            
+IcurrSrc_cpu_2_0	pkg_bump_cpu_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *12.n 
 																											
-* IcurrSrc_cpu_1_1	pkg_bump_cpu_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *24.n 
-* IcurrSrc_cpu_1_0	pkg_bump_cpu_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *36.n 
+IcurrSrc_cpu_1_1	pkg_bump_cpu_1_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *24.n 
+IcurrSrc_cpu_1_0	pkg_bump_cpu_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *36.n 
 																											
-* IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *48.n 
-* IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *60.n 
+IcurrSrc_cpu_0_1	pkg_bump_cpu_0_1	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *48.n 
+IcurrSrc_cpu_0_0	pkg_bump_cpu_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_cpu2Core_x1p2)		  R   td = 0.n   *60.n 
 																											
-* IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
-* IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
-* IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
-* IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+IcurrSrc_gpu_1_3	pkg_bump_gpu_1_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+IcurrSrc_gpu_1_2	pkg_bump_gpu_1_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+IcurrSrc_gpu_0_3	pkg_bump_gpu_0_3	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
+IcurrSrc_gpu_0_2	pkg_bump_gpu_0_2	ref_gnd	PWL  pwlfile = str(pwl_file_gpu_1Of4)		      R   td = 0.n   *100.n
 	
 	*** SOC 
 Xblk_die_soc  
@@ -395,7 +411,7 @@ Xblk_die_soc
 + ref_gnd
 + adsPowerModel_SOC
 
-* IcurrSrc_SOC	pkg_bump_soc	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
+IcurrSrc_SOC	pkg_bump_soc	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
 	
 	*** RSI 
 Xblk_die_rsi 
