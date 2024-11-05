@@ -68,7 +68,12 @@
 				.param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile.csv')	*** 1/4 PA, Brad 241031, 11us
 				.param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile.csv')	*** 1/4 IGI, Brad 241031, 11us 		
 				* .param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile_ScaleBy2.csv')	*** 1/4 PA, Brad 241031, 11us
-				* .param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile_ScaleBy2.csv')	*** 1/4 IGI, Brad 241031, 11us 			
+				* .param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile_ScaleBy2.csv')	*** 1/4 IGI, Brad 241031, 11us 		
+				* .param pwl_file_in_PA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_PA.csv')		*** 1/4 PA, Rahul 241104, 11us
+				* .param pwl_file_in_MA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_IGI.csv')	*** 1/4 PA, Rahul 241104, 11us 	
+				* .param pwl_file_in_PA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_jitter2_PA.csv')		*** 1/4 PA, Rahul 241104, jitter added , 4us
+				* .param pwl_file_in_MA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_jitter2_IGI.csv')	*** 1/4 PA, Rahul 241104, jitter added, 4us 
+				
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 80ns
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 160ns
@@ -163,6 +168,51 @@ C_lf lf 		ref_gnd	160.p
 .ends meas_filter
 
 
+*** Ecap EC2005P (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2005P
++ capPort1 capPort2 ref_gnd R_mt=15.5u	L_mt=8.6p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	5.m
+	l_cap_esl1	mt1_3	mt1_4	2.p
+	c_cap_1	mt1_4 	ref_gnd	4.67u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	5.m
+	l_cap_esl2	mt2_3	mt2_4	2.p
+	c_cap_2	mt2_4 	ref_gnd	4.67u
+.ends 
+
+*** Ecap EC2006P (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2006P
++ capPort1 capPort2 capPort3 capPort4 ref_gnd R_mt=7.7u	L_mt=4.3p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	6.m
+	l_cap_esl1	mt1_3	mt1_4	1.1p
+	c_cap_1	mt1_4 	ref_gnd	9.83u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	6.m
+	l_cap_esl2	mt2_3	mt2_4	1.1p
+	c_cap_2	mt2_4 	ref_gnd	9.83u
+
+	r_mt3 CapPort3 	mt3_1	R_mt  
+	l_mt3 mt3_1  	mt3_2	L_mt 
+	r_cap_esl3	mt3_2	mt3_3	6.m
+	l_cap_esl3	mt3_3	mt3_4	1.1p
+	c_cap_3	mt3_4 	ref_gnd	9.83u
+
+	r_mt4 CapPort4 	mt4_1	R_mt  
+	l_mt4 mt4_1  	mt4_2	L_mt 
+	r_cap_esl4	mt4_2	mt4_3	6.m
+	l_cap_esl4	mt4_3	mt4_4	1.1p
+	c_cap_4	mt4_4 	ref_gnd	9.83u
+.ends 
+	
+	
 	***** define die model *****
 .subckt model_die_lumped_nne_tile
 	+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84	pwl_file_in = str(pwl_file_quiet) delay = 0.
@@ -174,6 +224,7 @@ C_lf lf 		ref_gnd	160.p
 	IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) td = delay    *** add 'R' if repeat
 .ends
 
+	
 *** CPM w/o MIM 
 .inc ./hspice_inc/cpm_nne_240724_modelOnly.sp		*** 4x8 parition 
 .inc ./hspice_inc/cpm_nne_240523_modelOnly.spice
@@ -247,7 +298,7 @@ C_lf lf 		ref_gnd	160.p
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param is_use_ecap_ebed = 1		*** value: 0 or 1, note: this could be baked in pkg model 
 .param is_MIM 			= 0
 
 
@@ -533,11 +584,21 @@ Xblk_pkg
 	+ ref_gnd
 	+ str(siCap_empwr_EC1005_16600nF)
 	
-	*** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
-	r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	5.4u
-	l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		3.0p
-	r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	5.4u
-	l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		3.0p		
+	*** comment r/l below to disconnect EC1005 (do not comment out EC1005 above, reason unknown 241105)
+	* *** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
+	* r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	5.4u
+	* l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		3.0p
+	* r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	5.4u
+	* l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		3.0p		
+
+
+*** 3x EC2005P
+	xEcap_2005_inst1	pkg_bump_PA_ns_3 pkg_bump_MA_ns_3  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
+	xEcap_2005_inst2	pkg_bump_PA_ns_2 pkg_bump_MA_ns_2  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
+	xEcap_2005_inst3	pkg_bump_PA_ns_1 pkg_bump_MA_ns_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
+
+*** 1x EC2006P 
+	* xEcap_2006_inst1	pkg_bump_PA_ns_3 pkg_bump_MA_ns_3 pkg_bump_PA_ns_2 pkg_bump_MA_ns_2 ref_gnd	siCap_EC2006P R_mt=7.7u	L_mt=4.3p 
 	
 .endif	*** End If, is_use_ecap_ebed == 1
 		
