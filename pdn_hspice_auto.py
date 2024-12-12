@@ -1,3 +1,6 @@
+## Usage: create a seperate folder to contain all *.csv profiles at <abs_path_to_dir>, prepare and edit *.params
+## example: python  .\pdn_hspice_auto.py -d 'C:\Users\jiangongwei\work\script_py\PDN_Hspice_auto\test_dir2' -i  .\pdn_hspice_auto_input.params
+
 import os, sys, getopt
 import glob
 # import math, cmath
@@ -111,6 +114,11 @@ class hspice_batch_sim_generator:
             for f_ in file_list_sp:
                 os.remove(f_)        
 
+        file_list_sp = glob.glob('*_hspice_auto_script_*.sh')
+        if len(file_list_sp) != 0:  
+            for f_ in file_list_sp:
+                os.remove(f_)   
+
         date_str = datetime.today().strftime('%Y_%m_%d')
         date_str_num = datetime.today().strftime('%Y%m%d')
 
@@ -120,7 +128,8 @@ class hspice_batch_sim_generator:
         os.makedirs(folder_rslt)
 
         f_runScript = open('run_hspice_auto_'+ date_str_num + '.sh', "w")
-
+        tcl_cnt = 1
+        
         for grp in range(0, self.num_profile_cluster):    ### loop all grps
             header = '.param Vdd 	= ' + str(self.vdd_pwr) + '\n\n'
             header = header + '.param is_use_ecap_ebed = ' + str(self.Is_Use_Ecap) + '\n'
@@ -152,9 +161,10 @@ class hspice_batch_sim_generator:
             ### write tcl script 
             plotData = 'pkg_bump_pa_ns_3'
             fileName_tcl_out = date_str +'_wv_script_num' + str(grp) + '.tcl'
+            
             with open(folder_rslt + '/' +  fileName_tcl_out, 'w') as fout_tcl:
             # with open(fileName_tcl_out, 'w') as fout_tcl:
-                tcl_str = 'set file [sx_open_sim_file_read ' +  date_str +'_hspice_auto_script_num' + str(grp) + '.tr' + date_str_num +'] \n'
+                tcl_str = 'set file [sx_open_sim_file_read ' +  date_str +'_hspice_auto_script_num' + str(grp) + '.tr' + date_str_num+ str(tcl_cnt) +'] \n'
                 tcl_str = tcl_str + 'set sig1 [sx_signal pkg_bump_pa_ns_3]\n'
                 tcl_str = tcl_str + 'sx_export_precision 7\n'
                 tcl_str = tcl_str + 'sx_export_csv on\n'
@@ -163,8 +173,10 @@ class hspice_batch_sim_generator:
             fout_tcl.close()
 
         
-            f_runScript.write('hspice  -i ' + fileName_spice_out + ' -o '+ folder_rslt + ' -n ' + date_str_num + ' \n')
+            f_runScript.write('### Run this script by using source ... ###\n')
+            f_runScript.write('hspice  -i ' + fileName_spice_out + ' -o '+ folder_rslt + ' -n ' + date_str_num + str(tcl_cnt) +' \n')
             # f_runScript.write('hspice  -i ' + fileName_spice_out + ' -n ' + date_str_num + '\n')
+            tcl_cnt = tcl_cnt + 1
             
             f_runScript.write('cd ' + folder_rslt  +'  \n')
             f_runScript.write('wv -ace_no_gui -adv ' + fileName_tcl_out + '  \n')
@@ -179,10 +191,10 @@ class hspice_batch_sim_generator:
 try:
 	opts,args = getopt.getopt(sys.argv[1:],'d:i:')
 except getopt.GetoptError:
-	print('\nUsage: python pdn_hspice_auto.py [-d file directory] [-i pdn_hspice_auto_input.params]')
+	print('\nUsage: python pdn_hspice_auto.py [-d files absolute path] [-i pdn_hspice_auto_input.params]')
 	sys.exit(2)
 if (not opts) and args:
-	print('\nUsage: python pdn_hspice_auto.py [-d file directory] [-i pdn_hspice_auto_input.params]')
+	print('\nUsage: python pdn_hspice_auto.py [-d files absolute path] [-i pdn_hspice_auto_input.params]')
 	sys.exit(2)
 
 for o,a in opts:

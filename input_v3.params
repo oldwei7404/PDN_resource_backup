@@ -1,0 +1,418 @@
+#INFO: waveform_type A constant_clk:    Time_Length_in_ns | current_amplitude | current_floor < | clk conti| clk skip | this_freq_in_GHz >
+#INFO: waveform_type B linear_slope_clk: Time_Length_in_ns | current_amplitude_start | current_amplitude_end |current_floor < | clk conti| clk skip | this_freq_in_GHz >
+#INFO: waveform_type C scaled profile in .pkl:  "file path to envelope source (no space allowed)" | Time_unit_in_sec | Waveform_in_metric_unit | current_floor | time_scaling_factor | mag_scaling_factor | col_clk | col_data | skip_first_n_data | with_clk?1|0   | < | clk conti| clk skip | this_freq_in_GHz >
+#INFO: waveform_type D scaled profile:  "file path to envelope source (no space allowed)" | Time_unit_in_sec | Waveform_in_metric_unit | current_floor | time_scaling_factor | mag_scaling_factor | skip_first_n_data  | with_clk?1|0   | < | clk conti| clk skip | this_freq_in_GHz >| <R> | <num_of_repeat>
+#INFO: waveform_type E random btw low/up bound: Time_Length_in_ns | current_low_bound | current_up_bound | current_floor  < | clk conti| clk skip | this_freq_in_GHz >
+#INFO: waveform_type F linear_slope_no_clk: Time_Length_in_ns | current_amplitude_start | current_amplitude_end < | clk conti| clk skip | this_freq_in_GHz >
+#INFO: waveform_type G delay: Time_Length_in_ns | current_amplitude 
+#INFO: waveform_type H linear slope with random noise: Time_Length_in_ns | current_amplitude_start | current_amplitude_end |current_floor | lower noise diviation | upper noise deviation 
+
+#INFO: CLK_Freq unit: GHz
+#INFO: 0. < CLK_DutyCycle < 1.
+#INFO: 0. < CLK_T_RISE_as_ratio_of_CLK_Freq < 1.
+#INFO: 0. < CLK_T_FALL_as_ratio_of_CLK_Freq < 1.
+#INFO: 0. < (CLK_T_RISE_as_ratio_of_CLK_Freq + CLK_T_FALL_as_ratio_of_CLK_Freq) < CLK_DutyCycle
+
+VDD_in_Volt  0.75
+PROFILE_POWER_0_OR_CURR_1   1
+CLK_Freq_in_GHz    2.0
+CLK_DutyCycle 0.9
+CLK_T_RISE_as_ratio_of_CLK_Freq 0.25
+CLK_T_FALL_as_ratio_of_CLK_Freq 0.25
+CLK_EDGE_EFF N
+ONE_SAMPLE_ONLY_PER_CLK Y
+
+#INFO: Time_Length_in_ns  #Waveform_type  #Waveform_params
+
+## NOTE: one PA tile 
+#A   250      0.      0.0
+#B   64       0.  110.    0.0
+#A   1000    110.    0.0    
+#B   300         0.      1.54    0.0
+#B   100         1.54     12.     0.0
+#A   10000       12.     0.0
+#B   100         12.     1.54     0.0
+#B   300         1.54    0.    0.0
+#A   10000       0.      0.0
+
+
+## NOTE: this is POWER, NOT current, for PA  block: pNNE_PA;    MA block: pGMEM
+#A   10  0  0    
+#C   C:\Users\jiangongwei\Documents\Python_data\NNE_power_trace_test4_act_0p3_0p2_0518_200clk_0scale_continue_idle_clk.pkl  1.e-12   1.     0.  1.     0.25    TS_ps   pNNE_PA    0
+##A    3000 20   0
+##B   200  20  0    0  
+
+
+## NOTE: this is POWER, NOT current, for PA  block: pNNE_PA;    MA block: pGMEM, no transition in power profile, time use 80.e-12, CLK_Freq_in_GHz use 0.025, such that dT in 10ns
+#A   10  0  0    
+#C   C:\Users\jiangongwei\Documents\Python_data\NNE_power_trace_test4_act_0p3_0p2_0515_0clk_0scale_continue_idle_clk_51501.pkl  80.e-12   1.     0.  1.     0.25    TS_ps   pNNE_PA    0
+##A    3000 20   0
+##B   200  20  0    0  
+
+## NOTE: if it is NO ramping, and ramp up in 1 clk cycle, need to scale by (1/CLK_T_RISE_as_ratio_of_CLK_Freq) to avoid artificial ramp up
+## NOTE: this is POWER, NOT current, for PA  block: pNNE_PA;    MA block: pGMEM, no transition in power profile   ==> slow down dt, can use slower sampling freq inverse to time scaler
+#A   1000  0  0    
+#C   C:\Users\jiangongwei\Documents\Python_data\NNE_power_trace_test4_act_0p3_0p2_0515_0clk_0scale_continue_idle_clk_51501.pkl  1280.e-12   1.     0.  1.     0.25    TS_ps   pGMEM    0
+#A    3000 20   0
+#B   200  20  0    0  
+
+
+## NOTE: for dI dt event emulation
+#A   10      0.   0.
+#B   335     0   9.52    0.
+#B   100     9.52    53  0.
+#A   4000    53.  0.
+#B   120     53.     9.52    0.
+#B   300     9.52    0.  0.
+
+## NOTE: for stall experiment
+#A   10  0  0
+#B   100  0   10    0
+#A   500  10  0
+#A   1.5  0   0
+#A   500  10  0
+#A   1.5  0   0
+#A   500  10  0
+#A   1.5  0   0
+#A   500  10  0
+#A   50  0   0
+
+## NOTE: 20240117 Rahul PA total power, 0.25 weight is for 1 blk, continue to scale baesd on power 
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_noramp_240117.txt    1.      1.      0.  1.  0.25  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_ramp_32clk.csv    1.      1.      0.  1.  0.25  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_ramp_64clk.csv    1.      1.      0.  1.  0.25  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_ramp_128clk.csv    1.      1.      0.  1.  0.25  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_ramp_256clk.csv    1.      1.      0.  1.  0.25  0  0
+
+## NOTE: 20240117 Rahul PA total power, 0.25 weight is for 1 blk, continue to scale baesd on power 
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_ramp_128clk.csv  1.      1.      0.  1.  1.0  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_80W_ramp_128clk.csv   1.      1.      0.  1.  1.0  0  0
+
+#G   50000  0.
+#B   300     0   44    0.
+#B   200     44    44  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_80W_ramp_16clk.csv  1.      1.      0.  1.  1.0  0  0
+
+## trace, Rahul processed, vdd 0.75V, 85C, check mag scaling factor 
+##G   50000  0.
+#B   500 0 36.5 0.
+#B   500 36.5  36.5 0.
+##D   C:\Users\jiangongwei\Documents\Python_data\PA_Trace_FSDB_02_07.csv  1.e-9     1.      0.  1.  0.762  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   200  36.5  36.5 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_GMT_ramped_trace_scaled_3_6.csv  1.e-9     1.      0.  1.  1.  0  0
+#B   500 36.5   0   0
+
+
+## 240325 PA only trace 
+##B   100 0. 10 0.
+##B   900 10  10.  0.
+##D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325.csv  1.e-9     1.      0.  1.  0.25  0  0
+##D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext.csv  1.e-9     1.      0.  1.  0.1786  0  0
+
+## 240430 construct floored current PA  
+#B   100 0. 6. 0.
+#B   900 6.  6.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   50  6.  6.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   900 6.  6.  0.
+#B   100 6. 0. 0.
+
+## 240725 construct floored current PA of finer CPM breaks, use 0.04464 for PA edge, 0.1786 for non-edge   
+#B   100 0. 1.5 0.
+#B   900 1.5  1.5  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.04464  0  0
+#B   50  1.5  1.5  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.04464  0  0
+#B   900 1.5  1.5  0.
+#B   100 1.5 0. 0.
+
+## 240725 construct floored current PA of finer CPM breaks, use 0.1339 for PA non-edge   
+#B   100 0. 4.5 0.
+#B   900 4.5  4.5  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.1339  0  0
+#B   50  4.5  4.5  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430.csv  1.e-9     1.      0.  1.  0.1339  0  0
+#B   900 4.5  4.5  0.
+#B   100 4.5 0. 0.
+
+
+## 240430 construct floored current GMT, step slopes, w/ randomniss 
+#B   100 0. 2. 0.
+#B   900 2.  2.  0.
+#H   10.    2.  6. 0.  -0.7 0.7
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    12.  12. 0.  -2. 2.
+#E   2577.   10.  14. 0.
+#H   10.    12.  12. 0.  -2. 2.
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    7.5  7.5 0.  -1. 1.   
+#H   10.    6.  2. 0.  -0.7 0.7
+#B   50     2.  2.  0.
+#H   10.    2.  6. 0.  -0.7 0.7
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    12.  12. 0.  -2. 2.
+#E   2577.   10.  14. 0.
+#H   10.    12.  12. 0.  -2. 2.
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    6.  2. 0.  -0.7 0.7
+#B   900.  2.  2.  0.
+#B   100   2. 0.  0.
+
+## 240506 construct floored current PA , with stalls, 3x8ns ramp, down to 30W 
+#B   100 0. 6. 0.
+#B   900 6.  6.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430_1Of2.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   8  23.7  10. 0.
+#B   8  10.  10.  0.
+#B   8  10. 23.7    0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430_2Of2.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   50  6.  6.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430_1Of2.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#F   8  23.7  10.
+#F   8  10.  10. 
+#F   8  10. 23.7   
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_240430_2Of2.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   900 6.  6.  0.
+#B   100 6. 0. 0.
+
+## 240506 construct floored current GMT, step slopes, w/ randomniss , with stalls in PA, 3x8ns 
+#B   100 0. 2. 0.
+#B   900 2.  2.  0.
+#H   10.    2.  6. 0.  -0.7 0.7
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    12.  12. 0.  -2. 2.
+#E   2601.   10.  14. 0.
+#H   10.    12.  12. 0.  -2. 2.
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    7.5  7.5 0.  -1. 1.   
+#H   10.    6.  2. 0.  -0.7 0.7
+#B   50     2.  2.  0.
+#H   10.    2.  6. 0.  -0.7 0.7
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    12.  12. 0.  -2. 2.
+#E   2601.   10.  14. 0.
+#H   10.    12.  12. 0.  -2. 2.
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    6.  2. 0.  -0.7 0.7
+#B   900.  2.  2.  0.
+#B   100   2. 0.  0.
+
+
+## construct floored current 
+#B   100 0. 10 0.
+#B   900 10  10.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\pat_power_ramp_PA_only_240325_ext_w_rampDwn_floor20x4.csv  1.e-9     1.      0.  1.  0.1786  0  0
+#B   1000 10  10.  0.
+
+
+## construct floored current PA 
+#B   100 0. 2 0.
+#B   900 2  2.  0.
+#H   84.    2.  27. 0.  -2. 2.
+#H   50.    27.  25. 0.  -2. 2.
+#E   2000.   23.  27. 0.
+#H   84.    25.  2. 0.  -2. 2.
+#B   1000 2  2.  0.
+
+## construct floored current GMT 
+#B   100 0. 2. 0.
+#B   900 2.  2.  0.
+#H   50.    2.  12. 0.  -2. 2.
+##E   2050.   10.  14. 0.
+#    E   2507.   10.  14. 0.
+#H   50.    12.  2. 0.  -2. 2.
+#B   1000 2  2.  0.
+
+## construct floored current GMT, step slopes, w/ randomniss 
+#B   100 0. 2. 0.
+#B   900 2.  2.  0.
+#H   10.    2.  6. 0.  -0.7 0.7
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    12.  12. 0.  -2. 2.
+#E   2050.   10.  14. 0.
+#H   10.    12.  12. 0.  -2. 2.
+#H   10.    10.5  10.5 0.  -1.6 1.6
+#H   10.    9.  9. 0.  -1.3 1.3
+#H   10.    7.5  7.5 0.  -1. 1.
+#H   10.    6.  2. 0.  -0.7 0.7
+#B   1000 2  2.  0.
+#A   100  5. 3. 
+
+
+## voltage waveform, use 0.1 GHz or lower, to reduce data points 
+#B  10 0.  0.  0.
+#B  1300. 0. -0.018  0.
+#B  7000. -0.018  0.  0.
+#B  5000 0. 0. 0.
+#B  1300  0.  0.015 0.
+#B  10000  0.015   0.  0.
+
+
+# Puru trace, Rahul processed, vdd 0.75V, 85C, add delay for LTspice 
+##G 50000 0.
+#B   500 0 10. 0.
+#B   1000 10.  10. 0.
+#D   C:\Users\jiangongwei\Documents\Python_data\PA_power_trace_2_15.csv  1.e-9     1.      0.  1.  0.25  0  0
+#B   1000 10   0   0
+
+# trace, Rahul processed, vdd 0.75V, 85C, check mag scaling factor 
+## start with "NNE_PA" for PA, "NNE_GMT" for GMEM
+#B   500 0 2 0.
+#B   500 2. 2. 0.
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+#D   C:\Users\jiangongwei\Documents\Python_data\NNE_GMT_power_trace_3_18.csv  1.e-9     1.      0.  1.  0.25  0  
+#B   200  2.  2. 0 
+
+
+## for PMIC step load response 
+#F  100 0.  20.  0.
+#F  5000 20.  20.  0.
+#F  80. 20. 150  0.
+#F  10000.  150.  150. 0.
+#F  80.  150. 20. 0.
+#F  1000 20. 20. 0.
+
+
+## DvD from Steven , use 25G, curr 1, 
+#B   1100  0.   59   0.
+#D   C:\Users\jiangongwei\Documents\Python_data\nne_pa_dvd_x96_wo_pkg.csv  1.e-12     1.      0.  1.  0.25  0  
+
+## 240603 PA trace x 1/4
+#B 136 0 0  0.
+#B 64 0 20. 0.
+#D C:\Users\jiangongwei\Documents\Python_data\nne_PA_resnet_4_reduced_240603.csv  1.e-9     1.      0.  1.  0.25  0  
+#B 80  26. 0 0.
+
+## 240603 MA trace x 1/4 mockup
+#B 100 0 12  0.
+#E 7593   10.  14. 0. 
+#B 80   12 0 0
+
+
+## 240808 construct 200A case 
+#B   100 0. 6. 0.
+#B   900 6.  6.  0.
+#H   80.    6.  25 0.  -2. 2.
+#E   13000.  23. 27. 0.
+#H   64   25.  54. 0.  -2. 2.
+#E   400.  50.  58. 0.
+#H   64   54.  25. 0.  -2. 2.
+#E   5000.  23. 27. 0.
+#H   80.    25. 6.  0.  -2. 2.
+#B   900 6.  6.  0.
+
+## 240821 Brad new profile: resnet_6_PA_profile.csv, resnet_6_IGI_profile.csv
+##B  1000  0.   15.  0.
+#D C:\Users\jiangongwei\Documents\Python_data\resnet_6_PA_profile.csv  1.     1.      0.  1.  1.  0  
+
+## 240917 120A/80ns step load, PA 
+#B   1000  0.  5.  0.
+#B   1000  5.  5.  0.
+#B   80    5.  25.  0.
+#B   3000  25.  25.  0.
+#B   80    25.  5.   0.
+#B   1000  5.  5.  0.
+
+## 240917 120A/80ns step load, MA
+#B   1000  0.  2.4  0.
+#B   1000  2.4  2.4  0.
+#B   80    2.4  12  0.
+#B   3000  12.  12.  0.
+#B   80    12.  2.4   0.
+#B   1000  2.4  2.4  0.
+
+## 241031 Rahul 200W trace, need to set "PROFILE_POWER_0_OR_CURR_1" to "0", sample at 0.95GHz to fit in 100us in SIMPLIS
+## if PA: 0.6 * 0.25 = 0.15, if IGI: 0.4 * 0.25 = 0.1
+#D   C:\Users\jiangongwei\Documents\Python_data\power_trace_200W_20241031_jgwei.csv  1.     1.      0.  1.  0.15  0  
+
+## 241031 Brad resnet_8 trace, already scaled by 1/4, resnet_8_PA_profile.csv or resnet_8_IGI_profile.csv
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_8_PA_profile.csv 1.     1.      0.  1.  1.  0  
+
+## 241106 Rahul profile based on Resnet_8 , add ramp down 10us, use "PA" or "IGI" appendex 
+#D   C:\Users\jiangongwei\Documents\Python_data\Resnet8_RealImg_200W_double_up_down_ramp_jitter_IGI.csv  1.     1.      0.  1.  1.  0  
+
+## 241111 Brad profile, use "PA" or "IGI" appendex 
+#D   C:\Users\jiangongwei\Documents\Python_data\hspice_PA_profile_bb_norelu_20us_241111.csv   1.     1.      0.  1.  1.  0 
+
+## 2412010 Brad data PA 
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l1\resnet_bb_l1_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l2\resnet_bb_l2_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l3\resnet_bb_l3_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l4\resnet_bb_l4_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l5\resnet_bb_l5_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l6\resnet_bb_l6_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l7\resnet_bb_l7_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l8\resnet_bb_l8_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+#B   100.  0.    0.  0.
+#D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_ff_bb_l1\resnet_ff_bb_l1_hspice_PA_profile.csv   1.     1.      0.  1.  1.  0 
+
+
+## 2412010 Brad data IGI 
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l1\resnet_bb_l1_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l2\resnet_bb_l2_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l3\resnet_bb_l3_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l4\resnet_bb_l4_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l5\resnet_bb_l5_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l6\resnet_bb_l6_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l7\resnet_bb_l7_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_bb_l8\resnet_bb_l8_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
+B   100.  0.    0.  0.
+D   C:\Users\jiangongwei\Documents\Python_data\resnet_l1_8_a\resnet_ff_bb_l1\resnet_ff_bb_l1_hspice_IGI_profile.csv   1.     1.      0.  1.  1.  0 
