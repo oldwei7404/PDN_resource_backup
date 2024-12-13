@@ -7,13 +7,14 @@ tStep         10.p
 tStop         115.u
 td_delay      0.n 
 
-SPICE_Template  core_PDN_NNE_template_hspice_241211.hsp
-SPICE_Files_Linux_Path         ./
+SPICE_Profile_Csv_Dir   test_dir3
+
+SPICE_Template  core_PDN_NNE_template_hspice_241212.hsp
 
 Profile_Name_In_Spice_Num1     pwl_file_in_PA
 Profile_Csv_Keyword_Num1           PA 
 
-Profile_Name_In_Spice_Num2     pwl_file_in_MA
+Profile_Name_In_Spice_Num2     pwl_file_in_IGI
 Profile_Csv_Keyword_Num2           IGI 
 
 Profile_Name_In_Spice_Num3     pwl_file_in_TEST
