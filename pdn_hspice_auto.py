@@ -1,4 +1,7 @@
-## Usage: create a seperate folder, e.g. *.csv profiles at 'C:\example', put all .csv files, put template.hsp file in the folder, prepare and edit *.params
+## Usage: create a seperate folder, e.g. *.csv profiles at 'C:\example', put all .csv files, put template.hsp file in the folder, prepare and edit *.params; copy "example" folder to Linux
+## Usage: In Linux, "chmod -R 775 example", "chmod 777 example/[generated_project].sh"
+
+
 ## example: python  .\pdn_hspice_auto.py -d 'C:\example' -i  .\pdn_hspice_auto_input.params
 
 import os, sys, getopt
@@ -31,7 +34,18 @@ class hspice_batch_sim_generator:
     csv_file_dir = ''
     curr_profile_pair = {}  ### { current profile name in spice, csv data file list }
 
+### 
+    def remove_unwanted_lines(self, file):
+        with open(file, 'r+') as fileIO:
+            data_all_lines = fileIO.readlines()
+            fileIO.seek(0)
+            for line_ in data_all_lines:
+                if '#' not in line_:    ### lines that starts with # could cause issue in Hspice, so skip this line
+                    fileIO.write(line_)
+            fileIO.truncate()
+        fileIO.close()
 
+###
     def __init__(self, file_in_para):
         
         with open(r'%s'%file_in_para, 'r') as fin:
@@ -85,8 +99,12 @@ class hspice_batch_sim_generator:
         for dirPath, dirName, fileNames in os.walk(self.csv_file_dir):
             for file in fileNames:
                 if file.endswith('.csv'):
+                    csv_file_tmp = dirPath + '\\' + file
+                    # print('#debug1: ' + csv_file_tmp+ '\n')
+                    self.remove_unwanted_lines(csv_file_tmp)
+
                     file = dirPath.lstrip(self.csv_file_dir) + '\\' + file
-                    file = '.' + file.replace('\\','/')       ## Linux path
+                    file = '.' + file.replace('\\','/')       ## convert to Linux path
                     # print('#debug: ' + file.replace('\\','/') + '\n')
                     for idx, kw in enumerate(self.profile_Csv_KeyWord_List):      ## check if this file belongs to a keyword class 
                         if kw in file:  ## keyword found 
@@ -98,7 +116,7 @@ class hspice_batch_sim_generator:
                                 self.curr_profile_pair[pro_name_spice].append(file)
                             break  
 
-        ## search file 
+        ## search file (only check file in current folder)
         # os.chdir(self.csv_file_dir)
         # for file in os.listdir(self.csv_file_dir):  ## loop each csv file in directory
         #     if file.endswith('.csv'):

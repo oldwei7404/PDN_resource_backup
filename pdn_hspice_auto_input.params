@@ -1,15 +1,16 @@
+Is_TR_0_or_AC_1 0
+tStep         10.p
 
 VDD_in_Volt    0.775
 Is_Use_Ecap    0
 Is_Use_MIM     0
-Is_TR_0_or_AC_1 0
-tStep         10.p
+
 tStop         115.u
 td_delay      0.n 
 
 SPICE_Profile_Csv_Dir   test_dir3
 
-SPICE_Template  core_PDN_NNE_template_hspice_241212.hsp
+SPICE_Template  core_PDN_NNE_template_hspice_241216.hsp
 
 Profile_Name_In_Spice_Num1     pwl_file_in_PA
 Profile_Csv_Keyword_Num1           PA 
