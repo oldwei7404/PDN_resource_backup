@@ -437,8 +437,9 @@ class CurrWaveform:
                     cln_str = cln_str_src.split()
                 
                 time_ns = float(cln_str[0]) * self.src_profile_envelope_time_unit_in_sec * 1.e9
-                                
+            
                 if data_cnt >= self.waveform_d_skip_n_data: 
+
                     if not time_st_fnd:
                         time_ST = time_ns
                         time_st_fnd = True
@@ -457,7 +458,10 @@ class CurrWaveform:
                     else:
                         curr_ = float(cln_str[1]) * self.src_profile_envelope_waveform_amp_unit
 
-                    src_profile_amplitude.append( curr_ * self.waveform_d_mag_scale_fac )                          
+                    src_profile_amplitude.append( curr_ * self.waveform_d_mag_scale_fac )    
+                else: 
+                    data_cnt = data_cnt + 1  
+                    
                 cln_str = fin.readline()                
 
         fin.close()
@@ -738,24 +742,47 @@ class CurrWaveform:
         print('#INFO: Current waveform output as PWL to ' + fileName)
 
     def WriteWaveform_ToSimplis(self, fileName):
-        fileName = fileName + '_simplis.csv'
-
-        # NOTE: remove existing SIMPLIS file, if found
-        if os.path.isfile(fileName):
-            os.chmod(fileName, stat.S_IWRITE)
-            os.remove(fileName)
-
-        fout = open(fileName, 'w+')
         leng_rcd = len( self.currWaveform_list_time_ns)
-        if leng_rcd > 1e5:
-            leng_rcd = 100000
-            print('\n\n#WARNING: SIMPLIS cannot take more than 1e5 data points ! ' + str(leng_rcd) +' data points exported, time stops at ' +  str(self.currWaveform_list_time_ns[leng_rcd-1]) + ' ns\n\n')
 
-        fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
-        for i in range(0, leng_rcd):
-            fout.write(str(self.currWaveform_list_time_ns[i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[i]) + ' "\t\n')  
+        if leng_rcd < 1e5:
+            fileName = fileName + '_simplis.csv'
+            # NOTE: remove existing SIMPLIS file, if found
+            if os.path.isfile(fileName):
+                os.chmod(fileName, stat.S_IWRITE)
+                os.remove(fileName)
 
-        fout.close()
+            fout = open(fileName, 'w+')
+            # if leng_rcd > 1e5:
+            #     leng_rcd = 100000
+            #     print('\n\n#WARNING: SIMPLIS cannot take more than 1e5 data points ! ' + str(leng_rcd) +' data points exported, time stops at ' +  str(self.currWaveform_list_time_ns[leng_rcd-1]) + ' ns\n\n')
+
+            fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
+            for i in range(0, leng_rcd):
+                fout.write(str(self.currWaveform_list_time_ns[i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[i]) + ' "\t\n')  
+            fout.close()
+            ## write into multiple file, each <1e5
+        else:
+            Num_Files = int(leng_rcd / 1e5) + 1
+            fileName_base = fileName
+            print('\n\n#INFO: SIMPLIS split into ' + str(Num_Files) + ' files due to data length limit./n')
+            for file_num in range (0, Num_Files):
+                len_lmt = int(1e5)
+                baseNum = int(file_num * 1e5)
+                if file_num == Num_Files-1: ## last file
+                    len_lmt = int( leng_rcd - (Num_Files-1) * 1e5 )
+
+                # NOTE: remove existing SIMPLIS file, if found
+                fileName = fileName_base + '_' + str(file_num+1) + '_Of_' + str(Num_Files) +  '_simplis.csv'
+                if os.path.isfile(fileName):
+                    os.chmod(fileName, stat.S_IWRITE)
+                    os.remove(fileName)   
+
+                fout = open(fileName, 'w+')
+                fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
+                for i in range(0, len_lmt):
+                    fout.write(str(self.currWaveform_list_time_ns[baseNum + i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[baseNum + i]) + ' "\t\n')  
+                fout.close()
+
 
         # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
         os.chmod(fileName, S_IREAD|S_IRGRP|S_IROTH)
