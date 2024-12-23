@@ -742,51 +742,45 @@ class CurrWaveform:
         print('#INFO: Current waveform output as PWL to ' + fileName)
 
     def WriteWaveform_ToSimplis(self, fileName):
+        len_lmt = 100000 - 2    ### -2 to allow time 0 
         leng_rcd = len( self.currWaveform_list_time_ns)
+        Num_Files = int(leng_rcd / len_lmt) + 1
+        fileName_base = fileName
 
-        if leng_rcd < 1e5:
-            fileName = fileName + '_simplis.csv'
+        if Num_Files > 1:
+            print('\n\n#INFO: SIMPLIS split into ' + str(Num_Files) + ' files due to data length limit '+ str(len_lmt))
+
+        for file_num in range (0, Num_Files):            
+            baseNum = int(file_num * len_lmt)
+            if file_num == Num_Files-1: ## last file
+                len_lmt = int( leng_rcd - (Num_Files-1) * len_lmt )
+
             # NOTE: remove existing SIMPLIS file, if found
+            if Num_Files >1: 
+                fileName = fileName_base + '_' + str(file_num+1) + '_Of_' + str(Num_Files) +  '_simplis.csv'
+            else: 
+                fileName = fileName_base + '_simplis.csv'
+
             if os.path.isfile(fileName):
                 os.chmod(fileName, stat.S_IWRITE)
-                os.remove(fileName)
+                os.remove(fileName)   
 
             fout = open(fileName, 'w+')
-            # if leng_rcd > 1e5:
-            #     leng_rcd = 100000
-            #     print('\n\n#WARNING: SIMPLIS cannot take more than 1e5 data points ! ' + str(leng_rcd) +' data points exported, time stops at ' +  str(self.currWaveform_list_time_ns[leng_rcd-1]) + ' ns\n\n')
-
             fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
-            for i in range(0, leng_rcd):
-                fout.write(str(self.currWaveform_list_time_ns[i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[i]) + ' "\t\n')  
-            fout.close()
-            ## write into multiple file, each <1e5
-        else:
-            Num_Files = int(leng_rcd / 1e5) + 1
-            fileName_base = fileName
-            print('\n\n#INFO: SIMPLIS split into ' + str(Num_Files) + ' files due to data length limit./n')
-            for file_num in range (0, Num_Files):
-                len_lmt = int(1e5)
-                baseNum = int(file_num * 1e5)
-                if file_num == Num_Files-1: ## last file
-                    len_lmt = int( leng_rcd - (Num_Files-1) * 1e5 )
-
-                # NOTE: remove existing SIMPLIS file, if found
-                fileName = fileName_base + '_' + str(file_num+1) + '_Of_' + str(Num_Files) +  '_simplis.csv'
-                if os.path.isfile(fileName):
-                    os.chmod(fileName, stat.S_IWRITE)
-                    os.remove(fileName)   
-
-                fout = open(fileName, 'w+')
-                fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
+            if file_num == 0:
                 for i in range(0, len_lmt):
                     fout.write(str(self.currWaveform_list_time_ns[baseNum + i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[baseNum + i]) + ' "\t\n')  
-                fout.close()
+            else: 
+                fout.write('0, "\t0\t"\n')    ### first 2 data point to be 0, to avoid spice issue
+                fout.write( str( (self.currWaveform_list_time_ns[baseNum -1] + self.currWaveform_list_time_ns[baseNum] )*0.5 ) + 'e-9, "\t0\t"\n')
+                for i in range(0, len_lmt):
+                    fout.write(str(self.currWaveform_list_time_ns[baseNum + i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[baseNum + i]) + ' "\t\n')  
+            fout.close()
 
+            # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
+            os.chmod(fileName, S_IREAD|S_IRGRP|S_IROTH)
+            print('#INFO: Current waveform output as PWL to READ ONLY file : ' + fileName)
 
-        # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
-        os.chmod(fileName, S_IREAD|S_IRGRP|S_IROTH)
-        print('#INFO: Current waveform output as PWL to READ ONLY file : ' + fileName)
 
     def PlotWaveform(self):
         plt.rcParams.update({'font.size': 15})
