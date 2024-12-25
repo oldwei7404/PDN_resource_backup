@@ -742,7 +742,7 @@ class CurrWaveform:
         print('#INFO: Current waveform output as PWL to ' + fileName)
 
     def WriteWaveform_ToSimplis(self, fileName):
-        len_lmt = 100000 - 2    ### -2 to allow time 0 
+        len_lmt = 100000 - 3    ### -3 to allow time 0 
         leng_rcd = len( self.currWaveform_list_time_ns)
         Num_Files = int(leng_rcd / len_lmt) + 1
         fileName_base = fileName
@@ -770,11 +770,13 @@ class CurrWaveform:
             if file_num == 0:
                 for i in range(0, len_lmt):
                     fout.write(str(self.currWaveform_list_time_ns[baseNum + i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[baseNum + i]) + ' "\t\n')  
+                fout.write(str(self.currWaveform_list_time_ns[baseNum + len_lmt -1] + 0.5) + 'e-9, "\t0\t"\n')    ## make sure last current is 0
             else: 
                 fout.write('0, "\t0\t"\n')    ### first 2 data point to be 0, to avoid spice issue
                 fout.write( str( (self.currWaveform_list_time_ns[baseNum -1] + self.currWaveform_list_time_ns[baseNum] )*0.5 ) + 'e-9, "\t0\t"\n')
                 for i in range(0, len_lmt):
                     fout.write(str(self.currWaveform_list_time_ns[baseNum + i]) + 'e-9, "\t' + str(self.currWaveform_list_curr_Amp[baseNum + i]) + ' "\t\n')  
+                fout.write(str(self.currWaveform_list_time_ns[baseNum + len_lmt-1] + 0.5) + 'e-9, "\t0\t"\n')    ## make sure last current is 0
             fout.close()
 
             # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
