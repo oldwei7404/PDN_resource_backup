@@ -498,8 +498,29 @@ class CurrWaveform:
                 # elif time_ > 200e3:
                 #     continue 
 
-                # if time_ > 200e3:
+                ## for "PDN_2025_01_22.full_trace.pworst"
+                # if time_ < 225e3:
                 #     continue 
+                # if time_ > 340e3 and time_ < 430e3:
+                #     continue 
+                # if time_ > 460e3 and time_ < 480e3:
+                #     continue 
+                # if time_ > 490e3 and time_ < 565e3:
+                #     continue
+                # if time_ > 585e3 and time_ < 625e3:
+                #     continue  
+                # if time_ > 638e3 and time_ < 740e3:
+                #     continue
+                # if time_ > 760e3 and time_ < 788e3:
+                #     continue
+                # if time_ > 798e3 and time_ < 834e3:
+                #     continue
+                # if time_ > 842e3 and time_ < 948e3:
+                #     continue    
+                # if time_ > 965e3 and time_ < 994e3:
+                #     continue  
+                
+
 
                 # if time_ > 5e3 * skip_adj and  time_ < 95e3 * skip_adj:
                 #     continue
@@ -846,7 +867,7 @@ waveformInst.CompositeWaveform()
 # waveformInst.WriteWaveform(file_out_waveform)
 # waveformInst.WriteWaveform_InTimFormat(file_out_waveform)
 waveformInst.WriteWaveform_ToCSV(file_out_waveform)
-waveformInst.WriteWaveform_ToSimplis(file_out_waveform)
+# waveformInst.WriteWaveform_ToSimplis(file_out_waveform)
 
 if is_print_wf:
     waveformInst.PlotWaveform()
