@@ -31,19 +31,6 @@
 		* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_noRampFr0515_1116.csv')		*** PMIC vendor test, no ramp ,  11us
 		* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_MA_noRampFr0515_1116.csv')
 		
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_240117.txt.csv')				*** ramp 16clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_Ramp32clk.txt.csv')			*** ramp 32clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_Ramp64clk.txt.csv')			*** ramp 64clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_Ramp128clk.txt.csv')			*** ramp 128clk,  18us (2.5us w/ up/down)		
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_Ramp256clk.txt.csv')			*** ramp 256clk,  18us (3us w/ up/down)
-				
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp16clk_80W.txt.csv')		*** ramp 16clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp32clk_80W.txt.csv')		*** ramp 32clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp64clk_80W.txt.csv')		*** ramp 64clk,  18us (2.5us w/ up/down)
-				
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp16clk_105W.txt.csv')		*** ramp 16clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp32clk_105W.txt.csv')		*** ramp 32clk,  18us (2.5us w/ up/down)
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_4x2_Ramp64clk_105W.txt.csv')		*** ramp 64clk,  18us (2.5us w/ up/down)
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_x0p25_traceFrPD_240215.txt.csv')		*** *** 240215 Puru trace x 0.25, 3us
 			
@@ -65,31 +52,70 @@
 				* .param pwl_file_in_MA = str('./hspice_inc/resnet_6_IGI_profile.csv')	*** 1/4 PA, Brad 240823				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
 				* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_IGI_only_240830_resnet_6_50us.txt.csv')	*** 1/4 PA, Brad 240823
-				.param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile.csv')	*** 1/4 PA, Brad 241031, 11us
-				.param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile.csv')	*** 1/4 IGI, Brad 241031, 11us 		
+				* .param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile.csv')	*** 1/4 PA, Brad 241031, 11us
+				* .param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile.csv')	*** 1/4 IGI, Brad 241031, 11us 		
 				* .param pwl_file_in_PA = str('./hspice_inc/resnet_8_PA_profile_ScaleBy2.csv')	*** 1/4 PA, Brad 241031, 11us
 				* .param pwl_file_in_MA = str('./hspice_inc/resnet_8_IGI_profile_ScaleBy2.csv')	*** 1/4 IGI, Brad 241031, 11us 		
 				* .param pwl_file_in_PA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_PA.csv')		*** 1/4 PA, Rahul 241104, 11us
 				* .param pwl_file_in_MA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_IGI.csv')	*** 1/4 PA, Rahul 241104, 11us 	
 				* .param pwl_file_in_PA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_jitter2_PA.csv')		*** 1/4 PA, Rahul 241104, jitter added , 4us
 				* .param pwl_file_in_MA = str('./hspice_inc/Resnet8_RealImg_200W_double_ramp_jitter2_IGI.csv')	*** 1/4 PA, Rahul 241104, jitter added, 4us 
+				* .param pwl_file_in_PA = str('./hspice_inc/Resnet8_RealImg_200W_double_up_down_ramp_jitter_PA.csv')	*** 1/4 PA, Rahul 241106 with ramp down, 12us
+				* .param pwl_file_in_MA = str('./hspice_inc/Resnet8_RealImg_200W_double_up_down_ramp_jitter_IGI.csv')	*** 1/4 IGI,Rahul 241106 with ramp down, 12us 	
+				* .param pwl_file_in_PA = str('./hspice_inc/hspice_PA_profile_reshape_50us_241111.csv')	*** 1/4 PA, Brad 241111, waveform stablize after 7us though, 19W 
+				* .param pwl_file_in_MA = str('./hspice_inc/hspice_IGI_profile_reshape_50us_241111.csv')	*** 1/4 IGI, Brad 241111 	
+				
+				* .param pwl_file_in_PA = str('./hspice_inc/hspice_PA_profile_bb_norelu_20us_241111.csv')	*** 1/4 PA, Brad 241111, 112W, 20us
+				* .param pwl_file_in_MA = str('./hspice_inc/hspice_IGI_profile_bb_norelu_20us_241111.csv')	*** 1/4 IGI, Brad 241111 
+				* .param pwl_file_in_PA = str('./hspice_inc/resnet_ff_bb_l1_hspice_PA_profile_241211.csv')	*** 1/4 PA, 241211, 150A total, 20us
+				* .param pwl_file_in_MA = str('./hspice_inc/resnet_ff_bb_l1_hspice_IGI_profile_241211.csv')	*** 1/4 IGI, 241211, 20us  					
+				* .param pwl_file_in_PA = str('./hspice_inc/hspice_PA_profile_bb_norelu_20us_241119_x1p25_rampDown.csv')	*** 1/4 PA, Rahul based on Brad 241119, scaled by 1.25 
+				* .param pwl_file_in_MA = str('./hspice_inc/hspice_IGI_profile_bb_norelu_20us_241119.csv')	*** 1/4 IGI
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_l1_8_241218.csv')	*** 1/4 PA, Brad 241210 concatenated 8+1 layers, 5us interval, 155us
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_resnet_l1_8_241218.csv')	*** 1/4 IGI 	
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_l1to8_250107.txt.csv')	*** 1/4 PA, Brad 250107 concatenated 8 layers, 5us interval, 125us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_resnet_noRELu_l1to8_250107.txt.csv')	*** 1/4 IGI 	
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_L1to8_250108.txt.csv')	*** 1/4 250108, concatenated 8 layers, 5us interval, 137us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_L1to8_250108.txt.csv')	*** 1/4 IGI 
+				
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_wo_ReLU_L1_8_250110.txt.csv')	*** 1/4 250110, 5us interval, 140us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_wo_ReLU_L1_8_250110.txt.csv')	*** 1/4 IGI 				
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_w_ReLU_L1_8_250110.txt.csv')	*** 1/4 250110, 5us interval, 140us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_w_ReLU_L1_8_250110.txt.csv')	*** 1/4 IGI 
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_full_250121.txt.csv')	*** 1/4 250121, full, 752us, FF/0.825V/125C   
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_full_250121.txt.csv')	*** 1/4 IGI 
+				.param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_full_250122_v2_compressed.txt.csv')	*** 1/4 250121, from full, reduce idle profile, 255us, FF/0.75V/125C  
+				.param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_full_250122_v2_compressed.txt.csv')	*** 1/4 IGI
+							
+
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_w_ReLU_L1pworst_X0p8264_250110.txt.csv')	*** 1/4 PA, w/ ReLU,  L1 worst corner scaled to 0.75V, 29us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_w_ReLU_L1pworst_X0p8264_250110.txt.csv')	*** 1/4 IGI 		
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_L2_pworst_to_0p75V_250110.txt.csv')	*** 1/4 PA, w/o ReLU, L2 worst corner scaled to 0.75V, 17us
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_L2_pworst_to_0p75V_250110.txt.csv')	*** 1/4 IGI 	
 				
 				
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 80ns
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2PA_5A_25A_80ns_len7us.txt.csv') *** 1/4 of PA, 5==>25A in 160ns
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_ff_resnet_l1_x0p8264_241219.txt.csv')	*** 1/4 PA, Brad 241210 FF L1, scaled by 0.8264 to emulate 0.825
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_ff_resnet_l1_x0p8264_241219.txt.csv')	*** 1/4 IGI 	
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_L1_x1p3778.txt.csv')	*** 1/4 PA, noReLU 250107, L1 scaled by 1.3778, 20us 
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_resnet_noRELu_L1_x1p3778.txt.csv')	*** 1/4 IGI 	
+								* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_250108_L2.txt.csv')	*** 1/4 PA, noReLU 250107, L2, 15us
+								* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_250108_L2.txt.csv')	*** 1/4 IGI 				
+								* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_250108_L2_X1p39.txt.csv')	*** 1/4 PA, noReLU 250107, L2 x 1.39 to FF/0.75/125C, 17us
+								* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_PA_resnet_noRELu_250108_L2_X1p39.txt.csv')	*** 1/4 IGI 	
+								* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_L2_pworst_X0p8264.txt.csv')	*** 1/4 PA, noReLU 250107, L2 pworst scaled by (0.75/0.825)^2, 17us
+								* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_L2_pworst_X0p8264.txt.csv')	*** 1/4 IGI 									
+								
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_resnet_noReLU_L1_L2X1p39.txt.csv')	*** 1/4 L1 + L2 x 1.39, 35us
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_resnet_noReLU_L1_L2X1p39.txt.csv')	*** 1/4 IGI 			
+
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_l2_241219.txt.csv')	*** 1/4 PA, Brad 241210 L2
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_resnet_l2_241219.txt.csv')	*** 1/4 IGI 
+				* .param pwl_file_in_PA = str('./hspice_inc/NNE_1Of4_PA_resnet_l2_x1p3889_241219.txt.csv')	*** 1/4 PA, Brad 241210 L2, scaled by 125/90 to emulate FF/0.75V/125C
+				* .param pwl_file_in_MA = str('./hspice_inc/NNE_1Of4_IGI_resnet_l2_x1p3889_241219.txt.csv')	*** 1/4 IGI 
+			
 				
 						*** 200W peak power study
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_v0_200Wpeak_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak for 1us case, 13us, repeat ready 
-
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_100ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_200ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_250ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_300ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_350ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_400ns_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240808_200Wpeak_400ns_13usSteady_RptRdy.txt.csv') *** 1/4 of PA, based on Rahul 200W peak, repeat ready 
-				
-						*** 
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_PA_x1Of4_240603.txt.csv') *** 1/4 of PA, Brad trace 240603 7.7us, repeatable 
 				
 					*** these two PA currents need to work together to piece together one PA tile
@@ -117,41 +143,10 @@
 				
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240405_fr_PD_1100usRamp_200ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,  from /work/mammoth/pd/nne/4/steveny/PI/nne_pat_top/DVD_IPF_becky_0207rtl_newFP_newPG/reports/dynamic_analysis/pad.current
 				* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_only_240406_fr_PD_8ns.txt.csv')	*** 1/4 of PA tile, PD DvD trace x 96,
-				
-						
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp16clk_80W.txt.csv')	*** single current profile for whole NNE PA 
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp32clk_80W.txt.csv')	
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp64clk_80W.txt.csv')	
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp128clk_80W.txt.csv')	
-
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp16clk_80W_30W.txt.csv')	*** single current profile for whole NNE PA, 240202
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp32clk_80W_30W.txt.csv')	
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp64clk_80W_30W.txt.csv')	
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_Ramp128clk_80W_30W.txt.csv')	
-						
-						*.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_traceFrPD_240207.txt.csv')			*** 240207 Puru trace, 1us  
-						*.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_traceFrPD_x0p762_240207.txt.csv')	*** 240207 Puru trace x 0.762 to simulate 80W, 1us  
-						*.param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_all_traceFrPD_240215.txt.csv')			*** 240215 Puru trace, 3us
-						
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_fullAlign_240222.txt.csv')		*** 240222  trace, PA + GMEM 3us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_stagger_240222.txt.csv')			*** 240222  trace, PA + GMEM 3us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_fullAlign_scale_240222.txt.csv')	*** 240222  trace, PA + GMEM 3us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_stagger_scale_240222.txt.csv')	*** 240222  trace, PA + GMEM 3us
-						
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_240301.txt.csv')		*** 240301  trace, PA + GMEM 4us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_sacled_240301.txt.csv')		*** 240301  trace, PA + GMEM 4us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_all_traceFrPD_240306_8us.txt.csv')		*** 240306  trace, PA + GMEM 4us
-						* .param  pwl_file_All = str('./hspice_inc/curr_profile_NNE_PA_w_GMT_240425.csv')		*** 240425  trace, curr_profile_NNE_4x2_PA_only_240325_scaleBy0p7143_addRampDown_4us + curr_profile_NNE_GMT_only_mockup_currFlr2A_peak12A_50ns_rand_5us
-						
+									
 					
 		*** idle current
 		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
-
-		***  step up current (only one def allowed)
-	*.inc ./hspice_inc/out_curr_profile_NNE_100ns_12A_10000ns_cnst_100ns_rampDown_noClk.txt
-	*.inc ./hspice_inc/out_curr_profile_NNE_300nsRamp_100ns_12A_10000ns_cnst_100ns_rampDown_noClk.txt
-	*.inc ./hspice_inc/out_curr_profile_NNE_300nsRamp_100ns_12A_10000ns_cnst_100ns_rampDown_Clk0p7floor.txt
-	
 
 
 *** filter for measurement
@@ -168,7 +163,7 @@ C_lf lf 		ref_gnd	160.p
 .ends meas_filter
 
 
-*** Ecap EC2005P (R_mt, L_mt is per sub-cap)
+*** Ecap EC2005P, 9.34uF (R_mt, L_mt is per sub-cap)
 .subckt siCap_EC2005P
 + capPort1 capPort2 ref_gnd R_mt=15.5u	L_mt=8.6p 
 	r_mt1 CapPort1 	mt1_1	R_mt  
@@ -182,9 +177,9 @@ C_lf lf 		ref_gnd	160.p
 	r_cap_esl2	mt2_2	mt2_3	5.m
 	l_cap_esl2	mt2_3	mt2_4	2.p
 	c_cap_2	mt2_4 	ref_gnd	4.67u
-.ends 
+.ends siCap_EC2005P
 
-*** Ecap EC2006P (R_mt, L_mt is per sub-cap)
+*** Ecap EC2006P, 39.3uF (R_mt, L_mt is per sub-cap)
 .subckt siCap_EC2006P
 + capPort1 capPort2 capPort3 capPort4 ref_gnd R_mt=7.7u	L_mt=4.3p 
 	r_mt1 CapPort1 	mt1_1	R_mt  
@@ -210,7 +205,7 @@ C_lf lf 		ref_gnd	160.p
 	r_cap_esl4	mt4_2	mt4_3	6.m
 	l_cap_esl4	mt4_3	mt4_4	1.1p
 	c_cap_4	mt4_4 	ref_gnd	9.83u
-.ends 
+.ends siCap_EC2006P
 	
 	
 	***** define die model *****
@@ -267,6 +262,8 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM.cir		*** 240821 Andes 4x8 pkg cir, jgwei replaced DSC for MIM case, reduced model
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM.cir		*** 241004 130um micro pkg, jgwei reduced model based on Andes pkg SIW, jgwei pingrps
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_mockup_241102_IdEM.cir  *** 241102 130um pkg, Zijie mockup 
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_w_3XEC2005P_NoDSC_IdEM.cir	*** 241113 130um pkg, Zijie mockup w/ 3x EC2005P embedded, NO MLCC 
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEC2005P_IdEM.cir	*** 241119 130um pkg, Zijie mockup w/ 3x EC2005P embedded, improved mounting RL
 
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -289,6 +286,18 @@ C_lf lf 		ref_gnd	160.p
 	
 	.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir			*** 240903 Andes generated PCB model
 	.inc ./hspice_inc/ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM.cir 	*** 240912, 6 phase layout, 105C 
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_IdEM.cir		*** 241126 ACM3 PCB, 
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_kyo1uF_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase2_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_kyo1uF_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config3_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config4_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config6_IdEM.cir
+	
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_0x47uF_IdEM.cir
+	
 	
 					*** 
 
@@ -298,9 +307,8 @@ C_lf lf 		ref_gnd	160.p
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.param is_use_ecap_ebed = 1		*** value: 0 or 1, note: this could be baked in pkg model 
+.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
 .param is_MIM 			= 0
-
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
 .param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
@@ -327,7 +335,7 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 12.u   *200.u    
+.param tStop	= 255.u 	
 
 .param td_delay = 0.n
 .param td_delay_grp0 = 0.u   *0.u
@@ -382,7 +390,7 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 			* L_induc pmic_pwr_raw pmic_pwr  32.n		*** experiment to include L (need to disable 'r_pmic_l_eqv' ) 
 
 *************************************** Socket ********************************
-Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model 
+* Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model 
 
 
 																									.if ( 0 )  	***  test reduced PCB+pkg for SIMPLIS  ==> low accuracy, do NOT use 
@@ -399,7 +407,7 @@ Rskt	bga_pcb		bga_pkg		1.n				*** can add socket model
 
 *************************************** PCB ***********************************
 					*** debug to skip PCB 
-					* R_short_pcb bga_pcb 	pmic_pwr	1.n
+					* R_short_pcb bga_pkg 	pmic_pwr	1.n
 
 Xblk_PCB		*** 240912 6x phase solution  
 + pmic_pwr
@@ -415,7 +423,17 @@ Xblk_PCB		*** 240912 6x phase solution
 + bga_pcb_4		
 + bga_pcb_5
 + ref_gnd
-+ ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM
+* + ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_kyo1uF_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase2_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_IdEM
++ ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_kyo1uF_IdEM	*** POR 241210
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config3_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config4_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_0x47uF_IdEM
+* + ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config6_IdEM
 
 				* Xblk_PCB		*** 240903 Andes generated model 
 				* + bga_pcb_0 
@@ -492,6 +510,9 @@ Xblk_pkg
 * + Z_plot_NNE_pkg_ReduceModel_4x8_to_4x2_240830_IdEM	
 + Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_IdEM
 * + Z_plot_NNE_pkg_ReduceModel_4x2_130um_mockup_241102_IdEM
+* + Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_w_3XEC2005P_NoDSC_IdEM		*** Note, this already has 3xEcap embedded, do NOT enable Ecap param in script 
+* + Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEC2005P_IdEM			*** Note, this already has 3xEcap embedded, do NOT enable Ecap param in script 
+
 
 						* Xblk_pkg	*** 8+4 NNE grp 
 						* + pkg_bump_MA_ns_0
@@ -520,83 +541,87 @@ Xblk_pkg
 
 *** Ecap embedded, NOTE: this is just mock up, NOT real connection, connected on bumps, Optimistic !!		
 .if ( is_use_ecap_ebed == 1 )  *** use ecap embed
-	xECAP_16600nF_core_2
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_3_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ pkg_bump_PA_ns_2_
-	+ ref_gnd
-	+ str(siCap_empwr_EC1005_16600nF)
+					* xECAP_16600nF_core_2
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_3_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + pkg_bump_PA_ns_2_
+					* + ref_gnd
+					* + str(siCap_empwr_EC1005_16600nF)
+					
+					* *** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
+					* r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	5.4u
+					* l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		3.0p
+					* r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	5.4u
+					* l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		3.0p		
+
+
+*** 3x EC2005P w/ lumped mounting R/L
+	xEcap_2005_inst1	pkg_bump_PA_ns_3 pkg_bump_PA_ns_2  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=14.0p 
+	xEcap_2005_inst2	pkg_bump_PA_ns_1 pkg_bump_PA_ns_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=14.0p 
+	xEcap_2005_inst3	pkg_bump_MA_ns_2 pkg_bump_MA_ns_2  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=14.0p 
 	
-	*** comment r/l below to disconnect EC1005 (do not comment out EC1005 above, reason unknown 241105)
-	* *** NOTE:  mouting L and R based on 24/1/31 Zijie layout w/ Ecap
-	* r_ecap_EC1005_half_2 	pkg_bump_PA_ns_2_		pkg_bump_PA_ns_2_tmp	5.4u
-	* l_ecap_EC1005_half_2    pkg_bump_PA_ns_2_tmp	pkg_bump_PA_ns_2		3.0p
-	* r_ecap_EC1005_half_3 	pkg_bump_PA_ns_3_		pkg_bump_PA_ns_3_tmp	5.4u
-	* l_ecap_EC1005_half_3    pkg_bump_PA_ns_3_tmp	pkg_bump_PA_ns_3		3.0p		
-
-
-*** 3x EC2005P
-	xEcap_2005_inst1	pkg_bump_PA_ns_3 pkg_bump_MA_ns_3  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
-	xEcap_2005_inst2	pkg_bump_PA_ns_2 pkg_bump_MA_ns_2  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
-	xEcap_2005_inst3	pkg_bump_PA_ns_1 pkg_bump_MA_ns_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
-
+				*** 3x EC2005P w/ no. mounting R/L
+					* xEcap_2005_inst1	pkg_bump_PA_ns_3 pkg_bump_PA_ns_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+					* xEcap_2005_inst2	pkg_bump_PA_ns_1 pkg_bump_PA_ns_1  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+					* xEcap_2005_inst3	pkg_bump_MA_ns_2 pkg_bump_MA_ns_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+	
 *** 1x EC2006P 
 	* xEcap_2006_inst1	pkg_bump_PA_ns_3 pkg_bump_MA_ns_3 pkg_bump_PA_ns_2 pkg_bump_MA_ns_2 ref_gnd	siCap_EC2006P R_mt=7.7u	L_mt=4.3p 
 	
@@ -642,8 +667,6 @@ Xblk_pkg
 	+ ref_gnd pkg_bump_PA_ns_3
 	+ ref_gnd
 	+ adsPowerModel_nne_240724
-						
-	
 .endif 
 
 	
@@ -875,7 +898,7 @@ X_probe_filter_bga_0
 
 	.probe tran v(pkg_bump_PA_ns_3) v(pkg_bump_PA_ns_0) v(pkg_bump_MA_ns_3) v(pkg_bump_MA_ns_0)  
 	.probe tran v(pkg_bump_PA_ns_3_edge) v(pkg_bump_PA_ns_0_edge)
-	.probe tran v(bga_pkg) v(bga_pcb) v(bga_pcb_0) v(bga_pcb_1) v(bga_pcb_2) v(bga_pcb_3) v(bga_pcb_4) v(bga_pcb_5)
+	.probe tran v(bga_pkg) v(bga_pcb_0) v(bga_pcb_1) v(bga_pcb_2) v(bga_pcb_3) v(bga_pcb_4) v(bga_pcb_5)
 	.probe tran v(bga_pcb_0_hf) v(bga_pcb_0_lf) v(bga_pcb_hf) v(bga_pcb_lf)   
 	
 	
