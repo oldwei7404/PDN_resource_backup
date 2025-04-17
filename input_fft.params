@@ -12,17 +12,22 @@
 #### DvD 
     ## 241001 DvD of logic and GMT w/o MIM 
 #Input_Time_Domain_File          pad_voltage_VDD075NNE_02167_woMiM_vdd_minus_vss.csv
-Input_Time_Domain_File          nne_gmt_top_worstInst_VDD_minus_VSS_pin_woMiM.csv
+#Input_Time_Domain_File          nne_gmt_top_worstInst_VDD_minus_VSS_pin_woMiM.csv
+Input_Time_Domain_File           tr24112701_pa_3.txt
 
 #Input_Time_Domain_File          DvD_NNE_240610.csv
 #Input_Time_Domain_File          DvD_NNE_w_MIM.csv
+#Input_Time_Domain_File           SRAM_DvD_241016.csv
 
 Input_Time_Unit_in_s            1.
 Analysis_Sample_Rate_PerSec     1.e10
 Analysis_Spectrum_Resolt        1.e5 
 
-Freq_Filter_0_OR_Keep_1         0  
-Freq_Pair                       1. 250.e6 
+#Freq_Filter_0_OR_Keep_1         0  
+#Freq_Pair                       1. 250.e6 
 
 #Freq_Filter_0_OR_Keep_1         1  
 #Freq_Pair                       1. 250.e6
+
+Freq_Filter_0_OR_Keep_1         1  
+Freq_Pair                       1. 1.e5 

@@ -2,6 +2,7 @@
 ### Input: 
 ### 1) csv format: time, data
 ### 2) freq remove start, end OR freq kept start, end pairs
+### Example:   python .\fft_filter.py -d . -i .\input_fft_systemPDN.params -s
 
 import os, sys, getopt
 import math
@@ -11,6 +12,10 @@ import scipy.interpolate
 import numpy as np
 from numpy.fft import fft, ifft 
 from matplotlib.widgets import MultiCursor
+import stat
+from stat import S_IREAD, S_IRGRP, S_IROTH
+
+is_export_to_simplis_csv = False 
 
 class DataFftProcess:
     input_fileName = ''
@@ -31,8 +36,7 @@ class DataFftProcess:
 
     ##
     data_fft_coeff=[]
-
-
+    
     def __init__(self, in_fileName):
         line_cnt = 0
         wf_cnt = 0
@@ -121,7 +125,12 @@ class DataFftProcess:
         stat_min = 1.e6
         fout = open(fileName, 'w')
         fout.write('#Time(ns), filtered data\n')
-        for i in range(0, self.input_data_len_orig):
+        # print("### debug: "+ str(len(self.output_time))+ "\t"+ str(len(self.output_data)) + "\t" + str(self.input_data_len_orig))
+        data_len_out = self.input_data_len_orig
+        if data_len_out > len(self.output_data):
+            data_len_out = len(self.output_data)
+
+        for i in range(0, data_len_out):
             fout.write(str( self.output_time[i]) + ', ' + str(self.output_data[i]) + '\n')  
 
             if self.output_data[i] > stat_max:
@@ -134,6 +143,54 @@ class DataFftProcess:
 
         fout.close()
         print('#INFO: data output to CSV file: '+ fileName + '. Max Val: ' + "{:.3f}".format(stat_max) + '. Min Val: ' + "{:.3f}".format(stat_min) ) 
+
+    def write_data_to_Simplis_CSV(self, fileName):
+        len_lmt = 100000 - 3    ### -3 to allow time 0 
+
+        data_len_out = self.input_data_len_orig
+        if data_len_out > len(self.output_data):
+            data_len_out = len(self.output_data)
+
+        leng_rcd = data_len_out
+        Num_Files = int(leng_rcd / len_lmt) + 1
+        fileName_base = fileName
+
+        if Num_Files > 1:
+            print('\n\n#INFO: SIMPLIS split into ' + str(Num_Files) + ' files due to data length limit '+ str(len_lmt))
+
+        for file_num in range (0, Num_Files):            
+            baseNum = int(file_num * len_lmt)
+            if file_num == Num_Files-1: ## last file
+                len_lmt = int( leng_rcd - (Num_Files-1) * len_lmt )
+
+            # NOTE: remove existing SIMPLIS file, if found
+            if Num_Files >1: 
+                fileName = fileName_base + '_' + str(file_num+1) + '_Of_' + str(Num_Files) +  '_simplis.csv'
+            else: 
+                fileName = fileName_base + '_simplis.csv'
+
+            if os.path.isfile(fileName):
+                os.chmod(fileName, stat.S_IWRITE)
+                os.remove(fileName)   
+
+            fout = open(fileName, 'w+')
+            fout.write('START_DATA SHIFT_FIRST_TO_ZERO FORMAT=CSV,\n')
+            if file_num == 0:
+                for i in range(0, len_lmt):
+                    fout.write(str(self.output_time[baseNum + i]) + 'e-9, "\t' + str(self.output_data[baseNum + i]) + ' "\t\n')  
+                fout.write(str(self.output_time[baseNum + len_lmt -1] + 0.5) + 'e-9, "\t0\t"\n')    ## make sure last current is 0
+            else: 
+                fout.write('0, "\t0\t"\n')    ### first 2 data point to be 0, to avoid spice issue
+                fout.write( str( (self.output_time[baseNum -1] + self.output_time[baseNum] )*0.5 ) + 'e-9, "\t0\t"\n')
+                for i in range(0, len_lmt):
+                    fout.write(str(self.output_time[baseNum + i]) + 'e-9, "\t' + str(self.output_data[baseNum + i]) + ' "\t\n')  
+                fout.write(str(self.output_time[baseNum + len_lmt-1] + 0.5) + 'e-9, "\t0\t"\n')    ## make sure last current is 0
+            fout.close()
+
+            # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
+            os.chmod(fileName, S_IREAD|S_IRGRP|S_IROTH)
+            print('#INFO: Current waveform output as PWL to READ ONLY file : ' + fileName)
+
 
     def data_repeat(self):
         OneOverFreqResoltn = 1./self.freqResoltn
@@ -259,12 +316,12 @@ class DataFftProcess:
 
 # Main function 
 try:
-	opts,args = getopt.getopt(sys.argv[1:],'d:i:')
+	opts,args = getopt.getopt(sys.argv[1:],'d:i:s')
 except getopt.GetoptError:
-	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] ')
+	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV>')
 	sys.exit(2)
 if (not opts) and args:
-	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] ')
+	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV>')
 	sys.exit(2)
 
 for o,a in opts:
@@ -276,10 +333,12 @@ for o,a in opts:
             file_dir = a.lstrip(' ').rstrip(' ') + '/'
     if o =='-i':
         file_in_para = a.lstrip(' ').rstrip(' ')
+    if o =='-s':
+        is_export_to_simplis_csv = True 
 
 # BEGIN read input parameters
 file_in_para = file_dir + file_in_para
-file_out_waveform = file_in_para+'_out.csv'
+#file_out_waveform = file_in_para+'_out.csv'
 
 if os.path.exists(file_in_para):
     print('#INFO: input parameters file:    ' + file_in_para)
@@ -291,7 +350,12 @@ dataInstFFT = DataFftProcess(file_in_para)
 dataInstFFT.read_data()
 dataInstFFT.data_repeat()
 dataInstFFT.FFT_analysis()
+
+file_out_waveform = dataInstFFT.input_fileName+'_out.csv'
 dataInstFFT.write_data_to_CSV(file_out_waveform)
+
+if is_export_to_simplis_csv:
+    dataInstFFT.write_data_to_Simplis_CSV(file_out_waveform)
 
 
 print ("#INFO: FFT manipulation exit normally\n\n")
