@@ -1,0 +1,14 @@
+.subckt siCap_EC2005P
++ capPort1 capPort2 ref_gnd R_mt=15.5u	L_mt=8.6p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	5.m
+	l_cap_esl1	mt1_3	mt1_4	2.p
+	c_cap_1	mt1_4 	ref_gnd	4.67u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	5.m
+	l_cap_esl2	mt2_3	mt2_4	2.p
+	c_cap_2	mt2_4 	ref_gnd	4.67u
+.ends siCap_EC2005P
