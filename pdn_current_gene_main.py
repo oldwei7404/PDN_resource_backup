@@ -26,6 +26,8 @@
 # CLK_T_RISE_as_ratio_of_CLK_Freq 0.25
 # CLK_T_FALL_as_ratio_of_CLK_Freq 0.25
 # CLK_EDGE_EFF N
+#ONE_SAMPLE_ONLY_PER_CLK Y
+#Y_VAL_OFFSET 0.0
 
 ## usage 1
 ##INFO: Time_Length_in_ns  #Waveform_type  #Waveform_params
@@ -60,6 +62,7 @@ file_out_waveform = ""
 voltage = 0.
 waveform_params_list = []
 is_print_wf = False
+is_gen_simplis_csv = False 
  
 ###
 class CurrWaveform:
@@ -104,6 +107,8 @@ class CurrWaveform:
     waveform_d_mag_scale_fac = 1.0 
     waveform_d_skip_n_data = 0
     #waveform_d_w_clk = True 
+
+    waveform_val_offset = 0.
 
     ### these 3 paras are per waveform, will be overwritten by next waveform
     is_clk_gating = False
@@ -184,6 +189,9 @@ class CurrWaveform:
                         exit(-1)
                     set_cnt = set_cnt +1
                     print('#INFO: CLK edge effect:', cln_str[1])
+                elif cln_str[0] == 'Y_VAL_OFFSET':
+                    self.waveform_val_offset = float(cln_str[1])
+                    print(f"#INFO: Y_VAL_OFFSET: {self.waveform_val_offset:.1f}")
 
                 else:  
                     ## only proceed if general settings are completed
@@ -259,24 +267,33 @@ class CurrWaveform:
     ### Optional clk gating: parameters after "I_floor_ratio" is optional to enable clk gating
     def AddOneUnit(self, I_amp, I_floor_val, clk_seq = 0):
         tStart = self.currWaveform_list_time_ns[-1]
+
+        ### offset y value with floor at 0A, if needed
+        I_amp_          = I_amp         - self.waveform_val_offset
+        I_floor_val_    = I_floor_val   - self.waveform_val_offset
+        # if I_amp_ < 0.:
+        #     I_amp_ = 0.
+        # if I_floor_val_ < 0.:
+        #     I_floor_val_ = 0.
+
         ### no clk gating
         if not self.is_clk_gating:  ## only 1 sample per clk cycle
             if self.is_one_sample_per_clk:
                 self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns)
-                self.currWaveform_list_curr_Amp.append(I_floor_val)
+                self.currWaveform_list_curr_Amp.append(I_floor_val_)
                 return 
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.t_rise_ratio_T)
-            self.currWaveform_list_curr_Amp.append(I_amp)
+            self.currWaveform_list_curr_Amp.append(I_amp_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.clk_duty_cycle - self.T_clk_in_ns*self.t_fall_ratio_T)
-            self.currWaveform_list_curr_Amp.append(I_amp)
+            self.currWaveform_list_curr_Amp.append(I_amp_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.clk_duty_cycle)
-            self.currWaveform_list_curr_Amp.append(I_floor_val)
+            self.currWaveform_list_curr_Amp.append(I_floor_val_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns)
-            self.currWaveform_list_curr_Amp.append(I_floor_val)
+            self.currWaveform_list_curr_Amp.append(I_floor_val_)
             return ### exit function if no clk gating
 
         ### continue if clk gated 
@@ -284,16 +301,16 @@ class CurrWaveform:
         if rem < self.numOfConsecutiveClk:
             tStart = self.currWaveform_list_time_ns[-1]
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.t_rise_ratio_T)
-            self.currWaveform_list_curr_Amp.append(I_amp)
+            self.currWaveform_list_curr_Amp.append(I_amp_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.clk_duty_cycle - self.T_clk_in_ns*self.t_fall_ratio_T)
-            self.currWaveform_list_curr_Amp.append(I_amp)
+            self.currWaveform_list_curr_Amp.append(I_amp_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns * self.clk_duty_cycle)
-            self.currWaveform_list_curr_Amp.append(I_floor_val)
+            self.currWaveform_list_curr_Amp.append(I_floor_val_)
 
             self.currWaveform_list_time_ns.append(tStart + self.T_clk_in_ns)
-            self.currWaveform_list_curr_Amp.append(I_floor_val)
+            self.currWaveform_list_curr_Amp.append(I_floor_val_)
         else:
             self.AddOneUnit(I_floor_val, I_floor_val)   ### ??? gated clk pwr to be determined 
 
@@ -498,8 +515,8 @@ class CurrWaveform:
                 # elif time_ > 200e3:
                 #     continue 
 
-                ## for "PDN_2025_01_22.full_trace.pworst"
-                # if time_ < 225e3:
+                ##for "PDN_2025_01_22.full_trace.pworst"
+                # if time_ < 315e3:
                 #     continue 
                 # if time_ > 340e3 and time_ < 430e3:
                 #     continue 
@@ -825,13 +842,14 @@ class CurrWaveform:
 	
 
 # Main function 
+
 try:
-	opts,args = getopt.getopt(sys.argv[1:],'d:i:o:p')
+	opts,args = getopt.getopt(sys.argv[1:],'d:i:o:ps')
 except getopt.GetoptError:
-	print('\nUsage: python pdn_current_gene_main.py [-d file directory] [-i input.params] [-o out_curr_profile.tim] [-p <if waveforms print>]')
+	print('\nUsage: python pdn_current_gene_main.py [-d file directory] [-i input.params] [-o out_curr_profile.tim] [-p <if waveforms print>] [-s <if need generate Simplis csv>]')
 	sys.exit(2)
 if (not opts) and args:
-	print('\nUsage: python pdn_current_gene_main.py [-d file directory] [-i input.params] [-o out_curr_profile.tim] [-p <if waveforms print>]')
+	print('\nUsage: python pdn_current_gene_main.py [-d file directory] [-i input.params] [-o out_curr_profile.tim] [-p <if waveforms print>] [-s <if need generate Simplis csv>]')
 	sys.exit(2)
 
 for o,a in opts:
@@ -846,6 +864,8 @@ for o,a in opts:
         file_out_waveform = a.lstrip(' ').rstrip(' ')
     if o == '-p':
         is_print_wf = True
+    if o == '-s':
+        is_gen_simplis_csv = True 
 
 # BEGIN read input parameters
 file_in_para = file_dir + file_in_para
@@ -867,7 +887,8 @@ waveformInst.CompositeWaveform()
 # waveformInst.WriteWaveform(file_out_waveform)
 # waveformInst.WriteWaveform_InTimFormat(file_out_waveform)
 waveformInst.WriteWaveform_ToCSV(file_out_waveform)
-# waveformInst.WriteWaveform_ToSimplis(file_out_waveform)
+if is_gen_simplis_csv:
+    waveformInst.WriteWaveform_ToSimplis(file_out_waveform)
 
 if is_print_wf:
     waveformInst.PlotWaveform()
