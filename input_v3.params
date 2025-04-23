@@ -12,15 +12,17 @@
 #INFO: 0. < CLK_T_RISE_as_ratio_of_CLK_Freq < 1.
 #INFO: 0. < CLK_T_FALL_as_ratio_of_CLK_Freq < 1.
 #INFO: 0. < (CLK_T_RISE_as_ratio_of_CLK_Freq + CLK_T_FALL_as_ratio_of_CLK_Freq) < CLK_DutyCycle
+#INFO: Y_VAL_OFFSET: 0.0
 
 VDD_in_Volt  0.75
 PROFILE_POWER_0_OR_CURR_1   1
-CLK_Freq_in_GHz    2.0
+CLK_Freq_in_GHz    2
 CLK_DutyCycle 0.9
 CLK_T_RISE_as_ratio_of_CLK_Freq 0.25
 CLK_T_FALL_as_ratio_of_CLK_Freq 0.25
 CLK_EDGE_EFF N
 ONE_SAMPLE_ONLY_PER_CLK Y
+Y_VAL_OFFSET   0.0
 
 #INFO: Time_Length_in_ns  #Waveform_type  #Waveform_params
 
