@@ -178,13 +178,16 @@ class DataFftProcess:
             if file_num == 0:
                 for i in range(0, len_lmt):
                     fout.write(str(self.output_time[baseNum + i]) + ', "\t' + str(self.output_data[baseNum + i]) + ' "\t\n')  
-                fout.write(str(self.output_time[baseNum + len_lmt -1] + 0.5) + ', "\t0\t"\n')    ## make sure last current is 0
+                # fout.write(str(self.output_time[baseNum + len_lmt -1] + 0.5) + ', "\t0\t"\n')    ## make sure last current is 0
+                fout.write(str((self.output_time[baseNum + len_lmt -1]* 0.75 + self.output_time[baseNum + len_lmt] * 0.25) ) + ', "\t0\t"\n')    ## make sure last current is 0
             else: 
                 fout.write('0, "\t0\t"\n')    ### first 2 data point to be 0, to avoid spice issue
                 fout.write( str( (self.output_time[baseNum -1] + self.output_time[baseNum] )*0.5 ) + ', "\t0\t"\n')
                 for i in range(0, len_lmt):
                     fout.write(str(self.output_time[baseNum + i]) + ', "\t' + str(self.output_data[baseNum + i]) + ' "\t\n')  
-                fout.write(str(self.output_time[baseNum + len_lmt-1] + 0.5) + ', "\t0\t"\n')    ## make sure last current is 0
+                # fout.write(str(self.output_time[baseNum + len_lmt-1] + 0.5) + ', "\t0\t"\n')    ## make sure last current is 0
+                if baseNum + len_lmt < data_len_out:
+                    fout.write(str((self.output_time[baseNum + len_lmt -1] + self.output_time[baseNum + len_lmt])*0.5 ) + ', "\t0\t"\n')    ## make sure last current is 0
             fout.close()
 
             # NOTE: simplis output fomrat files are made read only due to SIMPLIS tends to change file in run        
