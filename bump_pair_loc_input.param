@@ -1,0 +1,15 @@
+BumpDataLib_CSV_File    bumpData_map_VSS.csv
+BumpDataLib_CSV_File_Name_Col_StartFr0      0
+BumpDataLib_CSV_File_X_Col_StartFr0  1
+BumpDataLib_CSV_File_Y_Col_StartFr0  2
+
+
+BumpDataInput_CSV_File  bump_curr_bumps.csv
+BumpDataInput_CSV_File_Name_Col_StartFr0    0
+BumpDataInput_CSV_File_X_Col_StartFr0   1
+BumpDataInput_CSV_File_Y_Col_StartFr0   2
+
+BumpDataLib_CSV_File_Unit_in_mm     0.001
+BumpDataInput_CSV_File_Unit_in_mm   1.
+
+Distance_Warning_Limit_in_mm   0.15   
