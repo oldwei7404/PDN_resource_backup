@@ -28,19 +28,24 @@ from scipy.spatial import ckdtree
 class BumpPairLoc:
     bumpDataLib_bumpName = []
     bumpDataLib_bumpCoord = []
+    bumpDataLib_voltage = []
+    bumpDataLib_plus_Input_voltage = []
     
     bumpDataInput_bumpName = []
     bumpDataInput_bumpCoord = []
+    bumpDataInput_voltage = []    
     
     BumpDataLib_CSV_File = ''
     BumpDataLib_CSV_File_Name_Col_StartFr0 = 0
     BumpDataLib_CSV_File_X_Col_StartFr0 = 0
     BumpDataLib_CSV_File_Y_Col_StartFr0 = 0
+    BumpDataLib_CSV_File_Volt_Minus1_Default = -1
 
     BumpDataInput_CSV_File = ''
     BumpDataInput_CSV_File_Name_Col_StartFr0 = 0
     BumpDataInput_CSV_File_X_Col_StartFr0 = 0
     BumpDataInput_CSV_File_Y_Col_StartFr0 = 0
+    BumpDataInput_CSV_File_Volt_Minus1_Default = -1
 
     BumpDataLib_CSV_File_Unit_in_mm = 1. 
     BumpDataInput_CSV_File_Unit_in_mm = 1.
@@ -67,6 +72,8 @@ class BumpPairLoc:
                     self.BumpDataLib_CSV_File_X_Col_StartFr0 = int(cln_str[1])
                 elif cln_str[0] == 'BumpDataLib_CSV_File_Y_Col_StartFr0':
                     self.BumpDataLib_CSV_File_Y_Col_StartFr0 = int(cln_str[1])
+                elif cln_str[0] == 'BumpDataLib_CSV_File_Volt_Minus1_Default':
+                    self.BumpDataLib_CSV_File_Volt_Minus1_Default = int(cln_str[1])
                     
                 elif cln_str[0] == 'BumpDataInput_CSV_File':
                     self.BumpDataInput_CSV_File = cln_str[1]
@@ -76,7 +83,9 @@ class BumpPairLoc:
                     self.BumpDataInput_CSV_File_X_Col_StartFr0 = int(cln_str[1])
                 elif cln_str[0] == 'BumpDataInput_CSV_File_Y_Col_StartFr0':
                     self.BumpDataInput_CSV_File_Y_Col_StartFr0 = int(cln_str[1])
-                    
+                elif cln_str[0] == 'BumpDataInput_CSV_File_Volt_Minus1_Default':
+                    self.BumpDataInput_CSV_File_Volt_Minus1_Default = int(cln_str[1])
+                                        
                 elif cln_str[0] == 'BumpDataLib_CSV_File_Unit_in_mm':
                     self.BumpDataLib_CSV_File_Unit_in_mm = float(cln_str[1])
                 elif cln_str[0] == 'BumpDataInput_CSV_File_Unit_in_mm':
@@ -105,6 +114,14 @@ class BumpPairLoc:
         self.bumpDataInput_bumpCoord = self.bumpDataInput_bumpCoord * self.BumpDataInput_CSV_File_Unit_in_mm
         self.bumpDataInput_bumpName = np.genfromtxt( self.BumpDataInput_CSV_File, delimiter=",", usecols=(self.BumpDataInput_CSV_File_Name_Col_StartFr0,), dtype=str, encoding="utf-8")
         
+        if self.BumpDataLib_CSV_File_Volt_Minus1_Default != -1 and self.BumpDataInput_CSV_File_Volt_Minus1_Default != -1:
+            self.bumpDataLib_voltage = np.loadtxt(self.BumpDataLib_CSV_File, delimiter=',',   \
+                                                usecols=( self.BumpDataLib_CSV_File_Volt_Minus1_Default ),  \
+                                                dtype=np.float32)
+            self.bumpDataInput_voltage = np.loadtxt(self.BumpDataInput_CSV_File, delimiter=',',   \
+                                                usecols=( self.BumpDataInput_CSV_File_Volt_Minus1_Default ),  \
+                                                dtype=np.float32)
+        
         print('#INFO: read in lib data: ' + self.BumpDataLib_CSV_File)
         print('#INFO: read in target data: ' + self.BumpDataInput_CSV_File)
         
@@ -126,6 +143,9 @@ class BumpPairLoc:
             bump_name_input = self.bumpDataInput_bumpName[idx_input]
             bump_name_pair_fnd = self.bumpDataLib_bumpName[idx]
             bump_pair_rslt.append( [bump_name_input, bump_name_pair_fnd])
+            
+            if self.BumpDataLib_CSV_File_Volt_Minus1_Default != -1 and self.BumpDataInput_CSV_File_Volt_Minus1_Default != -1 :
+                self.bumpDataLib_plus_Input_voltage.append(self.bumpDataInput_voltage[idx_input] + self.bumpDataLib_voltage[idx] )
         
             if (dist > self.Distance_Warning_Limit_in_mm ):
                 print('#WARNING: target bump: '+bump_name_input+", \t fond bump: " + bump_name_pair_fnd+', \t distance=' + str(dist) )
@@ -135,9 +155,20 @@ class BumpPairLoc:
             
         ### write bump pair to file
         fout = open(self.BumpDataInput_CSV_File.rstrip('.csv')+'_out.csv', 'w')
+        # for entry in bump_pair_rslt:
+        idx_ = 0
         for entry in bump_pair_rslt:
-            fout.write(str(entry[0]) + ', ' + str(entry[1]) + '\n')
-        
+            # fout.write(str(entry[0]) + ', ' + str(entry[1]) + '\n')
+            
+            if self.BumpDataLib_CSV_File_Volt_Minus1_Default != -1 and self.BumpDataInput_CSV_File_Volt_Minus1_Default != -1:
+                fout.write(str(entry[0]) + ', ' + str(entry[1]) + ', '+ \
+                    str(self.bumpDataInput_bumpCoord[idx_, 0]) + ', '\
+                    + str( self.bumpDataInput_bumpCoord[idx_, 1]) + ', '\
+                    + str( self.bumpDataLib_plus_Input_voltage[idx_])  \
+                    + '\n')
+            else:
+                fout.write(str(entry[0]) + ', ' + str(entry[1]) + '\n')
+            idx_ = idx_ + 1
         fout.close()
                    
         print('#INFO: ALL'+ str(self.bumpDataInput_bumpCoord.shape) + ' target bumps paired. Quit normally')
