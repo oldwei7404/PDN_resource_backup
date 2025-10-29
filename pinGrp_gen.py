@@ -1,9 +1,9 @@
 ##### User Input, specify dim of pin group to be defined  
-dim1_st = "B"
+dim1_st = "Y"
 dim1_ed = "BK"
 dim1_step_per_net = 2 
 
-dim2_st = 14
+dim2_st = 287
 dim2_ed = 50
 dim2_step_per_net = 2
 
