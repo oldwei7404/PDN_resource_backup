@@ -13,8 +13,8 @@
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.param is_use_ecap_ebed = 1		*** value: 0 or 1, note: this could be baked in pkg model 
-.param ecap_placement_opt = 5  *** 0:baseline, 1: opt1, 2: opt2, 3: opt3, 4: 8x half area caps , 5: 12x half length area caps 
+.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param ecap_placement_opt = 0  *** 0:baseline, 1: opt1, 2: opt2, 3: opt3, 4: 8x half area caps , 5: 12x half length area caps 
 
 .param is_use_MIM 		= 0
 
@@ -41,7 +41,7 @@
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	=  10.p
-.param tStop	= 151.u 	
+.param tStop	= 189.u 	
 
 .param td_delay_stag = 0.n
 .param td_delay_grp0 =  '0.* td_delay_stag'    
@@ -51,7 +51,7 @@
 
 *** !!! Check before change any current profile   !!!!  
 *** additional background DC current (mainly to help decompose profile and smoother staggering, this will require original profile to remove DC values) 
-.param is_use_backgnd_cur = 0
+.param is_use_backgnd_cur = 1
 .param curr_backgnd_PA = 6.5
 .param curr_backgnd_MA = 3.8
 
@@ -74,8 +74,8 @@
 
 *************************************** Input Models**************************
 	***** define load current source model used in die model *****
-	* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250407, 189us, SiVal NNE measurement testing profile 
-	* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	*** 
+	.param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250407, 189us, SiVal NNE measurement testing profile 
+	.param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	*** 
 
 	* .param pwl_file_in_PA = str('./hspice_inc/curr_profile_NNE_4x2_PA_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 1/4 250423, R1p95_bev_bb_int8_noRELu_wRamp, 142us,  FF/0.75V/105C, offset 0A  
 	* .param pwl_file_in_MA = str('./hspice_inc/curr_profile_NNE_4x2_IGI_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 	
@@ -84,8 +84,8 @@
 	* * .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_R1p95_b0_xfmr_wRamp_wRELu_250402.txt.csv')	*** 1/4 IGI	
 	* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_R1p95_b0_xfmr_wRamp_wRELu_250402_hack_v2.txt.csv')	*** 1/4 IGI, per Vamsi & Ryan, add IOT & (GMT-2.5A) 58~64us to 40~46us 	
 			
-	.param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 1/4 250407, R1p95_fixed_sm8_noRELU_wramp_rcml_, 151us,  FF/0.75V/105C, offset 0A  
-	.param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 
+	* .param pwl_file_in_PA = str('./hspice_inc/NNE_0p25_PA_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 1/4 250407, R1p95_fixed_sm8_noRELU_wramp_rcml_, 151us,  FF/0.75V/105C, offset 0A  
+	* .param pwl_file_in_MA = str('./hspice_inc/NNE_0p25_IGI_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 
 
 	
 	**** freq scaling test, SiVal NNE measurement testing profile, scaled x by time, 1/x by mag  
@@ -265,7 +265,7 @@ C_lf lf 		ref_gnd	160.p
 	c_cap_2	mt2_4 	ref_gnd	1.1675uF
 .ends siCap_EC2005P_qt
 
-***
+*** R_mt, L_mt is per quarter cap 
 .subckt siCap_EC2005P_4Part
 + capPort1 capPort2 capPort3 capPort4 ref_gnd R_mt=31.0u	L_mt=28.0p 
 	r_mt1 			CapPort1 	mt1_1	R_mt  
@@ -397,6 +397,8 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241004_w_3XEC2005P_NoDSC_IdEM.cir	*** 241113 130um pkg, Zijie mockup w/ 3x EC2005P embedded, NO MLCC 
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEC2005P_IdEM.cir	*** 241119 130um pkg, Zijie mockup w/ 3x EC2005P embedded, improved mounting RL
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEcap_ports_s20p_IdEM.cir	*** 250625 pkg, expose 3x Ecap (2 ports for each Ecap)
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_core600um_251029_IdEM.cir	*** core thickness to 600um for study
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x2_core400um_251029_IdEM.cir	*** core thickness to 400um for study 
 
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -758,7 +760,9 @@ Xblk_PCB		*** 240912 8x phase solution
 	+ pkg_Ecap_3_1
 	+ pkg_Ecap_3_2
 	+ ref_gnd
-	+ Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEcap_ports_s20p_IdEM
+	* + Z_plot_NNE_pkg_ReduceModel_4x2_130um_241119_w_3XEcap_ports_s20p_IdEM		*** POR
+	+ Z_plot_NNE_pkg_ReduceModel_4x2_core600um_251029_IdEM
+	* + Z_plot_NNE_pkg_ReduceModel_4x2_core400um_251029_IdEM
 	*** 3x EC2005P w/ no. mounting R/L
 	.if (ecap_placement_opt == 0)	*** real ecap pad connection, mounting R/L should be 0 
 		xEcap_2005_inst1	pkg_Ecap_1_1 pkg_Ecap_1_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
@@ -914,26 +918,26 @@ Xblk_PCB		*** 240912 8x phase solution
 .endif
 
 *** current src 
-	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3         * R 	*** add 'R' if repeat
-	IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2         * R 
-	IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1         * R
+	* IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp3         * R 	*** add 'R' if repeat
+	* IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2         * R 
+	* IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1         * R
 	IcurrSrc_0_0	pkg_bump_MA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp0         * R
 																									          
-	IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3         * R 
-	IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2         * R
-	IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1         * R 
+	* IcurrSrc_1_3	pkg_bump_PA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp3         * R 
+	* IcurrSrc_1_2	pkg_bump_PA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp2         * R
+	* IcurrSrc_1_1	pkg_bump_PA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp1         * R 
 	IcurrSrc_1_0	pkg_bump_PA_ns_0	ref_gnd	PWL  pwlfile = str(pwl_file_in_PA)  td= td_delay_grp0         * R
 
 	.if (is_use_backgnd_cur == 1)
 		IcurrSrc_0_3_backgnd	pkg_bump_MA_ns_3	ref_gnd	  curr_backgnd_MA
 		IcurrSrc_0_2_backgnd	pkg_bump_MA_ns_2	ref_gnd	  curr_backgnd_MA
 		IcurrSrc_0_1_backgnd	pkg_bump_MA_ns_1	ref_gnd	  curr_backgnd_MA
-		IcurrSrc_0_0_backgnd	pkg_bump_MA_ns_0	ref_gnd	  curr_backgnd_MA
+		* IcurrSrc_0_0_backgnd	pkg_bump_MA_ns_0	ref_gnd	  curr_backgnd_MA
 															
 		IcurrSrc_1_3_backgnd	pkg_bump_PA_ns_3	ref_gnd	  curr_backgnd_PA
 		IcurrSrc_1_2_backgnd	pkg_bump_PA_ns_2	ref_gnd	  curr_backgnd_PA
 		IcurrSrc_1_1_backgnd	pkg_bump_PA_ns_1	ref_gnd	  curr_backgnd_PA
-		IcurrSrc_1_0_backgnd	pkg_bump_PA_ns_0	ref_gnd	  curr_backgnd_PA
+		* IcurrSrc_1_0_backgnd	pkg_bump_PA_ns_0	ref_gnd	  curr_backgnd_PA
 	.endif 
 					
 

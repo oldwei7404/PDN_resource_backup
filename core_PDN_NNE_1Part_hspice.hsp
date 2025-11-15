@@ -865,10 +865,10 @@ Xblk_PCB
 .endif
 
 *** current src 
-	* IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp0         * R 	*** add 'R' if repeat
-	* IcurrSrc_0_3_1	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp1         * R 
-	* IcurrSrc_0_3_2	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp2         * R 
-	* IcurrSrc_0_3_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp3         * R 	
+	IcurrSrc_0_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp0         * R 	*** add 'R' if repeat
+	IcurrSrc_0_3_1	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp1         * R 
+	IcurrSrc_0_3_2	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp2         * R 
+	IcurrSrc_0_3_3	pkg_bump_MA_ns_3	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA_1_col)  td= td_delay_perCol_grp3         * R 	
 	
 	* IcurrSrc_0_2	pkg_bump_MA_ns_2	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp2         * R 
 	* IcurrSrc_0_1	pkg_bump_MA_ns_1	ref_gnd	PWL  pwlfile = str(pwl_file_in_MA)  td= td_delay_grp1         * R
