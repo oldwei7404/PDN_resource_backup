@@ -1,0 +1,1479 @@
+* Top level spice file 
+
+.option post=1
+*.chkanode type=gate dv=0.5*pvdd report=active
+.option parhier = local 
+.option measform = 1
+.option lis_new
+.option post probe
+.param pi = 3.141592653
+
+*** 200G RAM needed ***
+
+*************************************** Input params **************************
+.param Vdd 	= 0.775
+
+.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param ecap_placement_opt = 0  *** 0:baseline, 1: 
+*** ecap config info, slide 8 of https://docs.google.com/presentation/d/1orH5VIG1UrYzCUIHZ60a6fJnd-Fa2yBdIXBZB8ctO6Q/edit?slide=id.g399c8a40ad7_4_0#slide=id.g399c8a40ad7_4_0
+
+.param is_use_MIM 		= 0
+
+.param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
+.param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
+*** NOTE: ONLY applicable if PMIC_opt == 3
+* .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250307_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", no stagger 
+* .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250309_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", 50ns stagger, use current profile accordingly !! 
+* .param volt_src = str('./hspice_inc/VpmicOUT_NNE_0p25_PA_IGI_power_test_rivbev_bb_res2_250408.txt_simplis.BW25MHz.csv')
+* .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_sival_32nH_250409_Vpmic_out_modif.csv')  ***  nne valiadation test2, PMIC load line mode, only one PA+IGI parition running, others idling
+
+* .param volt_src = str('./hspice_inc/nne_test_2_4xPart_Vpmic_OUT_BW_25MHz.csv') 	*** nne validation test2, all 4 paritions running, loadline mode  
+.param volt_src = str('./hspice_inc/ADI_MAX20420_40_Top_schem_DL_6phase_ENC5_Integrator240916_25MHz_simplify_testcase3_rivbev_bb_res2_test2.csv') 	*** nne validation test2, all 4 paritions running, ADI integrator mode  
+
+* .param volt_src = str('./hspice_inc/MPQ2946_MPQ86761_For_Rivian_Encrypted_VpmicOUT.csv') 	*** nne validation test2, all 4 paritions running, DC loadline mode, MPS 250711   
+* .param volt_src = str('./hspice_inc/MPQ2946_MPQ86761_For_Rivian_Enc_ACloadline.csv') 	*** nne validation test2, all 4 paritions running, AC loadline mode, MPS 250716
+
+
+
+.param Vdd_shift_fr_pwl = -0.01
+
+.param is_ac_run = 1		*** 1 if impedance, 0 if transient 
+
+.param tStep	= 10.p
+.param tStop	= 35.u  	
+
+.param is_row_0_active = 1	***
+.param is_row_1_active = 0	***
+.param is_row_2_active = 0	***
+.param is_row_3_active = 0	***
+
+.param td_delay_stag = 0.n		
+.param td_delay_grp0 =  '0.* td_delay_stag'    
+.param td_delay_grp1 =  '1.* td_delay_stag'     
+.param td_delay_grp2 =  '2.* td_delay_stag'    
+.param td_delay_grp3 =  '3.* td_delay_stag'    	
+
+.param td_delay_perCol_stag = 0.n
+.param td_delay_perCol_grp0 =  '0.* td_delay_perCol_stag'    
+.param td_delay_perCol_grp1 =  '1.* td_delay_perCol_stag'     
+.param td_delay_perCol_grp2 =  '2.* td_delay_perCol_stag'    
+.param td_delay_perCol_grp3 =  '3.* td_delay_perCol_stag'   
+
+*** !!! Check before change any current profile   !!!!  
+*** additional background DC current (mainly to help decompose profile and smoother staggering, this will require original profile to remove DC values) 
+* .param is_use_backgnd_cur = 0
+.param curr_backgnd_PA_1_col = 0.915  		* 1.625
+.param curr_backgnd_MA_1_col = 0.535 		* 0.95
+
+
+
+	*** not used when CPM is enabled 
+	.param Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
+	.param Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
+
+	*** Cdie Rdie based on MAM-242, tau = 24.26 (excluding MIM)
+	.param Cdie_PA 	= '130.3n * Cdie_coeff'		
+	.param Cdie_MA 	= '101.7n * Cdie_coeff'
+	.param Rdie_PA 	= '0.186m * Rdie_coeff'
+	.param Rdie_MA 	= '0.239m * Rdie_coeff'
+	.param Rleak 	= 0.84
+	
+*************************************** User defined functions ****************
+.param V_meas(node, ref) = 'v(node) - v(ref)'
+
+
+*************************************** Input Models**************************
+	***** define load current source model used in die model *****
+	.param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p25_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
+	.param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p25_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	*** 
+
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/curr_profile_NNE_0p25_4x2_PA_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 1/4 250423, R1p95_bev_bb_int8_noRELu_wRamp, 142us,  FF/0.75V/105C, offset 0A  
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/curr_profile_NNE_0p25_4x2_IGI_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 	
+
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p25_0p25_PA_R1p95_b0_xfmr_wRamp_wRELu_250402.txt.csv')	*** 1/4 250402, b0 transformer w/ ReLU, 225us,  FF/0.75V/105C, offset 0A  
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p25_0p25_IGI_R1p95_b0_xfmr_wRamp_wRELu_250402_hack_v2.txt.csv')	*** 1/4 IGI, per Vamsi & Ryan, add IOT & (GMT-2.5A) 58~64us to 40~46us 	
+			
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p25_0p25_PA_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 1/4 250407, R1p95_fixed_sm8_noRELU_wramp_rcml_, 151us,  FF/0.75V/105C, offset 0A  
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p25_0p25_IGI_R1p95_fixed_sm8_noRELU_wramp_rcml_250407.txt.csv')	*** 
+
+
+	*** experiment ONLY , power x 2 
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p5_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p5_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	
+	*** experiment ONLY , power x 3 
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p75_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p75_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	
+	
+			
+		*** idle current
+		.param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
+
+
+*** filter for measurement
+.subckt meas_filter	
++ pin_in  ref_gnd 	hf  lf 
+
+E_meas pin_meas ref_gnd  pin_in ref_gnd	1.0
+
+C_hf pin_meas	hf  	160.p		
+R_hf hf         ref_gnd 1k
+
+R_lf pin_meas	lf		1k
+C_lf lf 		ref_gnd	160.p
+.ends meas_filter
+
+
+
+*** Ecap EC2005P, 9.34uF (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2005P
++ capPort1 capPort2 ref_gnd R_mt=15.5u	L_mt=14.0p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	5.m
+	l_cap_esl1	mt1_3	mt1_4	2.p
+	c_cap_1	mt1_4 	ref_gnd	4.67u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	5.m
+	l_cap_esl2	mt2_3	mt2_4	2.p
+	c_cap_2	mt2_4 	ref_gnd	4.67u
+.ends siCap_EC2005P
+
+*** Ecap EC2005P_hf, 4.67uF (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2005P_hf
++ capPort1 capPort2 ref_gnd R_mt=31.u	L_mt=28.0p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	10.m
+	l_cap_esl1	mt1_3	mt1_4	4.p
+	c_cap_1	mt1_4 	ref_gnd	2.335u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	10.m
+	l_cap_esl2	mt2_3	mt2_4	4.p
+	c_cap_2	mt2_4 	ref_gnd	2.335u
+.ends siCap_EC2005P_hf
+
+
+*** Ecap EC2005P_qt, 2.335uF (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2005P_qt
++ capPort1 capPort2 ref_gnd R_mt=62.u	L_mt=56.0p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	20.m
+	l_cap_esl1	mt1_3	mt1_4	8.p
+	c_cap_1	mt1_4 	ref_gnd	1.1675uF
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	20.m
+	l_cap_esl2	mt2_3	mt2_4	8.p
+	c_cap_2	mt2_4 	ref_gnd	1.1675uF
+.ends siCap_EC2005P_qt
+
+*** each sub-cap split into 2
+.subckt siCap_EC2005P_4Part  
++ capPort1 capPort2 capPort3 capPort4 ref_gnd R_mt=31.0u	L_mt=28.0p 
+	r_mt1 			CapPort1 	mt1_1	R_mt  
+	l_mt1 			mt1_1  	mt1_2	L_mt 
+	r_cap_esl1		mt1_2	mt1_3	10.m
+	l_cap_esl1		mt1_3	mt1_4	4.p
+	c_cap_1			mt1_4 	ref_gnd	2.335u
+
+	r_mt2 			CapPort2 	mt2_1	R_mt  
+	l_mt2 			mt2_1  	mt2_2	L_mt 
+	r_cap_esl2		mt2_2	mt2_3	10.m
+	l_cap_esl2		mt2_3	mt2_4	4.p
+	c_cap_2			mt2_4 	ref_gnd	2.335u
+	
+	r_mt3 			CapPort3 	mt3_1	R_mt  
+	l_mt3 			mt3_1  	mt3_2	L_mt 
+	r_cap_esl3		mt3_2	mt3_3	10.m
+	l_cap_esl3		mt3_3	mt3_4	4.p
+	c_cap_3			mt3_4 	ref_gnd	2.335u
+
+	r_mt4 			CapPort4 	mt4_1	R_mt  
+	l_mt4 			mt4_1  	mt4_2	L_mt 
+	r_cap_esl4		mt4_2	mt4_3	10.m
+	l_cap_esl4		mt4_3	mt4_4	4.p
+	c_cap_4			mt4_4 	ref_gnd	2.335u	
+	
+.ends siCap_EC2005P_4Part
+
+*** Ecap EC2006P, 39.3uF (R_mt, L_mt is per sub-cap)
+.subckt siCap_EC2006P
++ capPort1 capPort2 capPort3 capPort4 ref_gnd R_mt=7.7u	L_mt=8.0p 
+	r_mt1 CapPort1 	mt1_1	R_mt  
+	l_mt1 mt1_1  	mt1_2	L_mt 
+	r_cap_esl1	mt1_2	mt1_3	6.m
+	l_cap_esl1	mt1_3	mt1_4	1.1p
+	c_cap_1	mt1_4 	ref_gnd	9.83u
+
+	r_mt2 CapPort2 	mt2_1	R_mt  
+	l_mt2 mt2_1  	mt2_2	L_mt 
+	r_cap_esl2	mt2_2	mt2_3	6.m
+	l_cap_esl2	mt2_3	mt2_4	1.1p
+	c_cap_2	mt2_4 	ref_gnd	9.83u
+
+	r_mt3 CapPort3 	mt3_1	R_mt  
+	l_mt3 mt3_1  	mt3_2	L_mt 
+	r_cap_esl3	mt3_2	mt3_3	6.m
+	l_cap_esl3	mt3_3	mt3_4	1.1p
+	c_cap_3	mt3_4 	ref_gnd	9.83u
+
+	r_mt4 CapPort4 	mt4_1	R_mt  
+	l_mt4 mt4_1  	mt4_2	L_mt 
+	r_cap_esl4	mt4_2	mt4_3	6.m
+	l_cap_esl4	mt4_3	mt4_4	1.1p
+	c_cap_4	mt4_4 	ref_gnd	9.83u
+.ends siCap_EC2006P
+	
+	
+	***** define die model *****
+.subckt model_die_lumped_nne_tile
+	+ pin_bump ref_gnd C_die=100n R_die_1=1.25m R_die_2=RESMIN R_leak=0.84	pwl_file_in = str(pwl_file_quiet) delay = 0.
+
+	R_die_1_ 	pin_bump	2	R_die_1
+	R_die_2_	2		3	R_die_2
+	C_die_		3		ref_gnd	C_die 
+	R_leak_		pin_bump	ref_gnd	R_leak	
+	IcurrSrc	pin_bump	ref_gnd	PWL pwlfile = str(pwl_file_in) td = delay    *** add 'R' if repeat
+.ends
+
+	
+*** CPM w/o MIM 
+* .inc ./hspice_inc/cpm_nne_240724_modelOnly.sp		*** 4x8 parition 
+* .inc ./hspice_inc/cpm_nne_240523_modelOnly.spice
+.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/CPM_adsPowerModel_NNE_24x8_251117.sp		*** Andes 24x8 CPM die model 
+
+*** CPM w/ MIM included 
+* .inc ./hspice_inc/Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly.sp		*** 4x8, w/ MIM, 140um
+* .inc ./hspice_inc/cpm_nne_w_MIM_240929_reduce_IdEM.cir	*** reduced model of "Chip_Power_Model_SubCircuit_NNE_w_MIM_240920_modelOnly"
+
+
+* .inc ./hspice_inc/cpm_nne_4x2_240313.sp 			*** Andes 4x2 CPM model 240313
+* .inc ./hspice_inc/cpm_nne_240426_Redu_IdEM.cir		*** 240426 CPM reduced model 
+* .inc ./hspice_inc/cpm_maual_appx_nne_4x2_240317.sp	*** jgwei 4x2 CPM manual mockup based on CPM 
+
+
+	***** define pkg model *****
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_32part_IdEM.cir		*** 250910， 32 partition pkg with 6x ecap ports 
+	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_32part_BGA40part_IdEM.cir		*** 251030, 32 partition pkg, PCB with 32+8 partition 
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/NNE_Mammoth_PKG_NNE_MAM_eCap_dCap_cutout_250715_jgwei_die24x8_BGA40part_251117_redu_IdEM.cir	*** 251118, 24x8 bump partition, BGA 40 part, MLCC embedded
+
+	***** define PCB model *****
+		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
+		*.inc ./hspice_inc/ACM3_122323_nne_cut_manip_IdEM_s377p.cir					*** 231221 ACM3 PCB,   240126, accuracy not good btw 1~40MHz,  DO NOT USE
+	.inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB, reduced to 5 ports 
+		* .inc ./hspice_inc/ACM3_NEWLAYOUT_01_30_4_3uF_4Phase_half10uFCAPSrev3_manip_IdEM.cir		*** 240131 ACM3 PCB, Kavoos provided reduced PCB model, w/ 10uF, and 1uF caps; do NOT use due to LF noise near 500kHz
+	.inc ./hspice_inc/ACM3_notoplayer_10_100uF_10_220uF_IdEM.cir				*** Kavoos 240216 ACM3, 10uF, w/ 20x bulk caps 
+	.inc ./hspice_inc/ACM3_notoplayer_no_10_100uF_10_220uF_IdEM.cir				*** Kavoos 240216 ACM3, 10uF, w/o 20x bulk caps 
+	.inc ./hspice_inc/ACM3_bulk_top_and_centerbottom_caps_IdEM.cir				*** Kavoos 240221 ACM3, only top side caps, bulk caps, 66 back side caps 
+	.inc ./hspice_inc/acm3_nne_240320_discrt_105C_IdEM.cir						*** jgwei 240314 ACM3, 105C, 
+	.inc ./hspice_inc/acm3_nne_240320_discrt_105C_No100uF_IdEM.cir				*** jgwei 240314 ACM3, 105C, no 100uF
+		.inc ./hspice_inc/ACM3_105C_3_14_24_IdEM.cir								*** Kavoos 240314 ACM3 105C pcb 
+	.inc ./hspice_inc/acm3_nne_240320_discrt_105C_vf_no100uF_341x10uF_w_IVRports_manip_IdEM.cir	*** 240324 ACM3 105C, no 100uF, vertical feeding, 341x10uF caps
+	.inc ./hspice_inc/ACM3_04172024_NNE_PDN_220uF_IdEM.cir						*** ACM3 240417, 10x220uF, 105C
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga2Grp_s6p_IdEM.cir				*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 2 BGA grps 
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_jgwei_noBulk_Bga3Grp_IdEM.cir					*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 3 BGA grps 
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_IdEM.cir								*** ACM3 240503, only 10uF and 22uF, no bulkCap, originally for SIMPLIS sim, 6 BGA grps 
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_manip_IdEM.cir
+	.inc ./hspice_inc/ACM3_05032024_NNE_PDN_BGAgrpX6_trunc_25MHz_0x100uF_0x22uF_manip_IdEM.cir
+	
+	.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_NNE_wAll_Caps_RLC.cir			*** 240903 Andes generated PCB model
+	.inc ./hspice_inc/ACM3_Rev6_105C_240909_NNE_6xPhase_BGAx6_jgwei_swp2_IdEM.cir 	*** 240912, 6 phase layout, 105C 
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_IdEM.cir		*** 241126 ACM3 PCB, 
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase1_kyo1uF_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase2_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_kyo1uF_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config3_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config4_IdEM.cir
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_config6_IdEM.cir
+	
+	.inc ./hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_baseline_0x47uF_IdEM.cir
+	.inc ./hspice_inc/ACM3_250223_8phases_BGAx6_discrt_IdEM.cir	*** 250222 8x PMIC phases, based on Poppy SIW
+	.inc ./hspice_inc/SiVal_C_02192025_plug_ts_Order10_IdEM.cir			*** based on Poppy s14p
+	.inc ./hspice_inc/ACM3_SiVal_250301_RevC2_discrt_8phases_BGAx6_jgwei_IdEM.cir	*** 250605 SiVal C board
+	.inc ./hspice_inc/NNE_SiVal_revC_250808_6xBGA_8phases_s14p_IdEM.cir	*** 250825 SiVal C board from Poppy
+	.inc ./hspice_inc/NNE_SiVal_revC_251028_BGA8x8_modif_IdEM_s48p.cir	*** 251030, SiVal C, BGA with 8x4 + 8 partition 
+	
+	
+
+*************************************** End of User Input params **************
+
+*************************************** cap model *****************************
+.inc /data/home/jiangongwei/work/cap_models.hsp
+
+*************************************** PMIC **********************************
+*** ref_gnd def.
+Vref_gnd 	ref_gnd		0	0.										*** normal gnd 
+
+.subckt PMIC_model
++ pin_out ref_gnd fdbk_node opt = 1 vdd_pmic = 0.75 Vdd_shift= 0.0 t_delay = 0.n pwl_volt_in = str(volt_src)
+	*** opt 1/3 ideal voltage src
+		.if (opt == 1)
+			VshortPMIC	pin_out	ref_gnd	vdd_pmic
+		.endif 
+	*** opt 2/3, add feedback
+		.if (opt == 2)
+			VshortPMIC_ref	pin_out_tmp	0 	vdd_pmic	*** ref contant voltage src 
+			
+			VshortPMIC	pin_out	pin_tmp	vdd_pmic
+			E_fdbk	    pin_tmp	ref_gnd VCVS DELAY pin_out_tmp fdbk_node  TD=0.n			*** VCVS to model feedback using low freq signal 
+		.endif 
+	*** opt 3/3 voltage src waveform w/ shift 
+		.if (opt == 3)
+			Vpmic_wf     pin_out  pin_tmp  Vdd_shift					*** NOTE: shift waveform by constant voltage in V., use 0.0 if no shift 
+			Vpmic_wf_pwl pin_tmp  ref_gnd PWL pwlfile = str(pwl_volt_in)   td = t_delay 
+		.endif 
+	*** 
+.ends 
+
+
+*** opt 1 ideal PMIC w/o remote sense feedback
+.if ( 1 )
+	xblk_PMIC pmic_pwr_raw ref_gnd pkg_bump_PA_ns_3_lf PMIC_model 
+	+ opt = 'PMIC_opt'  vdd_pmic = 'Vdd' 	Vdd_shift = 'Vdd_shift_fr_pwl'		t_delay = 0.u 	pwl_volt_in = str(volt_src)		
+.endif 
+*** opt 2 EMpower simplified IVR equivalent model 	(remember to disable PMIC bulk caps on PCB)
+.if ( 0 )
+	VempowerVS	pmicEMpwrNode1	ref_gnd	Vdd		*** can be switched to PMIC model 
+	LempowerVS1  pmicEMpwrNode1  pmicEMpwrNode2  	'0.027778n * 0.9091'  
+	RempowerVS1  pmicEMpwrNode2  pmic_pwr_raw			50.u 
+.endif 
+
+*** resistance of pmic output cap
+r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
+			* L_induc pmic_pwr_raw pmic_pwr  32.n		*** experiment to include L (need to disable 'r_pmic_l_eqv' ) 
+			
+*** bulk caps added 
+	* xC_bulk_0 pmic_pwr ref_gnd	str(mlcc_22uF_0603)
+
+											*** debug to short lump BGA/bumps 
+											* r_bga_short_0	bga_pcb_0  bga_pcb_1		1.n 
+											* r_bga_short_1	bga_pcb_0  bga_pcb_2		1.n 
+											* r_bga_short_2	bga_pcb_0  bga_pcb_3		1.n 
+											* r_bga_short_3	bga_pcb_0  bga_pcb_4		1.n 
+											* r_bga_short_4	bga_pcb_0  bga_pcb_5		1.n 
+																												
+											* r_bump_short_0 pkg_bump_PA_ns_3	pkg_bump_PA_ns_0 	1.n
+											* r_bump_short_1 pkg_bump_PA_ns_3	pkg_bump_PA_ns_1 	1.n
+											* r_bump_short_2 pkg_bump_PA_ns_3	pkg_bump_PA_ns_2 	1.n
+											* r_bump_short_3 pkg_bump_PA_ns_3	pkg_bump_MA_ns_0 	1.n
+											* r_bump_short_4 pkg_bump_PA_ns_3	pkg_bump_MA_ns_1 	1.n
+											* r_bump_short_5 pkg_bump_PA_ns_3	pkg_bump_MA_ns_2 	1.n
+											* r_bump_short_6 pkg_bump_PA_ns_3	pkg_bump_MA_ns_3 	1.n
+											
+														* *** debug to short pkg 
+														* r_bga_bump_short bga_pcb_0	pkg_bump_PA_ns_3	1.n
+
+*************************************** PCB ***********************************
+					*** debug to skip PCB 
+					* R_short_pcb bga_pkg 	pmic_pwr	1.n
+
+* Xblk_PCB		*** 240912 8x phase solution  
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr 
+* + pmic_pwr
+* + bga_pcb_0_w_skt 
+* + bga_pcb_1_w_skt
+* + bga_pcb_2_w_skt
+* + bga_pcb_3_w_skt
+* + bga_pcb_4_w_skt		
+* + bga_pcb_5_w_skt
+* + ref_gnd
+* * + ACM3_250223_8phases_BGAx6_discrt_IdEM
+* + NNE_SiVal_revC_250808_6xBGA_8phases_s14p_IdEM
+
+Xblk_PCB 
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr 
++ pmic_pwr
++ bga_3_7
++ bga_2_7
++ bga_1_7
++ bga_0_7
++ bga_3_6
++ bga_2_6
++ bga_1_6
++ bga_0_6
++ bga_3_5
++ bga_2_5
++ bga_1_5
++ bga_0_5
++ bga_3_4
++ bga_2_4
++ bga_1_4
++ bga_0_4
++ bga_3_3
++ bga_2_3
++ bga_1_3
++ bga_0_3
++ bga_3_2
++ bga_2_2
++ bga_1_2
++ bga_0_2
++ bga_3_1
++ bga_2_1
++ bga_1_1
++ bga_0_1
++ bga_3_0
++ bga_2_0
++ bga_1_0
++ bga_0_0
++ bga_OUT_0_1
++ bga_OUT_0_2
++ bga_OUT_0_3
++ bga_OUT_0_4
++ bga_OUT_1_1
++ bga_OUT_1_2
++ bga_OUT_1_3
++ bga_OUT_1_4
++ ref_gnd 
++ NNE_SiVal_revC_251028_BGA8x8_modif_IdEM_s48p
+
+
+	
+				* *** S-para (only for AC sim)
+				* .model pcb_spara_model S
+				* + TSTONEFILE = '/data/home/jiangongwei/work/PDN_core/hspice_inc/ACM3_A0_241126_cut_NNE_6xPhase_BGAx6_testcase3_kyo1uF.s12p'
+				* + FMAX= 1G
+				
+				* S_blk_PCB
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + bga_pcb_0 
+				* + bga_pcb_1
+				* + bga_pcb_2
+				* + bga_pcb_3
+				* + bga_pcb_4		
+				* + bga_pcb_5
+				* + ref_gnd
+				* + mname = pcb_spara_model
+				* *** 
+				
+				* *** S-para (only for AC sim)
+				* .model pcb_spara_model S
+				* * + TSTONEFILE = '/data/home/jiangongwei/work/PDN_core/hspice_inc/NNE_ACM3_250222_frPoppySIW_jgwei_6xBGA.s14p'
+				* * + TSTONEFILE = '/data/home/jiangongwei/work/PDN_core/hspice_inc/SiVal_C_02192025_plug_ts.s14p'						*** Poppy generated 3x2 BGA
+				* + TSTONEFILE = '/data/home/jiangongwei/work/port_reduction/NNE_ACM3_250222_fr_PoppySIW/ACM3_250223_8phases_BGAx6_discrt.s14p'		*** discrete sweep, 122 freq pts
+				* + FMAX= 1G
+				
+				* S_blk_PCB
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr
+				* + pmic_pwr 
+				* + pmic_pwr
+				* + bga_pcb_0 
+				* + bga_pcb_1
+				* + bga_pcb_2
+				* + bga_pcb_3
+				* + bga_pcb_4		
+				* + bga_pcb_5
+				* + ref_gnd
+				* + mname = pcb_spara_model
+				* *** 
+*************************************** Pkg ***********************************
+Xblk_pkg
++ pkg_bump_ns_ew_0_0
++ pkg_bump_ns_ew_0_1
++ pkg_bump_ns_ew_0_2
++ pkg_bump_ns_ew_0_3
++ pkg_bump_ns_ew_0_4
++ pkg_bump_ns_ew_0_5
++ pkg_bump_ns_ew_0_6
++ pkg_bump_ns_ew_0_7
++ pkg_bump_ns_ew_1_0
++ pkg_bump_ns_ew_1_1
++ pkg_bump_ns_ew_1_2
++ pkg_bump_ns_ew_1_3
++ pkg_bump_ns_ew_1_4
++ pkg_bump_ns_ew_1_5
++ pkg_bump_ns_ew_1_6
++ pkg_bump_ns_ew_1_7
++ pkg_bump_ns_ew_2_0
++ pkg_bump_ns_ew_2_1
++ pkg_bump_ns_ew_2_2
++ pkg_bump_ns_ew_2_3
++ pkg_bump_ns_ew_2_4
++ pkg_bump_ns_ew_2_5
++ pkg_bump_ns_ew_2_6
++ pkg_bump_ns_ew_2_7
++ pkg_bump_ns_ew_3_0
++ pkg_bump_ns_ew_3_1
++ pkg_bump_ns_ew_3_2
++ pkg_bump_ns_ew_3_3
++ pkg_bump_ns_ew_3_4
++ pkg_bump_ns_ew_3_5
++ pkg_bump_ns_ew_3_6
++ pkg_bump_ns_ew_3_7
++ pkg_bump_ns_ew_4_0
++ pkg_bump_ns_ew_4_1
++ pkg_bump_ns_ew_4_2
++ pkg_bump_ns_ew_4_3
++ pkg_bump_ns_ew_4_4
++ pkg_bump_ns_ew_4_5
++ pkg_bump_ns_ew_4_6
++ pkg_bump_ns_ew_4_7
++ pkg_bump_ns_ew_5_0
++ pkg_bump_ns_ew_5_1
++ pkg_bump_ns_ew_5_2
++ pkg_bump_ns_ew_5_3
++ pkg_bump_ns_ew_5_4
++ pkg_bump_ns_ew_5_5
++ pkg_bump_ns_ew_5_6
++ pkg_bump_ns_ew_5_7
++ pkg_bump_ns_ew_6_0
++ pkg_bump_ns_ew_6_1
++ pkg_bump_ns_ew_6_2
++ pkg_bump_ns_ew_6_3
++ pkg_bump_ns_ew_6_4
++ pkg_bump_ns_ew_6_5
++ pkg_bump_ns_ew_6_6
++ pkg_bump_ns_ew_6_7
++ pkg_bump_ns_ew_7_0
++ pkg_bump_ns_ew_7_1
++ pkg_bump_ns_ew_7_2
++ pkg_bump_ns_ew_7_3
++ pkg_bump_ns_ew_7_4
++ pkg_bump_ns_ew_7_5
++ pkg_bump_ns_ew_7_6
++ pkg_bump_ns_ew_7_7
++ pkg_bump_ns_ew_8_0
++ pkg_bump_ns_ew_8_1
++ pkg_bump_ns_ew_8_2
++ pkg_bump_ns_ew_8_3
++ pkg_bump_ns_ew_8_4
++ pkg_bump_ns_ew_8_5
++ pkg_bump_ns_ew_8_6
++ pkg_bump_ns_ew_8_7
++ pkg_bump_ns_ew_9_0
++ pkg_bump_ns_ew_9_1
++ pkg_bump_ns_ew_9_2
++ pkg_bump_ns_ew_9_3
++ pkg_bump_ns_ew_9_4
++ pkg_bump_ns_ew_9_5
++ pkg_bump_ns_ew_9_6
++ pkg_bump_ns_ew_9_7
++ pkg_bump_ns_ew_10_0
++ pkg_bump_ns_ew_10_1
++ pkg_bump_ns_ew_10_2
++ pkg_bump_ns_ew_10_3
++ pkg_bump_ns_ew_10_4
++ pkg_bump_ns_ew_10_5
++ pkg_bump_ns_ew_10_6
++ pkg_bump_ns_ew_10_7
++ pkg_bump_ns_ew_11_0
++ pkg_bump_ns_ew_11_1
++ pkg_bump_ns_ew_11_2
++ pkg_bump_ns_ew_11_3
++ pkg_bump_ns_ew_11_4
++ pkg_bump_ns_ew_11_5
++ pkg_bump_ns_ew_11_6
++ pkg_bump_ns_ew_11_7
++ pkg_bump_ns_ew_12_0
++ pkg_bump_ns_ew_12_1
++ pkg_bump_ns_ew_12_2
++ pkg_bump_ns_ew_12_3
++ pkg_bump_ns_ew_12_4
++ pkg_bump_ns_ew_12_5
++ pkg_bump_ns_ew_12_6
++ pkg_bump_ns_ew_12_7
++ pkg_bump_ns_ew_13_0
++ pkg_bump_ns_ew_13_1
++ pkg_bump_ns_ew_13_2
++ pkg_bump_ns_ew_13_3
++ pkg_bump_ns_ew_13_4
++ pkg_bump_ns_ew_13_5
++ pkg_bump_ns_ew_13_6
++ pkg_bump_ns_ew_13_7
++ pkg_bump_ns_ew_14_0
++ pkg_bump_ns_ew_14_1
++ pkg_bump_ns_ew_14_2
++ pkg_bump_ns_ew_14_3
++ pkg_bump_ns_ew_14_4
++ pkg_bump_ns_ew_14_5
++ pkg_bump_ns_ew_14_6
++ pkg_bump_ns_ew_14_7
++ pkg_bump_ns_ew_15_0
++ pkg_bump_ns_ew_15_1
++ pkg_bump_ns_ew_15_2
++ pkg_bump_ns_ew_15_3
++ pkg_bump_ns_ew_15_4
++ pkg_bump_ns_ew_15_5
++ pkg_bump_ns_ew_15_6
++ pkg_bump_ns_ew_15_7
++ pkg_bump_ns_ew_16_0
++ pkg_bump_ns_ew_16_1
++ pkg_bump_ns_ew_16_2
++ pkg_bump_ns_ew_16_3
++ pkg_bump_ns_ew_16_4
++ pkg_bump_ns_ew_16_5
++ pkg_bump_ns_ew_16_6
++ pkg_bump_ns_ew_16_7
++ pkg_bump_ns_ew_17_0
++ pkg_bump_ns_ew_17_1
++ pkg_bump_ns_ew_17_2
++ pkg_bump_ns_ew_17_3
++ pkg_bump_ns_ew_17_4
++ pkg_bump_ns_ew_17_5
++ pkg_bump_ns_ew_17_6
++ pkg_bump_ns_ew_17_7
++ pkg_bump_ns_ew_18_0
++ pkg_bump_ns_ew_18_1
++ pkg_bump_ns_ew_18_2
++ pkg_bump_ns_ew_18_3
++ pkg_bump_ns_ew_18_4
++ pkg_bump_ns_ew_18_5
++ pkg_bump_ns_ew_18_6
++ pkg_bump_ns_ew_18_7
++ pkg_bump_ns_ew_19_0
++ pkg_bump_ns_ew_19_1
++ pkg_bump_ns_ew_19_2
++ pkg_bump_ns_ew_19_3
++ pkg_bump_ns_ew_19_4
++ pkg_bump_ns_ew_19_5
++ pkg_bump_ns_ew_19_6
++ pkg_bump_ns_ew_19_7
++ pkg_bump_ns_ew_20_0
++ pkg_bump_ns_ew_20_1
++ pkg_bump_ns_ew_20_2
++ pkg_bump_ns_ew_20_3
++ pkg_bump_ns_ew_20_4
++ pkg_bump_ns_ew_20_5
++ pkg_bump_ns_ew_20_6
++ pkg_bump_ns_ew_20_7
++ pkg_bump_ns_ew_21_0
++ pkg_bump_ns_ew_21_1
++ pkg_bump_ns_ew_21_2
++ pkg_bump_ns_ew_21_3
++ pkg_bump_ns_ew_21_4
++ pkg_bump_ns_ew_21_5
++ pkg_bump_ns_ew_21_6
++ pkg_bump_ns_ew_21_7
++ pkg_bump_ns_ew_22_0
++ pkg_bump_ns_ew_22_1
++ pkg_bump_ns_ew_22_2
++ pkg_bump_ns_ew_22_3
++ pkg_bump_ns_ew_22_4
++ pkg_bump_ns_ew_22_5
++ pkg_bump_ns_ew_22_6
++ pkg_bump_ns_ew_22_7
++ pkg_bump_ns_ew_23_0
++ pkg_bump_ns_ew_23_1
++ pkg_bump_ns_ew_23_2
++ pkg_bump_ns_ew_23_3
++ pkg_bump_ns_ew_23_4
++ pkg_bump_ns_ew_23_5
++ pkg_bump_ns_ew_23_6
++ pkg_bump_ns_ew_23_7
++ bga_3_7
++ bga_2_7
++ bga_1_7
++ bga_0_7
++ bga_3_6
++ bga_2_6
++ bga_1_6
++ bga_0_6
++ bga_3_5
++ bga_2_5
++ bga_1_5
++ bga_0_5
++ bga_3_4
++ bga_2_4
++ bga_1_4
++ bga_0_4
++ bga_3_3
++ bga_2_3
++ bga_1_3
++ bga_0_3
++ bga_3_2
++ bga_2_2
++ bga_1_2
++ bga_0_2
++ bga_3_1
++ bga_2_1
++ bga_1_1
++ bga_0_1
++ bga_3_0
++ bga_2_0
++ bga_1_0
++ bga_0_0
++ bga_OUT_0_1
++ bga_OUT_0_2
++ bga_OUT_0_3
++ bga_OUT_0_4
++ bga_OUT_1_1
++ bga_OUT_1_2
++ bga_OUT_1_3
++ bga_OUT_1_4
++ pkge_Ecap1_2x2mm_1
++ pkge_Ecap1_2x2mm_2
++ pkge_Ecap2_2x2mm_1
++ pkge_Ecap2_2x2mm_2
++ pkge_Ecap3_2x2mm_1
++ pkge_Ecap3_2x2mm_2
++ ref_gnd
++ NNE_Mammoth_PKG_NNE_MAM_eCap_dCap_cutout_250715_jgwei_die24x8_BGA40part_251117_redu_IdEM
+
+	* Xblk_pkg
+	* + pkg_bump_PA_ns_ew_0_7
+	* + pkg_bump_PA_ns_ew_1_7
+	* + pkg_bump_PA_ns_ew_2_7
+	* + pkg_bump_PA_ns_ew_3_7
+	* + pkg_bump_PA_ns_ew_0_6
+	* + pkg_bump_PA_ns_ew_1_6
+	* + pkg_bump_PA_ns_ew_2_6
+	* + pkg_bump_PA_ns_ew_3_6
+	* + pkg_bump_PA_ns_ew_0_5
+	* + pkg_bump_PA_ns_ew_1_5
+	* + pkg_bump_PA_ns_ew_2_5
+	* + pkg_bump_PA_ns_ew_3_5
+	* + pkg_bump_PA_ns_ew_0_4
+	* + pkg_bump_PA_ns_ew_1_4
+	* + pkg_bump_PA_ns_ew_2_4
+	* + pkg_bump_PA_ns_ew_3_4
+	* + pkg_bump_MA_ns_ew_0_3
+	* + pkg_bump_MA_ns_ew_1_3
+	* + pkg_bump_MA_ns_ew_2_3
+	* + pkg_bump_MA_ns_ew_3_3
+	* + pkg_bump_MA_ns_ew_0_2
+	* + pkg_bump_MA_ns_ew_1_2
+	* + pkg_bump_MA_ns_ew_2_2
+	* + pkg_bump_MA_ns_ew_3_2
+	* + pkg_bump_MA_ns_ew_0_1
+	* + pkg_bump_MA_ns_ew_1_1
+	* + pkg_bump_MA_ns_ew_2_1
+	* + pkg_bump_MA_ns_ew_3_1
+	* + pkg_bump_MA_ns_ew_0_0
+	* + pkg_bump_MA_ns_ew_1_0
+	* + pkg_bump_MA_ns_ew_2_0
+	* + pkg_bump_MA_ns_ew_3_0 
+	* + bga_3_7
+	* + bga_2_7
+	* + bga_1_7
+	* + bga_0_7
+	* + bga_3_6
+	* + bga_2_6
+	* + bga_1_6
+	* + bga_0_6
+	* + bga_3_5
+	* + bga_2_5
+	* + bga_1_5
+	* + bga_0_5
+	* + bga_3_4
+	* + bga_2_4
+	* + bga_1_4
+	* + bga_0_4
+	* + bga_3_3
+	* + bga_2_3
+	* + bga_1_3
+	* + bga_0_3
+	* + bga_3_2
+	* + bga_2_2
+	* + bga_1_2
+	* + bga_0_2
+	* + bga_3_1
+	* + bga_2_1
+	* + bga_1_1
+	* + bga_0_1
+	* + bga_3_0
+	* + bga_2_0
+	* + bga_1_0
+	* + bga_0_0
+	* + bga_OUT_0_1
+	* + bga_OUT_0_2
+	* + bga_OUT_0_3
+	* + bga_OUT_0_4
+	* + bga_OUT_1_1
+	* + bga_OUT_1_2
+	* + bga_OUT_1_3
+	* + bga_OUT_1_4
+	* + pkge_Ecap1_2x2mm_1
+	* + pkge_Ecap1_2x2mm_2
+	* + pkge_Ecap2_2x2mm_1
+	* + pkge_Ecap2_2x2mm_2
+	* + pkge_Ecap3_2x2mm_1
+	* + pkge_Ecap3_2x2mm_2	
+	* + ref_gnd 
+	* + Z_plot_NNE_pkg_ReduceModel_4x8_32part_BGA40part_IdEM
+
+.if (is_use_ecap_ebed == 1)
+	*** 3x EC2005P w/ no. mounting R/L
+	.if (ecap_placement_opt == 0)	*** real ecap pad connection, mounting R/L should be 0 
+		xEcap_2005_inst1	pkge_Ecap1_2x2mm_1 pkge_Ecap1_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+		xEcap_2005_inst2	pkge_Ecap2_2x2mm_1 pkge_Ecap2_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+		xEcap_2005_inst3	pkge_Ecap3_2x2mm_1 pkge_Ecap3_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+	.endif 
+
+	
+.endif 
+
+*************************************** Die ***********************************
+.if (is_use_MIM != 1)
+		* r_short_pa3_ma3  pkg_bump_PA_ns_3	pkg_bump_MA_ns_3	1.n
+		* xblk_die pkg_bump_PA_ns_3 ref_gnd	model_die_lumped_nne_tile C_die= 327.5n  R_die_1= 0.072m R_die_2= 1.n  R_leak = 1.	pwlfile = str(pwl_file_in_PAMA)		*** debug to use one parition 
+
+	xblk_die 	*** 24x8 NNE CPM w/o MIM
+	+ 			pkg_bump_ns_ew_0_0
+	+ ref_gnd   pkg_bump_ns_ew_1_0
+	+ ref_gnd   pkg_bump_ns_ew_2_0
+	+ ref_gnd   pkg_bump_ns_ew_3_0
+	+ ref_gnd   pkg_bump_ns_ew_4_0
+	+ ref_gnd   pkg_bump_ns_ew_5_0
+	+ ref_gnd   pkg_bump_ns_ew_6_0
+	+ ref_gnd   pkg_bump_ns_ew_7_0
+	+ ref_gnd   pkg_bump_ns_ew_8_0
+	+ ref_gnd   pkg_bump_ns_ew_9_0
+	+ ref_gnd   pkg_bump_ns_ew_10_0
+	+ ref_gnd   pkg_bump_ns_ew_11_0
+	+ ref_gnd   pkg_bump_ns_ew_12_0
+	+ ref_gnd   pkg_bump_ns_ew_13_0
+	+ ref_gnd   pkg_bump_ns_ew_14_0
+	+ ref_gnd   pkg_bump_ns_ew_15_0
+	+ ref_gnd   pkg_bump_ns_ew_16_0
+	+ ref_gnd   pkg_bump_ns_ew_17_0
+	+ ref_gnd   pkg_bump_ns_ew_18_0
+	+ ref_gnd   pkg_bump_ns_ew_19_0
+	+ ref_gnd   pkg_bump_ns_ew_20_0
+	+ ref_gnd   pkg_bump_ns_ew_21_0
+	+ ref_gnd   pkg_bump_ns_ew_22_0
+	+ ref_gnd   pkg_bump_ns_ew_23_0
+	+ ref_gnd   pkg_bump_ns_ew_0_1
+	+ ref_gnd   pkg_bump_ns_ew_1_1
+	+ ref_gnd   pkg_bump_ns_ew_2_1
+	+ ref_gnd   pkg_bump_ns_ew_3_1
+	+ ref_gnd   pkg_bump_ns_ew_4_1
+	+ ref_gnd   pkg_bump_ns_ew_5_1
+	+ ref_gnd   pkg_bump_ns_ew_6_1
+	+ ref_gnd   pkg_bump_ns_ew_7_1
+	+ ref_gnd   pkg_bump_ns_ew_8_1
+	+ ref_gnd   pkg_bump_ns_ew_9_1
+	+ ref_gnd   pkg_bump_ns_ew_10_1
+	+ ref_gnd   pkg_bump_ns_ew_11_1
+	+ ref_gnd   pkg_bump_ns_ew_12_1
+	+ ref_gnd   pkg_bump_ns_ew_13_1
+	+ ref_gnd   pkg_bump_ns_ew_14_1
+	+ ref_gnd   pkg_bump_ns_ew_15_1
+	+ ref_gnd   pkg_bump_ns_ew_16_1
+	+ ref_gnd   pkg_bump_ns_ew_17_1
+	+ ref_gnd   pkg_bump_ns_ew_18_1
+	+ ref_gnd   pkg_bump_ns_ew_19_1
+	+ ref_gnd   pkg_bump_ns_ew_20_1
+	+ ref_gnd   pkg_bump_ns_ew_21_1
+	+ ref_gnd   pkg_bump_ns_ew_22_1
+	+ ref_gnd   pkg_bump_ns_ew_23_1
+	+ ref_gnd   pkg_bump_ns_ew_0_2
+	+ ref_gnd   pkg_bump_ns_ew_1_2
+	+ ref_gnd   pkg_bump_ns_ew_2_2
+	+ ref_gnd   pkg_bump_ns_ew_3_2
+	+ ref_gnd   pkg_bump_ns_ew_4_2
+	+ ref_gnd   pkg_bump_ns_ew_5_2
+	+ ref_gnd   pkg_bump_ns_ew_6_2
+	+ ref_gnd   pkg_bump_ns_ew_7_2
+	+ ref_gnd   pkg_bump_ns_ew_8_2
+	+ ref_gnd   pkg_bump_ns_ew_9_2
+	+ ref_gnd   pkg_bump_ns_ew_10_2
+	+ ref_gnd   pkg_bump_ns_ew_11_2
+	+ ref_gnd   pkg_bump_ns_ew_12_2
+	+ ref_gnd   pkg_bump_ns_ew_13_2
+	+ ref_gnd   pkg_bump_ns_ew_14_2
+	+ ref_gnd   pkg_bump_ns_ew_15_2
+	+ ref_gnd   pkg_bump_ns_ew_16_2
+	+ ref_gnd   pkg_bump_ns_ew_17_2
+	+ ref_gnd   pkg_bump_ns_ew_18_2
+	+ ref_gnd   pkg_bump_ns_ew_19_2
+	+ ref_gnd   pkg_bump_ns_ew_20_2
+	+ ref_gnd   pkg_bump_ns_ew_21_2
+	+ ref_gnd   pkg_bump_ns_ew_22_2
+	+ ref_gnd   pkg_bump_ns_ew_23_2
+	+ ref_gnd   pkg_bump_ns_ew_0_3
+	+ ref_gnd   pkg_bump_ns_ew_1_3
+	+ ref_gnd   pkg_bump_ns_ew_2_3
+	+ ref_gnd   pkg_bump_ns_ew_3_3
+	+ ref_gnd   pkg_bump_ns_ew_4_3
+	+ ref_gnd   pkg_bump_ns_ew_5_3
+	+ ref_gnd   pkg_bump_ns_ew_6_3
+	+ ref_gnd   pkg_bump_ns_ew_7_3
+	+ ref_gnd   pkg_bump_ns_ew_8_3
+	+ ref_gnd   pkg_bump_ns_ew_9_3
+	+ ref_gnd   pkg_bump_ns_ew_10_3
+	+ ref_gnd   pkg_bump_ns_ew_11_3
+	+ ref_gnd   pkg_bump_ns_ew_12_3
+	+ ref_gnd   pkg_bump_ns_ew_13_3
+	+ ref_gnd   pkg_bump_ns_ew_14_3
+	+ ref_gnd   pkg_bump_ns_ew_15_3
+	+ ref_gnd   pkg_bump_ns_ew_16_3
+	+ ref_gnd   pkg_bump_ns_ew_17_3
+	+ ref_gnd   pkg_bump_ns_ew_18_3
+	+ ref_gnd   pkg_bump_ns_ew_19_3
+	+ ref_gnd   pkg_bump_ns_ew_20_3
+	+ ref_gnd   pkg_bump_ns_ew_21_3
+	+ ref_gnd   pkg_bump_ns_ew_22_3
+	+ ref_gnd   pkg_bump_ns_ew_23_3
+	+ ref_gnd   pkg_bump_ns_ew_0_4
+	+ ref_gnd   pkg_bump_ns_ew_1_4
+	+ ref_gnd   pkg_bump_ns_ew_2_4
+	+ ref_gnd   pkg_bump_ns_ew_3_4
+	+ ref_gnd   pkg_bump_ns_ew_4_4
+	+ ref_gnd   pkg_bump_ns_ew_5_4
+	+ ref_gnd   pkg_bump_ns_ew_6_4
+	+ ref_gnd   pkg_bump_ns_ew_7_4
+	+ ref_gnd   pkg_bump_ns_ew_8_4
+	+ ref_gnd   pkg_bump_ns_ew_9_4
+	+ ref_gnd   pkg_bump_ns_ew_10_4
+	+ ref_gnd   pkg_bump_ns_ew_11_4
+	+ ref_gnd   pkg_bump_ns_ew_12_4
+	+ ref_gnd   pkg_bump_ns_ew_13_4
+	+ ref_gnd   pkg_bump_ns_ew_14_4
+	+ ref_gnd   pkg_bump_ns_ew_15_4
+	+ ref_gnd   pkg_bump_ns_ew_16_4
+	+ ref_gnd   pkg_bump_ns_ew_17_4
+	+ ref_gnd   pkg_bump_ns_ew_18_4
+	+ ref_gnd   pkg_bump_ns_ew_19_4
+	+ ref_gnd   pkg_bump_ns_ew_20_4
+	+ ref_gnd   pkg_bump_ns_ew_21_4
+	+ ref_gnd   pkg_bump_ns_ew_22_4
+	+ ref_gnd   pkg_bump_ns_ew_23_4
+	+ ref_gnd   pkg_bump_ns_ew_0_5
+	+ ref_gnd   pkg_bump_ns_ew_1_5
+	+ ref_gnd   pkg_bump_ns_ew_2_5
+	+ ref_gnd   pkg_bump_ns_ew_3_5
+	+ ref_gnd   pkg_bump_ns_ew_4_5
+	+ ref_gnd   pkg_bump_ns_ew_5_5
+	+ ref_gnd   pkg_bump_ns_ew_6_5
+	+ ref_gnd   pkg_bump_ns_ew_7_5
+	+ ref_gnd   pkg_bump_ns_ew_8_5
+	+ ref_gnd   pkg_bump_ns_ew_9_5
+	+ ref_gnd   pkg_bump_ns_ew_10_5
+	+ ref_gnd   pkg_bump_ns_ew_11_5
+	+ ref_gnd   pkg_bump_ns_ew_12_5
+	+ ref_gnd   pkg_bump_ns_ew_13_5
+	+ ref_gnd   pkg_bump_ns_ew_14_5
+	+ ref_gnd   pkg_bump_ns_ew_15_5
+	+ ref_gnd   pkg_bump_ns_ew_16_5
+	+ ref_gnd   pkg_bump_ns_ew_17_5
+	+ ref_gnd   pkg_bump_ns_ew_18_5
+	+ ref_gnd   pkg_bump_ns_ew_19_5
+	+ ref_gnd   pkg_bump_ns_ew_20_5
+	+ ref_gnd   pkg_bump_ns_ew_21_5
+	+ ref_gnd   pkg_bump_ns_ew_22_5
+	+ ref_gnd   pkg_bump_ns_ew_23_5
+	+ ref_gnd   pkg_bump_ns_ew_0_6
+	+ ref_gnd   pkg_bump_ns_ew_1_6
+	+ ref_gnd   pkg_bump_ns_ew_2_6
+	+ ref_gnd   pkg_bump_ns_ew_3_6
+	+ ref_gnd   pkg_bump_ns_ew_4_6
+	+ ref_gnd   pkg_bump_ns_ew_5_6
+	+ ref_gnd   pkg_bump_ns_ew_6_6
+	+ ref_gnd   pkg_bump_ns_ew_7_6
+	+ ref_gnd   pkg_bump_ns_ew_8_6
+	+ ref_gnd   pkg_bump_ns_ew_9_6
+	+ ref_gnd   pkg_bump_ns_ew_10_6
+	+ ref_gnd   pkg_bump_ns_ew_11_6
+	+ ref_gnd   pkg_bump_ns_ew_12_6
+	+ ref_gnd   pkg_bump_ns_ew_13_6
+	+ ref_gnd   pkg_bump_ns_ew_14_6
+	+ ref_gnd   pkg_bump_ns_ew_15_6
+	+ ref_gnd   pkg_bump_ns_ew_16_6
+	+ ref_gnd   pkg_bump_ns_ew_17_6
+	+ ref_gnd   pkg_bump_ns_ew_18_6
+	+ ref_gnd   pkg_bump_ns_ew_19_6
+	+ ref_gnd   pkg_bump_ns_ew_20_6
+	+ ref_gnd   pkg_bump_ns_ew_21_6
+	+ ref_gnd   pkg_bump_ns_ew_22_6
+	+ ref_gnd   pkg_bump_ns_ew_23_6
+	+ ref_gnd   pkg_bump_ns_ew_0_7
+	+ ref_gnd   pkg_bump_ns_ew_1_7
+	+ ref_gnd   pkg_bump_ns_ew_2_7
+	+ ref_gnd   pkg_bump_ns_ew_3_7
+	+ ref_gnd   pkg_bump_ns_ew_4_7
+	+ ref_gnd   pkg_bump_ns_ew_5_7
+	+ ref_gnd   pkg_bump_ns_ew_6_7
+	+ ref_gnd   pkg_bump_ns_ew_7_7
+	+ ref_gnd   pkg_bump_ns_ew_8_7
+	+ ref_gnd   pkg_bump_ns_ew_9_7
+	+ ref_gnd   pkg_bump_ns_ew_10_7
+	+ ref_gnd   pkg_bump_ns_ew_11_7
+	+ ref_gnd   pkg_bump_ns_ew_12_7
+	+ ref_gnd   pkg_bump_ns_ew_13_7
+	+ ref_gnd   pkg_bump_ns_ew_14_7
+	+ ref_gnd   pkg_bump_ns_ew_15_7
+	+ ref_gnd   pkg_bump_ns_ew_16_7
+	+ ref_gnd   pkg_bump_ns_ew_17_7
+	+ ref_gnd   pkg_bump_ns_ew_18_7
+	+ ref_gnd   pkg_bump_ns_ew_19_7
+	+ ref_gnd   pkg_bump_ns_ew_20_7
+	+ ref_gnd   pkg_bump_ns_ew_21_7
+	+ ref_gnd   pkg_bump_ns_ew_22_7
+	+ ref_gnd   pkg_bump_ns_ew_23_7
+	+ ref_gnd 
+	+ CPM_adsPowerModel_NNE_24x8_251117
+
+	
+	
+		* xblk_die 	*** 4x8 NNE CPMCPM , Andes 240821 sign off 
+		* +         pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_	
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_	
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_	
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_
+		* + ref_gnd pkg_bump_MA_ns_	
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_		
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_	
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_	
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd pkg_bump_PA_ns_
+		* + ref_gnd
+		* + adsPowerModel_nne_240724
+
+
+.endif 
+	
+
+	
+	
+
+	
+.if (is_use_MIM == 1)
+	xblk_die 	*** 4x8 NNE grp, Andes CPM w/MIM
+	+         pkg_bump_MA_ns_ew_0_0
+	+ ref_gnd pkg_bump_MA_ns_ew_1_0
+	+ ref_gnd pkg_bump_MA_ns_ew_2_0
+	+ ref_gnd pkg_bump_MA_ns_ew_3_0	
+	+ ref_gnd pkg_bump_MA_ns_ew_0_1
+	+ ref_gnd pkg_bump_MA_ns_ew_1_1
+	+ ref_gnd pkg_bump_MA_ns_ew_2_1
+	+ ref_gnd pkg_bump_MA_ns_ew_3_1	
+	+ ref_gnd pkg_bump_MA_ns_ew_0_2
+	+ ref_gnd pkg_bump_MA_ns_ew_1_2
+	+ ref_gnd pkg_bump_MA_ns_ew_2_2
+	+ ref_gnd pkg_bump_MA_ns_ew_3_2	
+	+ ref_gnd pkg_bump_MA_ns_ew_0_3
+	+ ref_gnd pkg_bump_MA_ns_ew_1_3
+	+ ref_gnd pkg_bump_MA_ns_ew_2_3
+	+ ref_gnd pkg_bump_MA_ns_ew_3_3	
+	+ ref_gnd pkg_bump_PA_ns_ew_0_4
+	+ ref_gnd pkg_bump_PA_ns_ew_1_4
+	+ ref_gnd pkg_bump_PA_ns_ew_2_4
+	+ ref_gnd pkg_bump_PA_ns_ew_3_4		
+	+ ref_gnd pkg_bump_PA_ns_ew_0_5
+	+ ref_gnd pkg_bump_PA_ns_ew_1_5
+	+ ref_gnd pkg_bump_PA_ns_ew_2_5
+	+ ref_gnd pkg_bump_PA_ns_ew_3_5	
+	+ ref_gnd pkg_bump_PA_ns_ew_0_6
+	+ ref_gnd pkg_bump_PA_ns_ew_1_6
+	+ ref_gnd pkg_bump_PA_ns_ew_2_6
+	+ ref_gnd pkg_bump_PA_ns_ew_3_6	
+	+ ref_gnd pkg_bump_PA_ns_ew_0_7
+	+ ref_gnd pkg_bump_PA_ns_ew_1_7
+	+ ref_gnd pkg_bump_PA_ns_ew_2_7
+	+ ref_gnd pkg_bump_PA_ns_ew_3_7
+	+ ref_gnd
+	+ adsPowerModel_NNE_4x8_w_MIM_240920_modelOnly
+
+.endif
+
+*** current src 
+.if (is_row_0_active == 1)
+	* IcurrSrc_PA_ns_ew_0_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd 	pwlfile = str(pwl_file_in_PA_1_col)		td = 'td_delay_perCol_grp0 + td_delay_grp0'		
+	* IcurrSrc_PA_ns_ew_0_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'			
+	* IcurrSrc_PA_ns_ew_0_6   	pkg_bump_PA_ns_ew_0_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'			
+	* IcurrSrc_PA_ns_ew_0_7   	pkg_bump_PA_ns_ew_0_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'			
+
+	* IcurrSrc_MA_ns_ew_0_0		pkg_bump_MA_ns_ew_0_0	 ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp0'	
+	* IcurrSrc_MA_ns_ew_0_1		pkg_bump_MA_ns_ew_0_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'		
+	* IcurrSrc_MA_ns_ew_0_2		pkg_bump_MA_ns_ew_0_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'		
+	* IcurrSrc_MA_ns_ew_0_3		pkg_bump_MA_ns_ew_0_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'		
+
+		*** 251114 Ashwin per tile current "/data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_2_noRELu_wRamp_p3" 
+		*** 6 tiles are lumped to one partition in 4x8 CPM  
+		* IcurrSrc_PA_ns_ew_0_4_0   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r0.35us_s120000_e155000.pworst2/current_profile.pat.c23_r0.csv'         
+		* IcurrSrc_PA_ns_ew_0_4_1   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r0.35us_s120000_e155000.pworst2/current_profile.pat.c22_r0.csv'        
+		* IcurrSrc_PA_ns_ew_0_4_2   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r0.35us_s120000_e155000.pworst2/current_profile.pat.c21_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_3   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r0.35us_s120000_e155000.pworst2/current_profile.pat.c20_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r0.35us_s120000_e155000.pworst2/current_profile.pat.c19_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_5   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r0.35us_s120000_e155000.pworst2/current_profile.pat.c18_r0.csv'	 
+																																																																							
+		* IcurrSrc_PA_ns_ew_0_5_0   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r1.35us_s120000_e155000.pworst2/current_profile.pat.c23_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_1   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r1.35us_s120000_e155000.pworst2/current_profile.pat.c22_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_2   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r1.35us_s120000_e155000.pworst2/current_profile.pat.c21_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_3   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r1.35us_s120000_e155000.pworst2/current_profile.pat.c20_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_4   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r1.35us_s120000_e155000.pworst2/current_profile.pat.c19_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r1.35us_s120000_e155000.pworst2/current_profile.pat.c18_r1.csv'	 
+																																																																							
+		* IcurrSrc_PA_ns_ew_0_6_0   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r2.35us_s120000_e155000.pworst2/current_profile.pat.c23_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_1   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r2.35us_s120000_e155000.pworst2/current_profile.pat.c22_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_2   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r2.35us_s120000_e155000.pworst2/current_profile.pat.c21_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_3   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r2.35us_s120000_e155000.pworst2/current_profile.pat.c20_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_4   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r2.35us_s120000_e155000.pworst2/current_profile.pat.c19_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_5   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r2.35us_s120000_e155000.pworst2/current_profile.pat.c18_r2.csv'	 
+																																																																						
+		* IcurrSrc_PA_ns_ew_0_7_0   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r3.35us_s120000_e155000.pworst2/current_profile.pat.c23_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_1   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r3.35us_s120000_e155000.pworst2/current_profile.pat.c22_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_2   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r3.35us_s120000_e155000.pworst2/current_profile.pat.c21_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_3   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r3.35us_s120000_e155000.pworst2/current_profile.pat.c20_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_4   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r3.35us_s120000_e155000.pworst2/current_profile.pat.c19_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_5   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r3.35us_s120000_e155000.pworst2/current_profile.pat.c18_r3.csv'	 
+																																																																						 
+		* IcurrSrc_MA_ns_ew_0_0_0		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_1		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_2		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_3		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_4		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_5		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_iot_0		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c23_r0.35us_s120000_e155000.pworst2/current_profile.iot.c23_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_1		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c22_r0.35us_s120000_e155000.pworst2/current_profile.iot.c22_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_2		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c21_r0.35us_s120000_e155000.pworst2/current_profile.iot.c21_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_3		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c20_r0.35us_s120000_e155000.pworst2/current_profile.iot.c20_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_4		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c19_r0.35us_s120000_e155000.pworst2/current_profile.iot.c19_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_5		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c18_r0.35us_s120000_e155000.pworst2/current_profile.iot.c18_r0.csv'	  
+																																																																						  
+		* IcurrSrc_MA_ns_ew_0_1_0		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_1		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_2		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_3		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_4		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_5		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r1.csv'	          
+																																																																									  
+		* IcurrSrc_MA_ns_ew_0_2_0		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_1		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_2		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_3		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_4		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_5		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r2.csv'	          
+																																																																									  
+		* IcurrSrc_MA_ns_ew_0_3_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_ift_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c23_r0.35us_s120000_e155000.pworst2/current_profile.ift.c23_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c22_r0.35us_s120000_e155000.pworst2/current_profile.ift.c22_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c21_r0.35us_s120000_e155000.pworst2/current_profile.ift.c21_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c20_r0.35us_s120000_e155000.pworst2/current_profile.ift.c20_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c19_r0.35us_s120000_e155000.pworst2/current_profile.ift.c19_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c18_r0.35us_s120000_e155000.pworst2/current_profile.ift.c18_r0.csv'	  
+
+		*** 251115 Ashwin per tile current "/data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_nne_idle_power_A0"
+		*** 6 tiles are lumped to one partition in 4x8 CPM  
+		IcurrSrc_PA_ns_ew_0_4_0   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r0.35us_s120000_e155000.pworst2/current_profile.pat.c23_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_1   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r0.35us_s120000_e155000.pworst2/current_profile.pat.c22_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_2   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r0.35us_s120000_e155000.pworst2/current_profile.pat.c21_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_3   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r0.35us_s120000_e155000.pworst2/current_profile.pat.c20_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r0.35us_s120000_e155000.pworst2/current_profile.pat.c19_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_5   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r0.35us_s120000_e155000.pworst2/current_profile.pat.c18_r0.csv'
+																				
+		IcurrSrc_PA_ns_ew_0_5_0   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r1.35us_s120000_e155000.pworst2/current_profile.pat.c23_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_1   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r1.35us_s120000_e155000.pworst2/current_profile.pat.c22_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_2   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r1.35us_s120000_e155000.pworst2/current_profile.pat.c21_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_3   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r1.35us_s120000_e155000.pworst2/current_profile.pat.c20_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_4   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r1.35us_s120000_e155000.pworst2/current_profile.pat.c19_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r1.35us_s120000_e155000.pworst2/current_profile.pat.c18_r1.csv'
+																				
+		IcurrSrc_PA_ns_ew_0_6_0   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r2.35us_s120000_e155000.pworst2/current_profile.pat.c23_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_1   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r2.35us_s120000_e155000.pworst2/current_profile.pat.c22_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_2   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r2.35us_s120000_e155000.pworst2/current_profile.pat.c21_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_3   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r2.35us_s120000_e155000.pworst2/current_profile.pat.c20_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_4   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r2.35us_s120000_e155000.pworst2/current_profile.pat.c19_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_5   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r2.35us_s120000_e155000.pworst2/current_profile.pat.c18_r2.csv'
+																						
+		IcurrSrc_PA_ns_ew_0_7_0   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r3.35us_s120000_e155000.pworst2/current_profile.pat.c23_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_1   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r3.35us_s120000_e155000.pworst2/current_profile.pat.c22_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_2   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r3.35us_s120000_e155000.pworst2/current_profile.pat.c21_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_3   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r3.35us_s120000_e155000.pworst2/current_profile.pat.c20_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_4   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r3.35us_s120000_e155000.pworst2/current_profile.pat.c19_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_5   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r3.35us_s120000_e155000.pworst2/current_profile.pat.c18_r3.csv'		
+																						
+		IcurrSrc_MA_ns_ew_0_0_0		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_1		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_2		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_3		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_4		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_5		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_0		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c23_r0.35us_s120000_e155000.pworst2/current_profile.iot.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_1		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c22_r0.35us_s120000_e155000.pworst2/current_profile.iot.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_2		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c21_r0.35us_s120000_e155000.pworst2/current_profile.iot.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_3		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c20_r0.35us_s120000_e155000.pworst2/current_profile.iot.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_4		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c19_r0.35us_s120000_e155000.pworst2/current_profile.iot.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_5		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c18_r0.35us_s120000_e155000.pworst2/current_profile.iot.c18_r0.csv'		
+																								
+		IcurrSrc_MA_ns_ew_0_1_0		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_1		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_2		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_3		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_4		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_5		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r1.csv'		
+																							
+		IcurrSrc_MA_ns_ew_0_2_0		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_1		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_2		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_3		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_4		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_5		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r2.csv'		
+																							
+		IcurrSrc_MA_ns_ew_0_3_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c23_r0.35us_s120000_e155000.pworst2/current_profile.ift.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c22_r0.35us_s120000_e155000.pworst2/current_profile.ift.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c21_r0.35us_s120000_e155000.pworst2/current_profile.ift.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c20_r0.35us_s120000_e155000.pworst2/current_profile.ift.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c19_r0.35us_s120000_e155000.pworst2/current_profile.ift.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c18_r0.35us_s120000_e155000.pworst2/current_profile.ift.c18_r0.csv'		
+		
+.endif 
+
+.if (is_row_1_active == 1)							
+	IcurrSrc_PA_ns_ew_1_4   	pkg_bump_PA_ns_ew_1_4	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp1'				
+	IcurrSrc_PA_ns_ew_1_5   	pkg_bump_PA_ns_ew_1_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp1'				
+	IcurrSrc_PA_ns_ew_1_6   	pkg_bump_PA_ns_ew_1_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp1'				
+	IcurrSrc_PA_ns_ew_1_7   	pkg_bump_PA_ns_ew_1_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp1'	
+
+	IcurrSrc_MA_ns_ew_1_0		pkg_bump_MA_ns_ew_1_0    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp1'		
+	IcurrSrc_MA_ns_ew_1_1		pkg_bump_MA_ns_ew_1_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp1'		
+	IcurrSrc_MA_ns_ew_1_2		pkg_bump_MA_ns_ew_1_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp1'		
+	IcurrSrc_MA_ns_ew_1_3		pkg_bump_MA_ns_ew_1_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp1'		
+.endif
+
+.if (is_row_2_active == 1)										
+	IcurrSrc_PA_ns_ew_2_4   	pkg_bump_PA_ns_ew_2_4	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp2'							
+	IcurrSrc_PA_ns_ew_2_5   	pkg_bump_PA_ns_ew_2_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp2'							
+	IcurrSrc_PA_ns_ew_2_6   	pkg_bump_PA_ns_ew_2_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp2'							
+	IcurrSrc_PA_ns_ew_2_7   	pkg_bump_PA_ns_ew_2_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp2'	
+
+	IcurrSrc_MA_ns_ew_2_0		pkg_bump_MA_ns_ew_2_0    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp2'		
+	IcurrSrc_MA_ns_ew_2_1		pkg_bump_MA_ns_ew_2_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp2'		
+	IcurrSrc_MA_ns_ew_2_2		pkg_bump_MA_ns_ew_2_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp2'		
+	IcurrSrc_MA_ns_ew_2_3		pkg_bump_MA_ns_ew_2_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp2'			
+.endif 								
+		
+.if (is_row_3_active == 1)	
+	IcurrSrc_PA_ns_ew_3_4   	pkg_bump_PA_ns_ew_3_4	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp3'						
+	IcurrSrc_PA_ns_ew_3_5   	pkg_bump_PA_ns_ew_3_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp3'						
+	IcurrSrc_PA_ns_ew_3_6   	pkg_bump_PA_ns_ew_3_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp3'						
+	IcurrSrc_PA_ns_ew_3_7   	pkg_bump_PA_ns_ew_3_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp3'	
+	
+	IcurrSrc_MA_ns_ew_3_0		pkg_bump_MA_ns_ew_3_0    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp3'		
+	IcurrSrc_MA_ns_ew_3_1		pkg_bump_MA_ns_ew_3_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp3'		
+	IcurrSrc_MA_ns_ew_3_2		pkg_bump_MA_ns_ew_3_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp3'		
+	IcurrSrc_MA_ns_ew_3_3		pkg_bump_MA_ns_ew_3_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)	    td = 'td_delay_perCol_grp3 + td_delay_grp3'	
+.endif 
+
+*** idle current, if needed (usually complimentary to partitions activated above) 
+
+.if (is_row_0_active == 0)
+	IcurrSrc_PA_ns_ew_0_4_idle   	pkg_bump_PA_ns_ew_0_4	ref_gnd 	curr_backgnd_PA_1_col	
+	IcurrSrc_PA_ns_ew_0_5_idle   	pkg_bump_PA_ns_ew_0_5	ref_gnd     curr_backgnd_PA_1_col				
+	IcurrSrc_PA_ns_ew_0_6_idle   	pkg_bump_PA_ns_ew_0_6	ref_gnd     curr_backgnd_PA_1_col				
+	IcurrSrc_PA_ns_ew_0_7_idle   	pkg_bump_PA_ns_ew_0_7	ref_gnd     curr_backgnd_PA_1_col		
+	
+	IcurrSrc_MA_ns_ew_0_0_idle		pkg_bump_MA_ns_ew_0_0	 ref_gnd 	curr_backgnd_MA_1_col	
+	IcurrSrc_MA_ns_ew_0_1_idle		pkg_bump_MA_ns_ew_0_1    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_0_2_idle		pkg_bump_MA_ns_ew_0_2    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_0_3_idle		pkg_bump_MA_ns_ew_0_3    ref_gnd 	curr_backgnd_MA_1_col		
+.endif 
+	
+.if (is_row_1_active == 0)
+	IcurrSrc_PA_ns_ew_1_4_idle   	pkg_bump_PA_ns_ew_1_4	ref_gnd     curr_backgnd_PA_1_col				
+	IcurrSrc_PA_ns_ew_1_5_idle   	pkg_bump_PA_ns_ew_1_5	ref_gnd     curr_backgnd_PA_1_col				
+	IcurrSrc_PA_ns_ew_1_6_idle   	pkg_bump_PA_ns_ew_1_6	ref_gnd     curr_backgnd_PA_1_col				
+	IcurrSrc_PA_ns_ew_1_7_idle   	pkg_bump_PA_ns_ew_1_7	ref_gnd     curr_backgnd_PA_1_col				
+
+	IcurrSrc_MA_ns_ew_1_0_idle		pkg_bump_MA_ns_ew_1_0    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_1_1_idle		pkg_bump_MA_ns_ew_1_1    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_1_2_idle		pkg_bump_MA_ns_ew_1_2    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_1_3_idle		pkg_bump_MA_ns_ew_1_3    ref_gnd 	curr_backgnd_MA_1_col	
+.endif 
+
+.if (is_row_2_active == 0)	
+	IcurrSrc_PA_ns_ew_2_4_idle   	pkg_bump_PA_ns_ew_2_4	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_2_5_idle   	pkg_bump_PA_ns_ew_2_5	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_2_6_idle   	pkg_bump_PA_ns_ew_2_6	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_2_7_idle   	pkg_bump_PA_ns_ew_2_7	ref_gnd     curr_backgnd_PA_1_col							
+	
+	IcurrSrc_MA_ns_ew_2_0_idle		pkg_bump_MA_ns_ew_2_0    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_2_1_idle		pkg_bump_MA_ns_ew_2_1    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_2_2_idle		pkg_bump_MA_ns_ew_2_2    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_2_3_idle		pkg_bump_MA_ns_ew_2_3    ref_gnd 	curr_backgnd_MA_1_col	
+.endif 
+
+.if (is_row_3_active == 0)	
+	IcurrSrc_PA_ns_ew_3_4_idle   	pkg_bump_PA_ns_ew_3_4	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_3_5_idle   	pkg_bump_PA_ns_ew_3_5	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_3_6_idle   	pkg_bump_PA_ns_ew_3_6	ref_gnd     curr_backgnd_PA_1_col							
+	IcurrSrc_PA_ns_ew_3_7_idle   	pkg_bump_PA_ns_ew_3_7	ref_gnd     curr_backgnd_PA_1_col							
+														
+	IcurrSrc_MA_ns_ew_3_0_idle		pkg_bump_MA_ns_ew_3_0    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_3_1_idle		pkg_bump_MA_ns_ew_3_1    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_3_2_idle		pkg_bump_MA_ns_ew_3_2    ref_gnd 	curr_backgnd_MA_1_col		
+	IcurrSrc_MA_ns_ew_3_3_idle		pkg_bump_MA_ns_ew_3_3    ref_gnd 	curr_backgnd_MA_1_col	
+.endif 	
+	 
+*** filter for measurement 	
+
+X_probe_filter10
++ pkg_bump_PA_ns_ew_3_7
++ ref_gnd
++ pkg_bump_PA_ns_3_hf 
++ pkg_bump_PA_ns_3_lf
++ meas_filter
+
+X_probe_filter13
++ pkg_bump_PA_ns_ew_0_7
++ ref_gnd
++ pkg_bump_PA_ns_0_hf 
++ pkg_bump_PA_ns_0_lf
++ meas_filter
+
+
+* X_probe_filter_bga_0
+* + bga_pcb_0
+* + ref_gnd
+* + bga_pcb_0_hf 
+* + bga_pcb_0_lf
+* + meas_filter
+
+
+*************************************** Analysis I: AC simulation *************
+.if ( is_ac_run == 1 )
+	.if ( 1 )
+		*** NOTE: DO not include port def if tran analysis later
+		P1 pkg_bump_ns_ew_0_7	ref_gnd	port=1	z0 = 0.1
+		P2 pkg_bump_ns_ew_6_7	ref_gnd	port=2	z0 = 0.1
+		P3 pkg_bump_ns_ew_12_7	ref_gnd	port=3	z0 = 0.1
+		P4 pkg_bump_ns_ew_23_7	ref_gnd	port=4	z0 = 0.1
+		
+			* P1 pkg_bump_PA_ns_ew_0_7	ref_gnd	port=1	z0 = 0.1
+			* P2 pkg_bump_PA_ns_ew_1_7	ref_gnd	port=2	z0 = 0.1
+			* P3 pkg_bump_PA_ns_ew_2_7	ref_gnd	port=3	z0 = 0.1
+			* P4 pkg_bump_PA_ns_ew_3_7	ref_gnd	port=4	z0 = 0.1
+
+		
+		.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
+		**.probe  ac s11(db) s11(p) s21(db) s21(p) 
+		.probe ac zin(1)(m) zin(1)(p) zin(2)(m) zin(2)(p) zin(3)(m) zin(3)(p) zin(4)(m) zin(4)(p) 
+		
+		.ac 	dec 50 1. 1.G
+		
+		*** transfer Z *** 
+		* I_dc_curr pkg_bump_PA_ns_ew_0_7	ref_gnd	AC 1. 		
+		* .probe ac v(pkg_bump_PA_ns_ew_0_7)	v(pkg_bump_PA_ns_ew_3_7)
+
+		I_dc_curr pkg_bump_ns_ew_0_7	ref_gnd	AC 1. 
+		.probe ac v(pkg_bump_ns_ew_0_7)	v(pkg_bump_ns_ew_23_7)
+			
+	.endif 
+
+	.if ( 0 )
+		*i_ac_pkg_bump_0_0 pkg_bump_MA_ns_3 ref_gnd dc=0 ac=-1.
+		* .probe ac v(pkg_bump_MA_ns_3)
+		
+		i_ac_pkg_bump_1_0 pkg_bump_PA_ns_3 ref_gnd dc=0 ac=-1.
+		.probe ac v(pkg_bump_PA_ns_3)	vi(pkg_bump_PA_ns_3)	vr(pkg_bump_PA_ns_3)	
+		
+		.ac 	dec 50 1. 1.G
+		
+		* .param v_imag = vi(pkg_bump_PA_ns_3)
+		* .param acl = 'v_imag / 2./pi '
+		* .print 'vi(pkg_bump_PA_ns_3) / 2. '		*** works
+				* .print 'vi(pkg_bump_PA_ns_3) / pi '						*** NOT work 
+				* .measure ac ACL param = 'vi(pkg_bump_PA_ns_3) / 2.'		*** NOT work 
+
+		.param pfreq = 100.e6
+		.param dfreq = 10.e6
+		.measure ac zval_1   find vi(pkg_bump_PA_ns_3)	at = 'pfreq - dfreq '
+		.measure ac zval_2   find vi(pkg_bump_PA_ns_3)	at = 'pfreq + dfreq '
+		.measure ac acl      param='(zval_2 - zval_1)/2./pi/(dfreq+dfreq)'
+
+	.endif 
+
+.endif 
+
+*************************************** Analysis II: Transient simulation *****
+.if ( is_ac_run != 1 )
+	.tran tStep tSTOP 
+	*** edge partitions 
+	.probe tran v(pkg_bump_PA_ns_ew_3_7)  v(pkg_bump_PA_ns_ew_2_7)  v(pkg_bump_PA_ns_ew_1_7)   v(pkg_bump_PA_ns_ew_0_7)  
+	.probe tran v(pkg_bump_PA_ns_3_hf)  v(pkg_bump_PA_ns_3_lf)
+	.probe tran v(pkg_bump_PA_ns_0_hf)  v(pkg_bump_PA_ns_0_lf)
+
+	*** center partitions 
+	.probe tran v(pkg_bump_PA_ns_ew_3_4)  v(pkg_bump_PA_ns_ew_2_4)  v(pkg_bump_PA_ns_ew_1_4)   v(pkg_bump_PA_ns_ew_0_4)  
+	*** MA corner partition 
+	.probe tran v(pkg_bump_MA_ns_ew_3_0)  v(pkg_bump_MA_ns_ew_2_0)  v(pkg_bump_MA_ns_ew_1_0)   v(pkg_bump_MA_ns_ew_0_0) 
+	*** probe at Ecap area 
+	.probe tran v(pkge_Ecap1_2x2mm_2)  v(pkge_Ecap2_2x2mm_2)
+	
+	.probe tran v(pmic_pwr)
+	
+	* .probe x(Xblk_PCB.a_1)	x(Xblk_pkg.a_1)
+	
+	.probe 	 x(Xblk_pkg.a_1)   x(Xblk_pkg.a_2)   x(Xblk_pkg.a_3)  
+		   + x(Xblk_pkg.a_4)   x(Xblk_pkg.a_5)   x(Xblk_pkg.a_6)  
+		   + x(Xblk_pkg.a_7)   x(Xblk_pkg.a_8)   x(Xblk_pkg.a_9)  
+		   + x(Xblk_pkg.a_10)  x(Xblk_pkg.a_11)  x(Xblk_pkg.a_12) 
+		   + x(Xblk_pkg.a_13)  x(Xblk_pkg.a_14)  x(Xblk_pkg.a_15) 
+		   + x(Xblk_pkg.a_16)  x(Xblk_pkg.a_17)  x(Xblk_pkg.a_18) 
+		   + x(Xblk_pkg.a_19)  x(Xblk_pkg.a_20)  x(Xblk_pkg.a_21) 
+		   + x(Xblk_pkg.a_22)  x(Xblk_pkg.a_23)  x(Xblk_pkg.a_24) 
+		   + x(Xblk_pkg.a_25)  x(Xblk_pkg.a_26)  x(Xblk_pkg.a_27) 
+		   + x(Xblk_pkg.a_28)  x(Xblk_pkg.a_29)  x(Xblk_pkg.a_30) 
+		   + x(Xblk_pkg.a_31)  x(Xblk_pkg.a_32)
+	
+	* .probe x(Xblk_pkg.a_9)  x(Xblk_pkg.a_10)   x(Xblk_pkg.a_11) x(Xblk_pkg.a_12)  x(Xblk_pkg.a_13)   x(Xblk_pkg.a_14) 
+	.probe x(Xblk_pcb.a_9)  x(Xblk_pcb.a_10)   x(Xblk_pcb.a_11) x(Xblk_pcb.a_12)  x(Xblk_pcb.a_13)   x(Xblk_pcb.a_14) 
+	.probe x(xblk_PMIC.pin_out)
+
+	*** print bump grp curr 
+	* .probe x(Xblk_pkg.a_1)  x(Xblk_pkg.a_2)   x(Xblk_pkg.a_3) x(Xblk_pkg.a_4)  x(Xblk_pkg.a_5)   x(Xblk_pkg.a_6) x(Xblk_pkg.a_7)   x(Xblk_pkg.a_8) 
+
+
+.endif 
