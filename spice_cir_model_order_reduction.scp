@@ -1,0 +1,421 @@
+Vref_gnd 	ref_gnd		0	0.										*** normal gnd 
+.ac 	dec 25 1. 1.G 
+
+**** 
+.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/CPM_adsPowerModel_NNE_24x8_251117.sp		*** Andes 24x8 CPM die model 
+
+	xblk_die 	*** 24x8 NNE CPM w/o MIM
+	+ 			pkg_bump_ns_ew_0_0
+	+ ref_gnd   pkg_bump_ns_ew_1_0
+	+ ref_gnd   pkg_bump_ns_ew_2_0
+	+ ref_gnd   pkg_bump_ns_ew_3_0
+	+ ref_gnd   pkg_bump_ns_ew_4_0
+	+ ref_gnd   pkg_bump_ns_ew_5_0
+	+ ref_gnd   pkg_bump_ns_ew_6_0
+	+ ref_gnd   pkg_bump_ns_ew_7_0
+	+ ref_gnd   pkg_bump_ns_ew_8_0
+	+ ref_gnd   pkg_bump_ns_ew_9_0
+	+ ref_gnd   pkg_bump_ns_ew_10_0
+	+ ref_gnd   pkg_bump_ns_ew_11_0
+	+ ref_gnd   pkg_bump_ns_ew_12_0
+	+ ref_gnd   pkg_bump_ns_ew_13_0
+	+ ref_gnd   pkg_bump_ns_ew_14_0
+	+ ref_gnd   pkg_bump_ns_ew_15_0
+	+ ref_gnd   pkg_bump_ns_ew_16_0
+	+ ref_gnd   pkg_bump_ns_ew_17_0
+	+ ref_gnd   pkg_bump_ns_ew_18_0
+	+ ref_gnd   pkg_bump_ns_ew_19_0
+	+ ref_gnd   pkg_bump_ns_ew_20_0
+	+ ref_gnd   pkg_bump_ns_ew_21_0
+	+ ref_gnd   pkg_bump_ns_ew_22_0
+	+ ref_gnd   pkg_bump_ns_ew_23_0
+	+ ref_gnd   pkg_bump_ns_ew_0_1
+	+ ref_gnd   pkg_bump_ns_ew_1_1
+	+ ref_gnd   pkg_bump_ns_ew_2_1
+	+ ref_gnd   pkg_bump_ns_ew_3_1
+	+ ref_gnd   pkg_bump_ns_ew_4_1
+	+ ref_gnd   pkg_bump_ns_ew_5_1
+	+ ref_gnd   pkg_bump_ns_ew_6_1
+	+ ref_gnd   pkg_bump_ns_ew_7_1
+	+ ref_gnd   pkg_bump_ns_ew_8_1
+	+ ref_gnd   pkg_bump_ns_ew_9_1
+	+ ref_gnd   pkg_bump_ns_ew_10_1
+	+ ref_gnd   pkg_bump_ns_ew_11_1
+	+ ref_gnd   pkg_bump_ns_ew_12_1
+	+ ref_gnd   pkg_bump_ns_ew_13_1
+	+ ref_gnd   pkg_bump_ns_ew_14_1
+	+ ref_gnd   pkg_bump_ns_ew_15_1
+	+ ref_gnd   pkg_bump_ns_ew_16_1
+	+ ref_gnd   pkg_bump_ns_ew_17_1
+	+ ref_gnd   pkg_bump_ns_ew_18_1
+	+ ref_gnd   pkg_bump_ns_ew_19_1
+	+ ref_gnd   pkg_bump_ns_ew_20_1
+	+ ref_gnd   pkg_bump_ns_ew_21_1
+	+ ref_gnd   pkg_bump_ns_ew_22_1
+	+ ref_gnd   pkg_bump_ns_ew_23_1
+	+ ref_gnd   pkg_bump_ns_ew_0_2
+	+ ref_gnd   pkg_bump_ns_ew_1_2
+	+ ref_gnd   pkg_bump_ns_ew_2_2
+	+ ref_gnd   pkg_bump_ns_ew_3_2
+	+ ref_gnd   pkg_bump_ns_ew_4_2
+	+ ref_gnd   pkg_bump_ns_ew_5_2
+	+ ref_gnd   pkg_bump_ns_ew_6_2
+	+ ref_gnd   pkg_bump_ns_ew_7_2
+	+ ref_gnd   pkg_bump_ns_ew_8_2
+	+ ref_gnd   pkg_bump_ns_ew_9_2
+	+ ref_gnd   pkg_bump_ns_ew_10_2
+	+ ref_gnd   pkg_bump_ns_ew_11_2
+	+ ref_gnd   pkg_bump_ns_ew_12_2
+	+ ref_gnd   pkg_bump_ns_ew_13_2
+	+ ref_gnd   pkg_bump_ns_ew_14_2
+	+ ref_gnd   pkg_bump_ns_ew_15_2
+	+ ref_gnd   pkg_bump_ns_ew_16_2
+	+ ref_gnd   pkg_bump_ns_ew_17_2
+	+ ref_gnd   pkg_bump_ns_ew_18_2
+	+ ref_gnd   pkg_bump_ns_ew_19_2
+	+ ref_gnd   pkg_bump_ns_ew_20_2
+	+ ref_gnd   pkg_bump_ns_ew_21_2
+	+ ref_gnd   pkg_bump_ns_ew_22_2
+	+ ref_gnd   pkg_bump_ns_ew_23_2
+	+ ref_gnd   pkg_bump_ns_ew_0_3
+	+ ref_gnd   pkg_bump_ns_ew_1_3
+	+ ref_gnd   pkg_bump_ns_ew_2_3
+	+ ref_gnd   pkg_bump_ns_ew_3_3
+	+ ref_gnd   pkg_bump_ns_ew_4_3
+	+ ref_gnd   pkg_bump_ns_ew_5_3
+	+ ref_gnd   pkg_bump_ns_ew_6_3
+	+ ref_gnd   pkg_bump_ns_ew_7_3
+	+ ref_gnd   pkg_bump_ns_ew_8_3
+	+ ref_gnd   pkg_bump_ns_ew_9_3
+	+ ref_gnd   pkg_bump_ns_ew_10_3
+	+ ref_gnd   pkg_bump_ns_ew_11_3
+	+ ref_gnd   pkg_bump_ns_ew_12_3
+	+ ref_gnd   pkg_bump_ns_ew_13_3
+	+ ref_gnd   pkg_bump_ns_ew_14_3
+	+ ref_gnd   pkg_bump_ns_ew_15_3
+	+ ref_gnd   pkg_bump_ns_ew_16_3
+	+ ref_gnd   pkg_bump_ns_ew_17_3
+	+ ref_gnd   pkg_bump_ns_ew_18_3
+	+ ref_gnd   pkg_bump_ns_ew_19_3
+	+ ref_gnd   pkg_bump_ns_ew_20_3
+	+ ref_gnd   pkg_bump_ns_ew_21_3
+	+ ref_gnd   pkg_bump_ns_ew_22_3
+	+ ref_gnd   pkg_bump_ns_ew_23_3
+	+ ref_gnd   pkg_bump_ns_ew_0_4
+	+ ref_gnd   pkg_bump_ns_ew_1_4
+	+ ref_gnd   pkg_bump_ns_ew_2_4
+	+ ref_gnd   pkg_bump_ns_ew_3_4
+	+ ref_gnd   pkg_bump_ns_ew_4_4
+	+ ref_gnd   pkg_bump_ns_ew_5_4
+	+ ref_gnd   pkg_bump_ns_ew_6_4
+	+ ref_gnd   pkg_bump_ns_ew_7_4
+	+ ref_gnd   pkg_bump_ns_ew_8_4
+	+ ref_gnd   pkg_bump_ns_ew_9_4
+	+ ref_gnd   pkg_bump_ns_ew_10_4
+	+ ref_gnd   pkg_bump_ns_ew_11_4
+	+ ref_gnd   pkg_bump_ns_ew_12_4
+	+ ref_gnd   pkg_bump_ns_ew_13_4
+	+ ref_gnd   pkg_bump_ns_ew_14_4
+	+ ref_gnd   pkg_bump_ns_ew_15_4
+	+ ref_gnd   pkg_bump_ns_ew_16_4
+	+ ref_gnd   pkg_bump_ns_ew_17_4
+	+ ref_gnd   pkg_bump_ns_ew_18_4
+	+ ref_gnd   pkg_bump_ns_ew_19_4
+	+ ref_gnd   pkg_bump_ns_ew_20_4
+	+ ref_gnd   pkg_bump_ns_ew_21_4
+	+ ref_gnd   pkg_bump_ns_ew_22_4
+	+ ref_gnd   pkg_bump_ns_ew_23_4
+	+ ref_gnd   pkg_bump_ns_ew_0_5
+	+ ref_gnd   pkg_bump_ns_ew_1_5
+	+ ref_gnd   pkg_bump_ns_ew_2_5
+	+ ref_gnd   pkg_bump_ns_ew_3_5
+	+ ref_gnd   pkg_bump_ns_ew_4_5
+	+ ref_gnd   pkg_bump_ns_ew_5_5
+	+ ref_gnd   pkg_bump_ns_ew_6_5
+	+ ref_gnd   pkg_bump_ns_ew_7_5
+	+ ref_gnd   pkg_bump_ns_ew_8_5
+	+ ref_gnd   pkg_bump_ns_ew_9_5
+	+ ref_gnd   pkg_bump_ns_ew_10_5
+	+ ref_gnd   pkg_bump_ns_ew_11_5
+	+ ref_gnd   pkg_bump_ns_ew_12_5
+	+ ref_gnd   pkg_bump_ns_ew_13_5
+	+ ref_gnd   pkg_bump_ns_ew_14_5
+	+ ref_gnd   pkg_bump_ns_ew_15_5
+	+ ref_gnd   pkg_bump_ns_ew_16_5
+	+ ref_gnd   pkg_bump_ns_ew_17_5
+	+ ref_gnd   pkg_bump_ns_ew_18_5
+	+ ref_gnd   pkg_bump_ns_ew_19_5
+	+ ref_gnd   pkg_bump_ns_ew_20_5
+	+ ref_gnd   pkg_bump_ns_ew_21_5
+	+ ref_gnd   pkg_bump_ns_ew_22_5
+	+ ref_gnd   pkg_bump_ns_ew_23_5
+	+ ref_gnd   pkg_bump_ns_ew_0_6
+	+ ref_gnd   pkg_bump_ns_ew_1_6
+	+ ref_gnd   pkg_bump_ns_ew_2_6
+	+ ref_gnd   pkg_bump_ns_ew_3_6
+	+ ref_gnd   pkg_bump_ns_ew_4_6
+	+ ref_gnd   pkg_bump_ns_ew_5_6
+	+ ref_gnd   pkg_bump_ns_ew_6_6
+	+ ref_gnd   pkg_bump_ns_ew_7_6
+	+ ref_gnd   pkg_bump_ns_ew_8_6
+	+ ref_gnd   pkg_bump_ns_ew_9_6
+	+ ref_gnd   pkg_bump_ns_ew_10_6
+	+ ref_gnd   pkg_bump_ns_ew_11_6
+	+ ref_gnd   pkg_bump_ns_ew_12_6
+	+ ref_gnd   pkg_bump_ns_ew_13_6
+	+ ref_gnd   pkg_bump_ns_ew_14_6
+	+ ref_gnd   pkg_bump_ns_ew_15_6
+	+ ref_gnd   pkg_bump_ns_ew_16_6
+	+ ref_gnd   pkg_bump_ns_ew_17_6
+	+ ref_gnd   pkg_bump_ns_ew_18_6
+	+ ref_gnd   pkg_bump_ns_ew_19_6
+	+ ref_gnd   pkg_bump_ns_ew_20_6
+	+ ref_gnd   pkg_bump_ns_ew_21_6
+	+ ref_gnd   pkg_bump_ns_ew_22_6
+	+ ref_gnd   pkg_bump_ns_ew_23_6
+	+ ref_gnd   pkg_bump_ns_ew_0_7
+	+ ref_gnd   pkg_bump_ns_ew_1_7
+	+ ref_gnd   pkg_bump_ns_ew_2_7
+	+ ref_gnd   pkg_bump_ns_ew_3_7
+	+ ref_gnd   pkg_bump_ns_ew_4_7
+	+ ref_gnd   pkg_bump_ns_ew_5_7
+	+ ref_gnd   pkg_bump_ns_ew_6_7
+	+ ref_gnd   pkg_bump_ns_ew_7_7
+	+ ref_gnd   pkg_bump_ns_ew_8_7
+	+ ref_gnd   pkg_bump_ns_ew_9_7
+	+ ref_gnd   pkg_bump_ns_ew_10_7
+	+ ref_gnd   pkg_bump_ns_ew_11_7
+	+ ref_gnd   pkg_bump_ns_ew_12_7
+	+ ref_gnd   pkg_bump_ns_ew_13_7
+	+ ref_gnd   pkg_bump_ns_ew_14_7
+	+ ref_gnd   pkg_bump_ns_ew_15_7
+	+ ref_gnd   pkg_bump_ns_ew_16_7
+	+ ref_gnd   pkg_bump_ns_ew_17_7
+	+ ref_gnd   pkg_bump_ns_ew_18_7
+	+ ref_gnd   pkg_bump_ns_ew_19_7
+	+ ref_gnd   pkg_bump_ns_ew_20_7
+	+ ref_gnd   pkg_bump_ns_ew_21_7
+	+ ref_gnd   pkg_bump_ns_ew_22_7
+	+ ref_gnd   pkg_bump_ns_ew_23_7
+	+ ref_gnd 
+	+ CPM_adsPowerModel_NNE_24x8_251117
+
+.lin format=touchstone
++ PORTS=P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 
++ P11 P12 P13 P14 P15 P16 P17 P18 P19 P20 
++ P21 P22 P23 P24 P25 P26 P27 P28 P29 P30 
++ P31 P32 P33 P34 P35 P36 P37 P38 P39 P40 
++ P41 P42 P43 P44 P45 P46 P47 P48 P49 P50 
++ P51 P52 P53 P54 P55 P56 P57 P58 P59 P60 
++ P61 P62 P63 P64 P65 P66 P67 P68 P69 P70 
++ P71 P72 P73 P74 P75 P76 P77 P78 P79 P80 
++ P81 P82 P83 P84 P85 P86 P87 P88 P89 P90 
++ P91 P92 P93 P94 P95 P96 P97 P98 P99 P100 
++ P101 P102 P103 P104 P105 P106 P107 P108 P109 P110 
++ P111 P112 P113 P114 P115 P116 P117 P118 P119 P120 
++ P121 P122 P123 P124 P125 P126 P127 P128 P129 P130 
++ P131 P132 P133 P134 P135 P136 P137 P138 P139 P140 
++ P141 P142 P143 P144 P145 P146 P147 P148 P149 P150 
++ P151 P152 P153 P154 P155 P156 P157 P158 P159 P160 
++ P161 P162 P163 P164 P165 P166 P167 P168 P169 P170 
++ P171 P172 P173 P174 P175 P176 P177 P178 P179 P180 
++ P181 P182 P183 P184 P185 P186 P187 P188 P189 P190 
++ P191 P192
+
+.option lis_new=1 post probe 
+
+
+
+*** bump ports 
+P1    pkg_bump_ns_ew_0_0   0 port=1   z0=0.1		** par_0_0
+P2    pkg_bump_ns_ew_1_0   0 port=2   z0=0.1		** par_0_1
+P3    pkg_bump_ns_ew_2_0   0 port=3   z0=0.1
+P4    pkg_bump_ns_ew_3_0   0 port=4   z0=0.1
+P5    pkg_bump_ns_ew_4_0   0 port=5   z0=0.1
+P6    pkg_bump_ns_ew_5_0   0 port=6   z0=0.1
+P7    pkg_bump_ns_ew_6_0   0 port=7   z0=0.1
+P8    pkg_bump_ns_ew_7_0   0 port=8   z0=0.1
+P9    pkg_bump_ns_ew_8_0   0 port=9   z0=0.1
+P10   pkg_bump_ns_ew_9_0   0 port=10   z0=0.1
+P11   pkg_bump_ns_ew_10_0   0 port=11   z0=0.1
+P12   pkg_bump_ns_ew_11_0   0 port=12   z0=0.1
+P13   pkg_bump_ns_ew_12_0   0 port=13   z0=0.1
+P14   pkg_bump_ns_ew_13_0   0 port=14   z0=0.1
+P15   pkg_bump_ns_ew_14_0   0 port=15   z0=0.1
+P16   pkg_bump_ns_ew_15_0   0 port=16   z0=0.1
+P17   pkg_bump_ns_ew_16_0   0 port=17   z0=0.1
+P18   pkg_bump_ns_ew_17_0   0 port=18   z0=0.1
+P19   pkg_bump_ns_ew_18_0   0 port=19   z0=0.1
+P20   pkg_bump_ns_ew_19_0   0 port=20   z0=0.1
+P21   pkg_bump_ns_ew_20_0   0 port=21   z0=0.1
+P22   pkg_bump_ns_ew_21_0   0 port=22   z0=0.1
+P23   pkg_bump_ns_ew_22_0   0 port=23   z0=0.1
+P24   pkg_bump_ns_ew_23_0   0 port=24   z0=0.1
+P25   pkg_bump_ns_ew_0_1   0 port=25   z0=0.1
+P26   pkg_bump_ns_ew_1_1   0 port=26   z0=0.1
+P27   pkg_bump_ns_ew_2_1   0 port=27   z0=0.1
+P28   pkg_bump_ns_ew_3_1   0 port=28   z0=0.1
+P29   pkg_bump_ns_ew_4_1   0 port=29   z0=0.1
+P30   pkg_bump_ns_ew_5_1   0 port=30   z0=0.1
+P31   pkg_bump_ns_ew_6_1   0 port=31   z0=0.1
+P32   pkg_bump_ns_ew_7_1   0 port=32   z0=0.1
+P33   pkg_bump_ns_ew_8_1   0 port=33   z0=0.1
+P34   pkg_bump_ns_ew_9_1   0 port=34   z0=0.1
+P35   pkg_bump_ns_ew_10_1   0 port=35   z0=0.1
+P36   pkg_bump_ns_ew_11_1   0 port=36   z0=0.1
+P37   pkg_bump_ns_ew_12_1   0 port=37   z0=0.1
+P38   pkg_bump_ns_ew_13_1   0 port=38   z0=0.1
+P39   pkg_bump_ns_ew_14_1   0 port=39   z0=0.1
+P40   pkg_bump_ns_ew_15_1   0 port=40   z0=0.1
+P41   pkg_bump_ns_ew_16_1   0 port=41   z0=0.1
+P42   pkg_bump_ns_ew_17_1   0 port=42   z0=0.1
+P43   pkg_bump_ns_ew_18_1   0 port=43   z0=0.1
+P44   pkg_bump_ns_ew_19_1   0 port=44   z0=0.1
+P45   pkg_bump_ns_ew_20_1   0 port=45   z0=0.1
+P46   pkg_bump_ns_ew_21_1   0 port=46   z0=0.1
+P47   pkg_bump_ns_ew_22_1   0 port=47   z0=0.1
+P48   pkg_bump_ns_ew_23_1   0 port=48   z0=0.1
+P49   pkg_bump_ns_ew_0_2   0 port=49   z0=0.1
+P50   pkg_bump_ns_ew_1_2   0 port=50   z0=0.1
+P51   pkg_bump_ns_ew_2_2   0 port=51   z0=0.1
+P52   pkg_bump_ns_ew_3_2   0 port=52   z0=0.1
+P53   pkg_bump_ns_ew_4_2   0 port=53   z0=0.1
+P54   pkg_bump_ns_ew_5_2   0 port=54   z0=0.1
+P55   pkg_bump_ns_ew_6_2   0 port=55   z0=0.1
+P56   pkg_bump_ns_ew_7_2   0 port=56   z0=0.1
+P57   pkg_bump_ns_ew_8_2   0 port=57   z0=0.1
+P58   pkg_bump_ns_ew_9_2   0 port=58   z0=0.1
+P59   pkg_bump_ns_ew_10_2   0 port=59   z0=0.1
+P60   pkg_bump_ns_ew_11_2   0 port=60   z0=0.1
+P61   pkg_bump_ns_ew_12_2   0 port=61   z0=0.1
+P62   pkg_bump_ns_ew_13_2   0 port=62   z0=0.1
+P63   pkg_bump_ns_ew_14_2   0 port=63   z0=0.1
+P64   pkg_bump_ns_ew_15_2   0 port=64   z0=0.1
+P65   pkg_bump_ns_ew_16_2   0 port=65   z0=0.1
+P66   pkg_bump_ns_ew_17_2   0 port=66   z0=0.1
+P67   pkg_bump_ns_ew_18_2   0 port=67   z0=0.1
+P68   pkg_bump_ns_ew_19_2   0 port=68   z0=0.1
+P69   pkg_bump_ns_ew_20_2   0 port=69   z0=0.1
+P70   pkg_bump_ns_ew_21_2   0 port=70   z0=0.1
+P71   pkg_bump_ns_ew_22_2   0 port=71   z0=0.1
+P72   pkg_bump_ns_ew_23_2   0 port=72   z0=0.1
+P73   pkg_bump_ns_ew_0_3   0 port=73   z0=0.1
+P74   pkg_bump_ns_ew_1_3   0 port=74   z0=0.1
+P75   pkg_bump_ns_ew_2_3   0 port=75   z0=0.1
+P76   pkg_bump_ns_ew_3_3   0 port=76   z0=0.1
+P77   pkg_bump_ns_ew_4_3   0 port=77   z0=0.1
+P78   pkg_bump_ns_ew_5_3   0 port=78   z0=0.1
+P79   pkg_bump_ns_ew_6_3   0 port=79   z0=0.1
+P80   pkg_bump_ns_ew_7_3   0 port=80   z0=0.1
+P81   pkg_bump_ns_ew_8_3   0 port=81   z0=0.1
+P82   pkg_bump_ns_ew_9_3   0 port=82   z0=0.1
+P83   pkg_bump_ns_ew_10_3   0 port=83   z0=0.1
+P84   pkg_bump_ns_ew_11_3   0 port=84   z0=0.1
+P85   pkg_bump_ns_ew_12_3   0 port=85   z0=0.1
+P86   pkg_bump_ns_ew_13_3   0 port=86   z0=0.1
+P87   pkg_bump_ns_ew_14_3   0 port=87   z0=0.1
+P88   pkg_bump_ns_ew_15_3   0 port=88   z0=0.1
+P89   pkg_bump_ns_ew_16_3   0 port=89   z0=0.1
+P90   pkg_bump_ns_ew_17_3   0 port=90   z0=0.1
+P91   pkg_bump_ns_ew_18_3   0 port=91   z0=0.1
+P92   pkg_bump_ns_ew_19_3   0 port=92   z0=0.1
+P93   pkg_bump_ns_ew_20_3   0 port=93   z0=0.1
+P94   pkg_bump_ns_ew_21_3   0 port=94   z0=0.1
+P95   pkg_bump_ns_ew_22_3   0 port=95   z0=0.1
+P96   pkg_bump_ns_ew_23_3   0 port=96   z0=0.1
+P97   pkg_bump_ns_ew_0_4   0 port=97   z0=0.1
+P98   pkg_bump_ns_ew_1_4   0 port=98   z0=0.1
+P99   pkg_bump_ns_ew_2_4   0 port=99   z0=0.1
+P100  pkg_bump_ns_ew_3_4   0 port=100   z0=0.1
+P101  pkg_bump_ns_ew_4_4   0 port=101   z0=0.1
+P102  pkg_bump_ns_ew_5_4   0 port=102   z0=0.1
+P103  pkg_bump_ns_ew_6_4   0 port=103   z0=0.1
+P104  pkg_bump_ns_ew_7_4   0 port=104   z0=0.1
+P105  pkg_bump_ns_ew_8_4   0 port=105   z0=0.1
+P106  pkg_bump_ns_ew_9_4   0 port=106   z0=0.1
+P107  pkg_bump_ns_ew_10_4   0 port=107   z0=0.1
+P108  pkg_bump_ns_ew_11_4   0 port=108   z0=0.1
+P109  pkg_bump_ns_ew_12_4   0 port=109   z0=0.1
+P110  pkg_bump_ns_ew_13_4   0 port=110   z0=0.1
+P111  pkg_bump_ns_ew_14_4   0 port=111   z0=0.1
+P112  pkg_bump_ns_ew_15_4   0 port=112   z0=0.1
+P113  pkg_bump_ns_ew_16_4   0 port=113   z0=0.1
+P114  pkg_bump_ns_ew_17_4   0 port=114   z0=0.1
+P115  pkg_bump_ns_ew_18_4   0 port=115   z0=0.1
+P116  pkg_bump_ns_ew_19_4   0 port=116   z0=0.1
+P117  pkg_bump_ns_ew_20_4   0 port=117   z0=0.1
+P118  pkg_bump_ns_ew_21_4   0 port=118   z0=0.1
+P119  pkg_bump_ns_ew_22_4   0 port=119   z0=0.1
+P120  pkg_bump_ns_ew_23_4   0 port=120   z0=0.1
+P121  pkg_bump_ns_ew_0_5   0 port=121   z0=0.1
+P122  pkg_bump_ns_ew_1_5   0 port=122   z0=0.1
+P123  pkg_bump_ns_ew_2_5   0 port=123   z0=0.1
+P124  pkg_bump_ns_ew_3_5   0 port=124   z0=0.1
+P125  pkg_bump_ns_ew_4_5   0 port=125   z0=0.1
+P126  pkg_bump_ns_ew_5_5   0 port=126   z0=0.1
+P127  pkg_bump_ns_ew_6_5   0 port=127   z0=0.1
+P128  pkg_bump_ns_ew_7_5   0 port=128   z0=0.1
+P129  pkg_bump_ns_ew_8_5   0 port=129   z0=0.1
+P130  pkg_bump_ns_ew_9_5   0 port=130   z0=0.1
+P131  pkg_bump_ns_ew_10_5   0 port=131   z0=0.1
+P132  pkg_bump_ns_ew_11_5   0 port=132   z0=0.1
+P133  pkg_bump_ns_ew_12_5   0 port=133   z0=0.1
+P134  pkg_bump_ns_ew_13_5   0 port=134   z0=0.1
+P135  pkg_bump_ns_ew_14_5   0 port=135   z0=0.1
+P136  pkg_bump_ns_ew_15_5   0 port=136   z0=0.1
+P137  pkg_bump_ns_ew_16_5   0 port=137   z0=0.1
+P138  pkg_bump_ns_ew_17_5   0 port=138   z0=0.1
+P139  pkg_bump_ns_ew_18_5   0 port=139   z0=0.1
+P140  pkg_bump_ns_ew_19_5   0 port=140   z0=0.1
+P141  pkg_bump_ns_ew_20_5   0 port=141   z0=0.1
+P142  pkg_bump_ns_ew_21_5   0 port=142   z0=0.1
+P143  pkg_bump_ns_ew_22_5   0 port=143   z0=0.1
+P144  pkg_bump_ns_ew_23_5   0 port=144   z0=0.1
+P145  pkg_bump_ns_ew_0_6   0 port=145   z0=0.1
+P146  pkg_bump_ns_ew_1_6   0 port=146   z0=0.1
+P147  pkg_bump_ns_ew_2_6   0 port=147   z0=0.1
+P148  pkg_bump_ns_ew_3_6   0 port=148   z0=0.1
+P149  pkg_bump_ns_ew_4_6   0 port=149   z0=0.1
+P150  pkg_bump_ns_ew_5_6   0 port=150   z0=0.1
+P151  pkg_bump_ns_ew_6_6   0 port=151   z0=0.1
+P152  pkg_bump_ns_ew_7_6   0 port=152   z0=0.1
+P153  pkg_bump_ns_ew_8_6   0 port=153   z0=0.1
+P154  pkg_bump_ns_ew_9_6   0 port=154   z0=0.1
+P155  pkg_bump_ns_ew_10_6   0 port=155   z0=0.1
+P156  pkg_bump_ns_ew_11_6   0 port=156   z0=0.1
+P157  pkg_bump_ns_ew_12_6   0 port=157   z0=0.1
+P158  pkg_bump_ns_ew_13_6   0 port=158   z0=0.1
+P159  pkg_bump_ns_ew_14_6   0 port=159   z0=0.1
+P160  pkg_bump_ns_ew_15_6   0 port=160   z0=0.1
+P161  pkg_bump_ns_ew_16_6   0 port=161   z0=0.1
+P162  pkg_bump_ns_ew_17_6   0 port=162   z0=0.1
+P163  pkg_bump_ns_ew_18_6   0 port=163   z0=0.1
+P164  pkg_bump_ns_ew_19_6   0 port=164   z0=0.1
+P165  pkg_bump_ns_ew_20_6   0 port=165   z0=0.1
+P166  pkg_bump_ns_ew_21_6   0 port=166   z0=0.1
+P167  pkg_bump_ns_ew_22_6   0 port=167   z0=0.1
+P168  pkg_bump_ns_ew_23_6   0 port=168   z0=0.1
+P169  pkg_bump_ns_ew_0_7   0 port=169   z0=0.1
+P170  pkg_bump_ns_ew_1_7   0 port=170   z0=0.1
+P171  pkg_bump_ns_ew_2_7   0 port=171   z0=0.1
+P172  pkg_bump_ns_ew_3_7   0 port=172   z0=0.1
+P173  pkg_bump_ns_ew_4_7   0 port=173   z0=0.1
+P174  pkg_bump_ns_ew_5_7   0 port=174   z0=0.1
+P175  pkg_bump_ns_ew_6_7   0 port=175   z0=0.1
+P176  pkg_bump_ns_ew_7_7   0 port=176   z0=0.1
+P177  pkg_bump_ns_ew_8_7   0 port=177   z0=0.1
+P178  pkg_bump_ns_ew_9_7   0 port=178   z0=0.1
+P179  pkg_bump_ns_ew_10_7   0 port=179   z0=0.1
+P180  pkg_bump_ns_ew_11_7   0 port=180   z0=0.1
+P181  pkg_bump_ns_ew_12_7   0 port=181   z0=0.1
+P182  pkg_bump_ns_ew_13_7   0 port=182   z0=0.1
+P183  pkg_bump_ns_ew_14_7   0 port=183   z0=0.1
+P184  pkg_bump_ns_ew_15_7   0 port=184   z0=0.1
+P185  pkg_bump_ns_ew_16_7   0 port=185   z0=0.1
+P186  pkg_bump_ns_ew_17_7   0 port=186   z0=0.1
+P187  pkg_bump_ns_ew_18_7   0 port=187   z0=0.1
+P188  pkg_bump_ns_ew_19_7   0 port=188   z0=0.1
+P189  pkg_bump_ns_ew_20_7   0 port=189   z0=0.1
+P190  pkg_bump_ns_ew_21_7   0 port=190   z0=0.1
+P191  pkg_bump_ns_ew_22_7   0 port=191   z0=0.1
+P192  pkg_bump_ns_ew_23_7   0 port=192   z0=0.1

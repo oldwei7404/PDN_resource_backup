@@ -36,10 +36,10 @@
 
 .param Vdd_shift_fr_pwl = -0.01
 
-.param is_ac_run = 1		*** 1 if impedance, 0 if transient 
+.param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 189.u 	
+.param tStop	= 35.u  	
 
 .param is_row_0_active = 1	***
 .param is_row_1_active = 0	***
@@ -61,11 +61,11 @@
 *** !!! Check before change any current profile   !!!!  
 *** additional background DC current (mainly to help decompose profile and smoother staggering, this will require original profile to remove DC values) 
 * .param is_use_backgnd_cur = 0
-.param curr_backgnd_PA_1_col = 1.625
-.param curr_backgnd_MA_1_col = 0.95
+.param curr_backgnd_PA_1_col = 0.915  		* 1.625
+.param curr_backgnd_MA_1_col = 0.535 		* 0.95
 
 
-		
+
 	*** not used when CPM is enabled 
 	.param Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
 	.param Rdie_coeff = 1.0				*** Rdie is constant 1. , rather than scaled by '1./Cdie_coeff'
@@ -83,8 +83,8 @@
 
 *************************************** Input Models**************************
 	***** define load current source model used in die model *****
-	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p25_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
-	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p25_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	*** 
+	.param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p25_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
+	.param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p25_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	*** 
 
 	* .param pwl_file_in_PA_1_col = str('./hspice_inc/curr_profile_NNE_0p25_4x2_PA_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 1/4 250423, R1p95_bev_bb_int8_noRELu_wRamp, 142us,  FF/0.75V/105C, offset 0A  
 	* .param pwl_file_in_MA_1_col = str('./hspice_inc/curr_profile_NNE_0p25_4x2_IGI_R1p95_bev_bb_int8_noRELu_wRamp_250423.txt.csv')	*** 	
@@ -100,8 +100,8 @@
 	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p5_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
 	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p5_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	
 	*** experiment ONLY , power x 3 
-	.param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p75_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
-	.param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p75_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	
+	* .param pwl_file_in_PA_1_col = str('./hspice_inc/NNE_0p75_x0p25_PA_power_test_rivbev_bb_res2_250407.txt.csv')	*** 250412, 189us, SiVal NNE measurement testing profile, scale by 1/4, for a column
+	* .param pwl_file_in_MA_1_col = str('./hspice_inc/NNE_0p75_x0p25_IGI_power_test_rivbev_bb_res2_250407.txt.csv')	
 	
 			
 		*** idle current
@@ -758,15 +758,156 @@ Xblk_pkg
 
 *** current src 
 .if (is_row_0_active == 1)
-	IcurrSrc_PA_ns_ew_0_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd 	pwlfile = str(pwl_file_in_PA_1_col)		td = 'td_delay_perCol_grp0 + td_delay_grp0'		
-	IcurrSrc_PA_ns_ew_0_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'			
-	IcurrSrc_PA_ns_ew_0_6   	pkg_bump_PA_ns_ew_0_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'			
-	IcurrSrc_PA_ns_ew_0_7   	pkg_bump_PA_ns_ew_0_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'			
+	* IcurrSrc_PA_ns_ew_0_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd 	pwlfile = str(pwl_file_in_PA_1_col)		td = 'td_delay_perCol_grp0 + td_delay_grp0'		
+	* IcurrSrc_PA_ns_ew_0_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'			
+	* IcurrSrc_PA_ns_ew_0_6   	pkg_bump_PA_ns_ew_0_6	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'			
+	* IcurrSrc_PA_ns_ew_0_7   	pkg_bump_PA_ns_ew_0_7	ref_gnd     pwlfile = str(pwl_file_in_PA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'			
 
-	IcurrSrc_MA_ns_ew_0_0		pkg_bump_MA_ns_ew_0_0	 ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp0'	
-	IcurrSrc_MA_ns_ew_0_1		pkg_bump_MA_ns_ew_0_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'		
-	IcurrSrc_MA_ns_ew_0_2		pkg_bump_MA_ns_ew_0_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'		
-	IcurrSrc_MA_ns_ew_0_3		pkg_bump_MA_ns_ew_0_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'		
+	* IcurrSrc_MA_ns_ew_0_0		pkg_bump_MA_ns_ew_0_0	 ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp0 + td_delay_grp0'	
+	* IcurrSrc_MA_ns_ew_0_1		pkg_bump_MA_ns_ew_0_1    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp1 + td_delay_grp0'		
+	* IcurrSrc_MA_ns_ew_0_2		pkg_bump_MA_ns_ew_0_2    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp2 + td_delay_grp0'		
+	* IcurrSrc_MA_ns_ew_0_3		pkg_bump_MA_ns_ew_0_3    ref_gnd 	pwlfile = str(pwl_file_in_MA_1_col)     td = 'td_delay_perCol_grp3 + td_delay_grp0'		
+
+		*** 251114 Ashwin per tile current "/data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_2_noRELu_wRamp_p3" 
+		*** 6 tiles are lumped to one partition in 4x8 CPM  
+		* IcurrSrc_PA_ns_ew_0_4_0   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r0.35us_s120000_e155000.pworst2/current_profile.pat.c23_r0.csv'         
+		* IcurrSrc_PA_ns_ew_0_4_1   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r0.35us_s120000_e155000.pworst2/current_profile.pat.c22_r0.csv'        
+		* IcurrSrc_PA_ns_ew_0_4_2   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r0.35us_s120000_e155000.pworst2/current_profile.pat.c21_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_3   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r0.35us_s120000_e155000.pworst2/current_profile.pat.c20_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r0.35us_s120000_e155000.pworst2/current_profile.pat.c19_r0.csv'    
+		* IcurrSrc_PA_ns_ew_0_4_5   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r0.35us_s120000_e155000.pworst2/current_profile.pat.c18_r0.csv'	 
+																																																																							
+		* IcurrSrc_PA_ns_ew_0_5_0   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r1.35us_s120000_e155000.pworst2/current_profile.pat.c23_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_1   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r1.35us_s120000_e155000.pworst2/current_profile.pat.c22_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_2   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r1.35us_s120000_e155000.pworst2/current_profile.pat.c21_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_3   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r1.35us_s120000_e155000.pworst2/current_profile.pat.c20_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_4   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r1.35us_s120000_e155000.pworst2/current_profile.pat.c19_r1.csv'    
+		* IcurrSrc_PA_ns_ew_0_5_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r1.35us_s120000_e155000.pworst2/current_profile.pat.c18_r1.csv'	 
+																																																																							
+		* IcurrSrc_PA_ns_ew_0_6_0   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r2.35us_s120000_e155000.pworst2/current_profile.pat.c23_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_1   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r2.35us_s120000_e155000.pworst2/current_profile.pat.c22_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_2   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r2.35us_s120000_e155000.pworst2/current_profile.pat.c21_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_3   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r2.35us_s120000_e155000.pworst2/current_profile.pat.c20_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_4   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r2.35us_s120000_e155000.pworst2/current_profile.pat.c19_r2.csv'    
+		* IcurrSrc_PA_ns_ew_0_6_5   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r2.35us_s120000_e155000.pworst2/current_profile.pat.c18_r2.csv'	 
+																																																																						
+		* IcurrSrc_PA_ns_ew_0_7_0   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c23_r3.35us_s120000_e155000.pworst2/current_profile.pat.c23_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_1   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c22_r3.35us_s120000_e155000.pworst2/current_profile.pat.c22_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_2   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c21_r3.35us_s120000_e155000.pworst2/current_profile.pat.c21_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_3   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c20_r3.35us_s120000_e155000.pworst2/current_profile.pat.c20_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_4   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c19_r3.35us_s120000_e155000.pworst2/current_profile.pat.c19_r3.csv'    
+		* IcurrSrc_PA_ns_ew_0_7_5   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.pat.c18_r3.35us_s120000_e155000.pworst2/current_profile.pat.c18_r3.csv'	 
+																																																																						 
+		* IcurrSrc_MA_ns_ew_0_0_0		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_1		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_2		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_3		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_4		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_5		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r0.csv'	 
+		* IcurrSrc_MA_ns_ew_0_0_iot_0		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c23_r0.35us_s120000_e155000.pworst2/current_profile.iot.c23_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_1		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c22_r0.35us_s120000_e155000.pworst2/current_profile.iot.c22_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_2		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c21_r0.35us_s120000_e155000.pworst2/current_profile.iot.c21_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_3		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c20_r0.35us_s120000_e155000.pworst2/current_profile.iot.c20_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_4		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c19_r0.35us_s120000_e155000.pworst2/current_profile.iot.c19_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_0_iot_5		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.iot.c18_r0.35us_s120000_e155000.pworst2/current_profile.iot.c18_r0.csv'	  
+																																																																						  
+		* IcurrSrc_MA_ns_ew_0_1_0		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_1		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_2		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_3		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_4		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r1.csv'	          
+		* IcurrSrc_MA_ns_ew_0_1_5		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r1.csv'	          
+																																																																									  
+		* IcurrSrc_MA_ns_ew_0_2_0		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_1		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_2		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_3		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_4		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r2.csv'	          
+		* IcurrSrc_MA_ns_ew_0_2_5		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r2.csv'	          
+																																																																									  
+		* IcurrSrc_MA_ns_ew_0_3_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c23_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c22_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c21_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c20_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c19_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.gmt.c18_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r3.csv'	          
+		* IcurrSrc_MA_ns_ew_0_3_ift_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c23_r0.35us_s120000_e155000.pworst2/current_profile.ift.c23_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c22_r0.35us_s120000_e155000.pworst2/current_profile.ift.c22_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c21_r0.35us_s120000_e155000.pworst2/current_profile.ift.c21_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c20_r0.35us_s120000_e155000.pworst2/current_profile.ift.c20_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c19_r0.35us_s120000_e155000.pworst2/current_profile.ift.c19_r0.csv'	  
+		* IcurrSrc_MA_ns_ew_0_3_ift_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_2_noRELu_wRamp_p3/R1p25.power_testcase_2_noRELu_wRamp_p3.ift.c18_r0.35us_s120000_e155000.pworst2/current_profile.ift.c18_r0.csv'	  
+
+		*** 251115 Ashwin per tile current "/data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_nne_idle_power_A0"
+		*** 6 tiles are lumped to one partition in 4x8 CPM  
+		IcurrSrc_PA_ns_ew_0_4_0   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r0.35us_s120000_e155000.pworst2/current_profile.pat.c23_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_1   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r0.35us_s120000_e155000.pworst2/current_profile.pat.c22_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_2   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r0.35us_s120000_e155000.pworst2/current_profile.pat.c21_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_3   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r0.35us_s120000_e155000.pworst2/current_profile.pat.c20_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_4   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r0.35us_s120000_e155000.pworst2/current_profile.pat.c19_r0.csv'
+		IcurrSrc_PA_ns_ew_0_4_5   	pkg_bump_PA_ns_ew_0_4	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r0.35us_s120000_e155000.pworst2/current_profile.pat.c18_r0.csv'
+																				
+		IcurrSrc_PA_ns_ew_0_5_0   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r1.35us_s120000_e155000.pworst2/current_profile.pat.c23_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_1   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r1.35us_s120000_e155000.pworst2/current_profile.pat.c22_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_2   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r1.35us_s120000_e155000.pworst2/current_profile.pat.c21_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_3   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r1.35us_s120000_e155000.pworst2/current_profile.pat.c20_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_4   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r1.35us_s120000_e155000.pworst2/current_profile.pat.c19_r1.csv'
+		IcurrSrc_PA_ns_ew_0_5_5   	pkg_bump_PA_ns_ew_0_5	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r1.35us_s120000_e155000.pworst2/current_profile.pat.c18_r1.csv'
+																				
+		IcurrSrc_PA_ns_ew_0_6_0   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r2.35us_s120000_e155000.pworst2/current_profile.pat.c23_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_1   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r2.35us_s120000_e155000.pworst2/current_profile.pat.c22_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_2   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r2.35us_s120000_e155000.pworst2/current_profile.pat.c21_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_3   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r2.35us_s120000_e155000.pworst2/current_profile.pat.c20_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_4   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r2.35us_s120000_e155000.pworst2/current_profile.pat.c19_r2.csv'
+		IcurrSrc_PA_ns_ew_0_6_5   	pkg_bump_PA_ns_ew_0_6	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r2.35us_s120000_e155000.pworst2/current_profile.pat.c18_r2.csv'
+																						
+		IcurrSrc_PA_ns_ew_0_7_0   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c23_r3.35us_s120000_e155000.pworst2/current_profile.pat.c23_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_1   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c22_r3.35us_s120000_e155000.pworst2/current_profile.pat.c22_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_2   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c21_r3.35us_s120000_e155000.pworst2/current_profile.pat.c21_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_3   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c20_r3.35us_s120000_e155000.pworst2/current_profile.pat.c20_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_4   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c19_r3.35us_s120000_e155000.pworst2/current_profile.pat.c19_r3.csv'		
+		IcurrSrc_PA_ns_ew_0_7_5   	pkg_bump_PA_ns_ew_0_7	ref_gnd   pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.pat.c18_r3.35us_s120000_e155000.pworst2/current_profile.pat.c18_r3.csv'		
+																						
+		IcurrSrc_MA_ns_ew_0_0_0		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_1		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_2		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_3		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_4		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_5		pkg_bump_MA_ns_ew_0_0	ref_gnd    pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r0.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_0		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c23_r0.35us_s120000_e155000.pworst2/current_profile.iot.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_1		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c22_r0.35us_s120000_e155000.pworst2/current_profile.iot.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_2		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c21_r0.35us_s120000_e155000.pworst2/current_profile.iot.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_3		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c20_r0.35us_s120000_e155000.pworst2/current_profile.iot.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_4		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c19_r0.35us_s120000_e155000.pworst2/current_profile.iot.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_0_iot_5		pkg_bump_MA_ns_ew_0_0	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.iot.c18_r0.35us_s120000_e155000.pworst2/current_profile.iot.c18_r0.csv'		
+																								
+		IcurrSrc_MA_ns_ew_0_1_0		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_1		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_2		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_3		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_4		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r1.csv'		
+		IcurrSrc_MA_ns_ew_0_1_5		pkg_bump_MA_ns_ew_0_1	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r1.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r1.csv'		
+																							
+		IcurrSrc_MA_ns_ew_0_2_0		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_1		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_2		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_3		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_4		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r2.csv'		
+		IcurrSrc_MA_ns_ew_0_2_5		pkg_bump_MA_ns_ew_0_2	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r2.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r2.csv'		
+																							
+		IcurrSrc_MA_ns_ew_0_3_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c23_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c23_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c22_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c22_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c21_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c21_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c20_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c20_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c19_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c19_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.gmt.c18_r3.35us_s120000_e155000.pworst2/current_profile.gmt.c18_r3.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_0		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c23_r0.35us_s120000_e155000.pworst2/current_profile.ift.c23_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_1		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c22_r0.35us_s120000_e155000.pworst2/current_profile.ift.c22_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_2		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c21_r0.35us_s120000_e155000.pworst2/current_profile.ift.c21_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_3		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c20_r0.35us_s120000_e155000.pworst2/current_profile.ift.c20_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_4		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c19_r0.35us_s120000_e155000.pworst2/current_profile.ift.c19_r0.csv'		
+		IcurrSrc_MA_ns_ew_0_3_ift_5		pkg_bump_MA_ns_ew_0_3	ref_gnd     pwlfile = '/data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0/R1p25.power_testcase_nne_idle_power_A0.ift.c18_r0.35us_s120000_e155000.pworst2/current_profile.ift.c18_r0.csv'		
+		
 .endif 
 
 .if (is_row_1_active == 1)							
@@ -945,13 +1086,26 @@ X_probe_filter13
 	
 	.probe tran v(pmic_pwr)
 	
-	.probe x(Xblk_PCB.a_1)	x(Xblk_pkg.a_1)
+	* .probe x(Xblk_PCB.a_1)	x(Xblk_pkg.a_1)
+	
+	.probe 	 x(Xblk_pkg.a_1)   x(Xblk_pkg.a_2)   x(Xblk_pkg.a_3)  
+		   + x(Xblk_pkg.a_4)   x(Xblk_pkg.a_5)   x(Xblk_pkg.a_6)  
+		   + x(Xblk_pkg.a_7)   x(Xblk_pkg.a_8)   x(Xblk_pkg.a_9)  
+		   + x(Xblk_pkg.a_10)  x(Xblk_pkg.a_11)  x(Xblk_pkg.a_12) 
+		   + x(Xblk_pkg.a_13)  x(Xblk_pkg.a_14)  x(Xblk_pkg.a_15) 
+		   + x(Xblk_pkg.a_16)  x(Xblk_pkg.a_17)  x(Xblk_pkg.a_18) 
+		   + x(Xblk_pkg.a_19)  x(Xblk_pkg.a_20)  x(Xblk_pkg.a_21) 
+		   + x(Xblk_pkg.a_22)  x(Xblk_pkg.a_23)  x(Xblk_pkg.a_24) 
+		   + x(Xblk_pkg.a_25)  x(Xblk_pkg.a_26)  x(Xblk_pkg.a_27) 
+		   + x(Xblk_pkg.a_28)  x(Xblk_pkg.a_29)  x(Xblk_pkg.a_30) 
+		   + x(Xblk_pkg.a_31)  x(Xblk_pkg.a_32)
+	
 	* .probe x(Xblk_pkg.a_9)  x(Xblk_pkg.a_10)   x(Xblk_pkg.a_11) x(Xblk_pkg.a_12)  x(Xblk_pkg.a_13)   x(Xblk_pkg.a_14) 
 	.probe x(Xblk_pcb.a_9)  x(Xblk_pcb.a_10)   x(Xblk_pcb.a_11) x(Xblk_pcb.a_12)  x(Xblk_pcb.a_13)   x(Xblk_pcb.a_14) 
 	.probe x(xblk_PMIC.pin_out)
 
 	*** print bump grp curr 
-	.probe x(Xblk_pkg.a_1)  x(Xblk_pkg.a_2)   x(Xblk_pkg.a_3) x(Xblk_pkg.a_4)  x(Xblk_pkg.a_5)   x(Xblk_pkg.a_6) x(Xblk_pkg.a_7)   x(Xblk_pkg.a_8) 
+	* .probe x(Xblk_pkg.a_1)  x(Xblk_pkg.a_2)   x(Xblk_pkg.a_3) x(Xblk_pkg.a_4)  x(Xblk_pkg.a_5)   x(Xblk_pkg.a_6) x(Xblk_pkg.a_7)   x(Xblk_pkg.a_8) 
 
 
 .endif 
