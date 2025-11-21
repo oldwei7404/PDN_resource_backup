@@ -13,7 +13,7 @@
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param is_use_ecap_ebed = 1		*** value: 0 or 1, note: this could be baked in pkg model 
 .param ecap_placement_opt = 0  *** 0:baseline, 1: 
 *** ecap config info, slide 8 of https://docs.google.com/presentation/d/1orH5VIG1UrYzCUIHZ60a6fJnd-Fa2yBdIXBZB8ctO6Q/edit?slide=id.g399c8a40ad7_4_0#slide=id.g399c8a40ad7_4_0
 
@@ -38,12 +38,6 @@
 .param Vdd_shift_fr_pwl = -0.01
 
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
-
-.param tStep	= 10.p
-.param tStop	= 189.u  	
-
-.param is_curr_defined_external = 0 		*** 1: if current sources files defined externally; 
-											*** 0: if define current sources within in this file 
 
 * .param is_row_0_active = 1	***
 * .param is_row_1_active = 0	***
@@ -90,8 +84,18 @@
 .param curr_backgnd_PA_1_tile = 0.1525  		
 .param curr_backgnd_MA_1_tile = 0.089167	
 
+.param tStep	= 10.p
+.param tStop	= 35.u  	
+
+.param is_curr_defined_external = 1 		*** 1: if current sources files defined externally; 
+											*** 0: if define current sources within in this file 
+											
 .if (is_curr_defined_external == 1 )
-	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_251120_Ashwin_idle_perTile.scp
+	*** ONLY 1 of these can be active, all others need to be commented
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_251120_Ashwin_idle_perTile.scp
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_OthersIdle_PerTile.scp		*** Active share same csv, idle Ashwin per tile 
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile.scp	 *** Active and Idle are all Ashwin per tile 
+	
 .endif 
 	
 .if (is_curr_defined_external == 0 )	
