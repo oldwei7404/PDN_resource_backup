@@ -1,5 +1,5 @@
-** raw source: /data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_nne_idle_power_A0
-** jgwei postprocess to remove #
+** raw source: 	   /data/archive/rap1/JIRA/RAP1-5206/D2025_10_15_T18_15_40_.5Tests/pdn.power_testcase_nne_idle_power_A0
+** jgwei postprocess to remove #: /data/home/jiangongwei/work/PDN_core/profile_NNE/pdn.power_testcase_nne_idle_power_A0
 .param curr_inactive_PA_1_tile = 0.1525  		
 .param curr_inactive_MA_1_tile = 0.089167	
 
