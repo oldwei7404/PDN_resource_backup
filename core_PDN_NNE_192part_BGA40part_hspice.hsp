@@ -17,7 +17,7 @@
 .param ecap_placement_opt = 0  *** 0:baseline, 1: 
 *** ecap config info, slide 8 of https://docs.google.com/presentation/d/1orH5VIG1UrYzCUIHZ60a6fJnd-Fa2yBdIXBZB8ctO6Q/edit?slide=id.g399c8a40ad7_4_0#slide=id.g399c8a40ad7_4_0
 
-.param is_use_MIM 		= 0
+.param is_use_MIM 		= 0		*** No MIM die model as of 11/26/2025 
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
 .param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
@@ -37,7 +37,7 @@
 
 .param Vdd_shift_fr_pwl = -0.01
 
-.param is_ac_run = 0		*** 1 if impedance, 0 if transient 
+.param is_ac_run = 1		*** 1 if impedance, 0 if transient 
 
 * .param is_row_0_active = 1	***
 * .param is_row_1_active = 0	***
@@ -92,9 +92,13 @@
 											
 .if (is_curr_defined_external == 1 )
 	*** ONLY 1 of these can be active, all others need to be commented
-	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_251120_Ashwin_idle_perTile.scp
-	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_OthersIdle_PerTile.scp		*** Active share same csv, idle Ashwin per tile 
-	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile.scp	 *** Active and Idle are all Ashwin per tile 
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_251120_Ashwin_idle_perTile.scp				*** all Ashwin per tile idle power, 35us 
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_OthersIdle_PerTile.scp		*** Active share same csv, idle Ashwin per tile , 35us 
+	
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile.scp	 *** Active and Idle are all Ashwin per tile , 35us 
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTilePwrX2_OthersIdle_PerTile.scp		*** Active pwr x 2,  and Idle are all Ashwin per tile , 35us 
+	
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_AllRowActive_PerTile_same_curr.scp			*** All using previous same tile profile, 189us  
 	
 .endif 
 	
@@ -263,6 +267,8 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_32part_IdEM.cir		*** 250910， 32 partition pkg with 6x ecap ports 
 	.inc ./hspice_inc/Z_plot_NNE_pkg_ReduceModel_4x8_32part_BGA40part_IdEM.cir		*** 251030, 32 partition pkg, PCB with 32+8 partition 
 	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/NNE_Mammoth_PKG_NNE_MAM_eCap_dCap_cutout_250715_jgwei_die24x8_BGA40part_251117_redu_IdEM.cir	*** 251118, 24x8 bump partition, BGA 40 part, MLCC embedded
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/nne_only_mam_ecap_120624_1_1b_251123_odb_cut_NNE_bump24x8_BGA40part_IdEM.cir 		*** 251125, Cadera 1B option w/ 4x Ecap, 24x8 bump, 40 BGA , MLCC embedded
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/nne_only_mam_ecap_120624_1_2b_251127_odb_opt2B_IdEM.cir							*** 251128, Cadera 2B option w/ 5x Ecap, 24x8 bump, 40 BGA , MLCC embedded
 
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -497,247 +503,740 @@ Xblk_PCB
 				* + mname = pcb_spara_model
 				* *** 
 *************************************** Pkg ***********************************
-Xblk_pkg
-+ pkg_bump_ns_ew_0_0
-+ pkg_bump_ns_ew_0_1
-+ pkg_bump_ns_ew_0_2
-+ pkg_bump_ns_ew_0_3
-+ pkg_bump_ns_ew_0_4
-+ pkg_bump_ns_ew_0_5
-+ pkg_bump_ns_ew_0_6
-+ pkg_bump_ns_ew_0_7
-+ pkg_bump_ns_ew_1_0
-+ pkg_bump_ns_ew_1_1
-+ pkg_bump_ns_ew_1_2
-+ pkg_bump_ns_ew_1_3
-+ pkg_bump_ns_ew_1_4
-+ pkg_bump_ns_ew_1_5
-+ pkg_bump_ns_ew_1_6
-+ pkg_bump_ns_ew_1_7
-+ pkg_bump_ns_ew_2_0
-+ pkg_bump_ns_ew_2_1
-+ pkg_bump_ns_ew_2_2
-+ pkg_bump_ns_ew_2_3
-+ pkg_bump_ns_ew_2_4
-+ pkg_bump_ns_ew_2_5
-+ pkg_bump_ns_ew_2_6
-+ pkg_bump_ns_ew_2_7
-+ pkg_bump_ns_ew_3_0
-+ pkg_bump_ns_ew_3_1
-+ pkg_bump_ns_ew_3_2
-+ pkg_bump_ns_ew_3_3
-+ pkg_bump_ns_ew_3_4
-+ pkg_bump_ns_ew_3_5
-+ pkg_bump_ns_ew_3_6
-+ pkg_bump_ns_ew_3_7
-+ pkg_bump_ns_ew_4_0
-+ pkg_bump_ns_ew_4_1
-+ pkg_bump_ns_ew_4_2
-+ pkg_bump_ns_ew_4_3
-+ pkg_bump_ns_ew_4_4
-+ pkg_bump_ns_ew_4_5
-+ pkg_bump_ns_ew_4_6
-+ pkg_bump_ns_ew_4_7
-+ pkg_bump_ns_ew_5_0
-+ pkg_bump_ns_ew_5_1
-+ pkg_bump_ns_ew_5_2
-+ pkg_bump_ns_ew_5_3
-+ pkg_bump_ns_ew_5_4
-+ pkg_bump_ns_ew_5_5
-+ pkg_bump_ns_ew_5_6
-+ pkg_bump_ns_ew_5_7
-+ pkg_bump_ns_ew_6_0
-+ pkg_bump_ns_ew_6_1
-+ pkg_bump_ns_ew_6_2
-+ pkg_bump_ns_ew_6_3
-+ pkg_bump_ns_ew_6_4
-+ pkg_bump_ns_ew_6_5
-+ pkg_bump_ns_ew_6_6
-+ pkg_bump_ns_ew_6_7
-+ pkg_bump_ns_ew_7_0
-+ pkg_bump_ns_ew_7_1
-+ pkg_bump_ns_ew_7_2
-+ pkg_bump_ns_ew_7_3
-+ pkg_bump_ns_ew_7_4
-+ pkg_bump_ns_ew_7_5
-+ pkg_bump_ns_ew_7_6
-+ pkg_bump_ns_ew_7_7
-+ pkg_bump_ns_ew_8_0
-+ pkg_bump_ns_ew_8_1
-+ pkg_bump_ns_ew_8_2
-+ pkg_bump_ns_ew_8_3
-+ pkg_bump_ns_ew_8_4
-+ pkg_bump_ns_ew_8_5
-+ pkg_bump_ns_ew_8_6
-+ pkg_bump_ns_ew_8_7
-+ pkg_bump_ns_ew_9_0
-+ pkg_bump_ns_ew_9_1
-+ pkg_bump_ns_ew_9_2
-+ pkg_bump_ns_ew_9_3
-+ pkg_bump_ns_ew_9_4
-+ pkg_bump_ns_ew_9_5
-+ pkg_bump_ns_ew_9_6
-+ pkg_bump_ns_ew_9_7
-+ pkg_bump_ns_ew_10_0
-+ pkg_bump_ns_ew_10_1
-+ pkg_bump_ns_ew_10_2
-+ pkg_bump_ns_ew_10_3
-+ pkg_bump_ns_ew_10_4
-+ pkg_bump_ns_ew_10_5
-+ pkg_bump_ns_ew_10_6
-+ pkg_bump_ns_ew_10_7
-+ pkg_bump_ns_ew_11_0
-+ pkg_bump_ns_ew_11_1
-+ pkg_bump_ns_ew_11_2
-+ pkg_bump_ns_ew_11_3
-+ pkg_bump_ns_ew_11_4
-+ pkg_bump_ns_ew_11_5
-+ pkg_bump_ns_ew_11_6
-+ pkg_bump_ns_ew_11_7
-+ pkg_bump_ns_ew_12_0
-+ pkg_bump_ns_ew_12_1
-+ pkg_bump_ns_ew_12_2
-+ pkg_bump_ns_ew_12_3
-+ pkg_bump_ns_ew_12_4
-+ pkg_bump_ns_ew_12_5
-+ pkg_bump_ns_ew_12_6
-+ pkg_bump_ns_ew_12_7
-+ pkg_bump_ns_ew_13_0
-+ pkg_bump_ns_ew_13_1
-+ pkg_bump_ns_ew_13_2
-+ pkg_bump_ns_ew_13_3
-+ pkg_bump_ns_ew_13_4
-+ pkg_bump_ns_ew_13_5
-+ pkg_bump_ns_ew_13_6
-+ pkg_bump_ns_ew_13_7
-+ pkg_bump_ns_ew_14_0
-+ pkg_bump_ns_ew_14_1
-+ pkg_bump_ns_ew_14_2
-+ pkg_bump_ns_ew_14_3
-+ pkg_bump_ns_ew_14_4
-+ pkg_bump_ns_ew_14_5
-+ pkg_bump_ns_ew_14_6
-+ pkg_bump_ns_ew_14_7
-+ pkg_bump_ns_ew_15_0
-+ pkg_bump_ns_ew_15_1
-+ pkg_bump_ns_ew_15_2
-+ pkg_bump_ns_ew_15_3
-+ pkg_bump_ns_ew_15_4
-+ pkg_bump_ns_ew_15_5
-+ pkg_bump_ns_ew_15_6
-+ pkg_bump_ns_ew_15_7
-+ pkg_bump_ns_ew_16_0
-+ pkg_bump_ns_ew_16_1
-+ pkg_bump_ns_ew_16_2
-+ pkg_bump_ns_ew_16_3
-+ pkg_bump_ns_ew_16_4
-+ pkg_bump_ns_ew_16_5
-+ pkg_bump_ns_ew_16_6
-+ pkg_bump_ns_ew_16_7
-+ pkg_bump_ns_ew_17_0
-+ pkg_bump_ns_ew_17_1
-+ pkg_bump_ns_ew_17_2
-+ pkg_bump_ns_ew_17_3
-+ pkg_bump_ns_ew_17_4
-+ pkg_bump_ns_ew_17_5
-+ pkg_bump_ns_ew_17_6
-+ pkg_bump_ns_ew_17_7
-+ pkg_bump_ns_ew_18_0
-+ pkg_bump_ns_ew_18_1
-+ pkg_bump_ns_ew_18_2
-+ pkg_bump_ns_ew_18_3
-+ pkg_bump_ns_ew_18_4
-+ pkg_bump_ns_ew_18_5
-+ pkg_bump_ns_ew_18_6
-+ pkg_bump_ns_ew_18_7
-+ pkg_bump_ns_ew_19_0
-+ pkg_bump_ns_ew_19_1
-+ pkg_bump_ns_ew_19_2
-+ pkg_bump_ns_ew_19_3
-+ pkg_bump_ns_ew_19_4
-+ pkg_bump_ns_ew_19_5
-+ pkg_bump_ns_ew_19_6
-+ pkg_bump_ns_ew_19_7
-+ pkg_bump_ns_ew_20_0
-+ pkg_bump_ns_ew_20_1
-+ pkg_bump_ns_ew_20_2
-+ pkg_bump_ns_ew_20_3
-+ pkg_bump_ns_ew_20_4
-+ pkg_bump_ns_ew_20_5
-+ pkg_bump_ns_ew_20_6
-+ pkg_bump_ns_ew_20_7
-+ pkg_bump_ns_ew_21_0
-+ pkg_bump_ns_ew_21_1
-+ pkg_bump_ns_ew_21_2
-+ pkg_bump_ns_ew_21_3
-+ pkg_bump_ns_ew_21_4
-+ pkg_bump_ns_ew_21_5
-+ pkg_bump_ns_ew_21_6
-+ pkg_bump_ns_ew_21_7
-+ pkg_bump_ns_ew_22_0
-+ pkg_bump_ns_ew_22_1
-+ pkg_bump_ns_ew_22_2
-+ pkg_bump_ns_ew_22_3
-+ pkg_bump_ns_ew_22_4
-+ pkg_bump_ns_ew_22_5
-+ pkg_bump_ns_ew_22_6
-+ pkg_bump_ns_ew_22_7
-+ pkg_bump_ns_ew_23_0
-+ pkg_bump_ns_ew_23_1
-+ pkg_bump_ns_ew_23_2
-+ pkg_bump_ns_ew_23_3
-+ pkg_bump_ns_ew_23_4
-+ pkg_bump_ns_ew_23_5
-+ pkg_bump_ns_ew_23_6
-+ pkg_bump_ns_ew_23_7
-+ bga_3_7
-+ bga_2_7
-+ bga_1_7
-+ bga_0_7
-+ bga_3_6
-+ bga_2_6
-+ bga_1_6
-+ bga_0_6
-+ bga_3_5
-+ bga_2_5
-+ bga_1_5
-+ bga_0_5
-+ bga_3_4
-+ bga_2_4
-+ bga_1_4
-+ bga_0_4
-+ bga_3_3
-+ bga_2_3
-+ bga_1_3
-+ bga_0_3
-+ bga_3_2
-+ bga_2_2
-+ bga_1_2
-+ bga_0_2
-+ bga_3_1
-+ bga_2_1
-+ bga_1_1
-+ bga_0_1
-+ bga_3_0
-+ bga_2_0
-+ bga_1_0
-+ bga_0_0
-+ bga_OUT_0_1
-+ bga_OUT_0_2
-+ bga_OUT_0_3
-+ bga_OUT_0_4
-+ bga_OUT_1_1
-+ bga_OUT_1_2
-+ bga_OUT_1_3
-+ bga_OUT_1_4
-+ pkge_Ecap1_2x2mm_1
-+ pkge_Ecap1_2x2mm_2
-+ pkge_Ecap2_2x2mm_1
-+ pkge_Ecap2_2x2mm_2
-+ pkge_Ecap3_2x2mm_1
-+ pkge_Ecap3_2x2mm_2
-+ ref_gnd
-+ NNE_Mammoth_PKG_NNE_MAM_eCap_dCap_cutout_250715_jgwei_die24x8_BGA40part_251117_redu_IdEM
+* Xblk_pkg	*** POR w/ 3x Ecap  
+* + pkg_bump_ns_ew_0_0
+* + pkg_bump_ns_ew_0_1
+* + pkg_bump_ns_ew_0_2
+* + pkg_bump_ns_ew_0_3
+* + pkg_bump_ns_ew_0_4
+* + pkg_bump_ns_ew_0_5
+* + pkg_bump_ns_ew_0_6
+* + pkg_bump_ns_ew_0_7
+* + pkg_bump_ns_ew_1_0
+* + pkg_bump_ns_ew_1_1
+* + pkg_bump_ns_ew_1_2
+* + pkg_bump_ns_ew_1_3
+* + pkg_bump_ns_ew_1_4
+* + pkg_bump_ns_ew_1_5
+* + pkg_bump_ns_ew_1_6
+* + pkg_bump_ns_ew_1_7
+* + pkg_bump_ns_ew_2_0
+* + pkg_bump_ns_ew_2_1
+* + pkg_bump_ns_ew_2_2
+* + pkg_bump_ns_ew_2_3
+* + pkg_bump_ns_ew_2_4
+* + pkg_bump_ns_ew_2_5
+* + pkg_bump_ns_ew_2_6
+* + pkg_bump_ns_ew_2_7
+* + pkg_bump_ns_ew_3_0
+* + pkg_bump_ns_ew_3_1
+* + pkg_bump_ns_ew_3_2
+* + pkg_bump_ns_ew_3_3
+* + pkg_bump_ns_ew_3_4
+* + pkg_bump_ns_ew_3_5
+* + pkg_bump_ns_ew_3_6
+* + pkg_bump_ns_ew_3_7
+* + pkg_bump_ns_ew_4_0
+* + pkg_bump_ns_ew_4_1
+* + pkg_bump_ns_ew_4_2
+* + pkg_bump_ns_ew_4_3
+* + pkg_bump_ns_ew_4_4
+* + pkg_bump_ns_ew_4_5
+* + pkg_bump_ns_ew_4_6
+* + pkg_bump_ns_ew_4_7
+* + pkg_bump_ns_ew_5_0
+* + pkg_bump_ns_ew_5_1
+* + pkg_bump_ns_ew_5_2
+* + pkg_bump_ns_ew_5_3
+* + pkg_bump_ns_ew_5_4
+* + pkg_bump_ns_ew_5_5
+* + pkg_bump_ns_ew_5_6
+* + pkg_bump_ns_ew_5_7
+* + pkg_bump_ns_ew_6_0
+* + pkg_bump_ns_ew_6_1
+* + pkg_bump_ns_ew_6_2
+* + pkg_bump_ns_ew_6_3
+* + pkg_bump_ns_ew_6_4
+* + pkg_bump_ns_ew_6_5
+* + pkg_bump_ns_ew_6_6
+* + pkg_bump_ns_ew_6_7
+* + pkg_bump_ns_ew_7_0
+* + pkg_bump_ns_ew_7_1
+* + pkg_bump_ns_ew_7_2
+* + pkg_bump_ns_ew_7_3
+* + pkg_bump_ns_ew_7_4
+* + pkg_bump_ns_ew_7_5
+* + pkg_bump_ns_ew_7_6
+* + pkg_bump_ns_ew_7_7
+* + pkg_bump_ns_ew_8_0
+* + pkg_bump_ns_ew_8_1
+* + pkg_bump_ns_ew_8_2
+* + pkg_bump_ns_ew_8_3
+* + pkg_bump_ns_ew_8_4
+* + pkg_bump_ns_ew_8_5
+* + pkg_bump_ns_ew_8_6
+* + pkg_bump_ns_ew_8_7
+* + pkg_bump_ns_ew_9_0
+* + pkg_bump_ns_ew_9_1
+* + pkg_bump_ns_ew_9_2
+* + pkg_bump_ns_ew_9_3
+* + pkg_bump_ns_ew_9_4
+* + pkg_bump_ns_ew_9_5
+* + pkg_bump_ns_ew_9_6
+* + pkg_bump_ns_ew_9_7
+* + pkg_bump_ns_ew_10_0
+* + pkg_bump_ns_ew_10_1
+* + pkg_bump_ns_ew_10_2
+* + pkg_bump_ns_ew_10_3
+* + pkg_bump_ns_ew_10_4
+* + pkg_bump_ns_ew_10_5
+* + pkg_bump_ns_ew_10_6
+* + pkg_bump_ns_ew_10_7
+* + pkg_bump_ns_ew_11_0
+* + pkg_bump_ns_ew_11_1
+* + pkg_bump_ns_ew_11_2
+* + pkg_bump_ns_ew_11_3
+* + pkg_bump_ns_ew_11_4
+* + pkg_bump_ns_ew_11_5
+* + pkg_bump_ns_ew_11_6
+* + pkg_bump_ns_ew_11_7
+* + pkg_bump_ns_ew_12_0
+* + pkg_bump_ns_ew_12_1
+* + pkg_bump_ns_ew_12_2
+* + pkg_bump_ns_ew_12_3
+* + pkg_bump_ns_ew_12_4
+* + pkg_bump_ns_ew_12_5
+* + pkg_bump_ns_ew_12_6
+* + pkg_bump_ns_ew_12_7
+* + pkg_bump_ns_ew_13_0
+* + pkg_bump_ns_ew_13_1
+* + pkg_bump_ns_ew_13_2
+* + pkg_bump_ns_ew_13_3
+* + pkg_bump_ns_ew_13_4
+* + pkg_bump_ns_ew_13_5
+* + pkg_bump_ns_ew_13_6
+* + pkg_bump_ns_ew_13_7
+* + pkg_bump_ns_ew_14_0
+* + pkg_bump_ns_ew_14_1
+* + pkg_bump_ns_ew_14_2
+* + pkg_bump_ns_ew_14_3
+* + pkg_bump_ns_ew_14_4
+* + pkg_bump_ns_ew_14_5
+* + pkg_bump_ns_ew_14_6
+* + pkg_bump_ns_ew_14_7
+* + pkg_bump_ns_ew_15_0
+* + pkg_bump_ns_ew_15_1
+* + pkg_bump_ns_ew_15_2
+* + pkg_bump_ns_ew_15_3
+* + pkg_bump_ns_ew_15_4
+* + pkg_bump_ns_ew_15_5
+* + pkg_bump_ns_ew_15_6
+* + pkg_bump_ns_ew_15_7
+* + pkg_bump_ns_ew_16_0
+* + pkg_bump_ns_ew_16_1
+* + pkg_bump_ns_ew_16_2
+* + pkg_bump_ns_ew_16_3
+* + pkg_bump_ns_ew_16_4
+* + pkg_bump_ns_ew_16_5
+* + pkg_bump_ns_ew_16_6
+* + pkg_bump_ns_ew_16_7
+* + pkg_bump_ns_ew_17_0
+* + pkg_bump_ns_ew_17_1
+* + pkg_bump_ns_ew_17_2
+* + pkg_bump_ns_ew_17_3
+* + pkg_bump_ns_ew_17_4
+* + pkg_bump_ns_ew_17_5
+* + pkg_bump_ns_ew_17_6
+* + pkg_bump_ns_ew_17_7
+* + pkg_bump_ns_ew_18_0
+* + pkg_bump_ns_ew_18_1
+* + pkg_bump_ns_ew_18_2
+* + pkg_bump_ns_ew_18_3
+* + pkg_bump_ns_ew_18_4
+* + pkg_bump_ns_ew_18_5
+* + pkg_bump_ns_ew_18_6
+* + pkg_bump_ns_ew_18_7
+* + pkg_bump_ns_ew_19_0
+* + pkg_bump_ns_ew_19_1
+* + pkg_bump_ns_ew_19_2
+* + pkg_bump_ns_ew_19_3
+* + pkg_bump_ns_ew_19_4
+* + pkg_bump_ns_ew_19_5
+* + pkg_bump_ns_ew_19_6
+* + pkg_bump_ns_ew_19_7
+* + pkg_bump_ns_ew_20_0
+* + pkg_bump_ns_ew_20_1
+* + pkg_bump_ns_ew_20_2
+* + pkg_bump_ns_ew_20_3
+* + pkg_bump_ns_ew_20_4
+* + pkg_bump_ns_ew_20_5
+* + pkg_bump_ns_ew_20_6
+* + pkg_bump_ns_ew_20_7
+* + pkg_bump_ns_ew_21_0
+* + pkg_bump_ns_ew_21_1
+* + pkg_bump_ns_ew_21_2
+* + pkg_bump_ns_ew_21_3
+* + pkg_bump_ns_ew_21_4
+* + pkg_bump_ns_ew_21_5
+* + pkg_bump_ns_ew_21_6
+* + pkg_bump_ns_ew_21_7
+* + pkg_bump_ns_ew_22_0
+* + pkg_bump_ns_ew_22_1
+* + pkg_bump_ns_ew_22_2
+* + pkg_bump_ns_ew_22_3
+* + pkg_bump_ns_ew_22_4
+* + pkg_bump_ns_ew_22_5
+* + pkg_bump_ns_ew_22_6
+* + pkg_bump_ns_ew_22_7
+* + pkg_bump_ns_ew_23_0
+* + pkg_bump_ns_ew_23_1
+* + pkg_bump_ns_ew_23_2
+* + pkg_bump_ns_ew_23_3
+* + pkg_bump_ns_ew_23_4
+* + pkg_bump_ns_ew_23_5
+* + pkg_bump_ns_ew_23_6
+* + pkg_bump_ns_ew_23_7
+* + bga_3_7
+* + bga_2_7
+* + bga_1_7
+* + bga_0_7
+* + bga_3_6
+* + bga_2_6
+* + bga_1_6
+* + bga_0_6
+* + bga_3_5
+* + bga_2_5
+* + bga_1_5
+* + bga_0_5
+* + bga_3_4
+* + bga_2_4
+* + bga_1_4
+* + bga_0_4
+* + bga_3_3
+* + bga_2_3
+* + bga_1_3
+* + bga_0_3
+* + bga_3_2
+* + bga_2_2
+* + bga_1_2
+* + bga_0_2
+* + bga_3_1
+* + bga_2_1
+* + bga_1_1
+* + bga_0_1
+* + bga_3_0
+* + bga_2_0
+* + bga_1_0
+* + bga_0_0
+* + bga_OUT_0_1
+* + bga_OUT_0_2
+* + bga_OUT_0_3
+* + bga_OUT_0_4
+* + bga_OUT_1_1
+* + bga_OUT_1_2
+* + bga_OUT_1_3
+* + bga_OUT_1_4
+* + pkge_Ecap1_2x2mm_1
+* + pkge_Ecap1_2x2mm_2
+* + pkge_Ecap2_2x2mm_1
+* + pkge_Ecap2_2x2mm_2
+* + pkge_Ecap3_2x2mm_1
+* + pkge_Ecap3_2x2mm_2
+* + ref_gnd
+* + NNE_Mammoth_PKG_NNE_MAM_eCap_dCap_cutout_250715_jgwei_die24x8_BGA40part_251117_redu_IdEM
+
+
+	Xblk_pkg		*** opt 1B w/ 5x Ecap 
+	+ pkg_bump_ns_ew_0_0
+	+ pkg_bump_ns_ew_0_1
+	+ pkg_bump_ns_ew_0_2
+	+ pkg_bump_ns_ew_0_3
+	+ pkg_bump_ns_ew_0_4
+	+ pkg_bump_ns_ew_0_5
+	+ pkg_bump_ns_ew_0_6
+	+ pkg_bump_ns_ew_0_7
+	+ pkg_bump_ns_ew_1_0
+	+ pkg_bump_ns_ew_1_1
+	+ pkg_bump_ns_ew_1_2
+	+ pkg_bump_ns_ew_1_3
+	+ pkg_bump_ns_ew_1_4
+	+ pkg_bump_ns_ew_1_5
+	+ pkg_bump_ns_ew_1_6
+	+ pkg_bump_ns_ew_1_7
+	+ pkg_bump_ns_ew_2_0
+	+ pkg_bump_ns_ew_2_1
+	+ pkg_bump_ns_ew_2_2
+	+ pkg_bump_ns_ew_2_3
+	+ pkg_bump_ns_ew_2_4
+	+ pkg_bump_ns_ew_2_5
+	+ pkg_bump_ns_ew_2_6
+	+ pkg_bump_ns_ew_2_7
+	+ pkg_bump_ns_ew_3_0
+	+ pkg_bump_ns_ew_3_1
+	+ pkg_bump_ns_ew_3_2
+	+ pkg_bump_ns_ew_3_3
+	+ pkg_bump_ns_ew_3_4
+	+ pkg_bump_ns_ew_3_5
+	+ pkg_bump_ns_ew_3_6
+	+ pkg_bump_ns_ew_3_7
+	+ pkg_bump_ns_ew_4_0
+	+ pkg_bump_ns_ew_4_1
+	+ pkg_bump_ns_ew_4_2
+	+ pkg_bump_ns_ew_4_3
+	+ pkg_bump_ns_ew_4_4
+	+ pkg_bump_ns_ew_4_5
+	+ pkg_bump_ns_ew_4_6
+	+ pkg_bump_ns_ew_4_7
+	+ pkg_bump_ns_ew_5_0
+	+ pkg_bump_ns_ew_5_1
+	+ pkg_bump_ns_ew_5_2
+	+ pkg_bump_ns_ew_5_3
+	+ pkg_bump_ns_ew_5_4
+	+ pkg_bump_ns_ew_5_5
+	+ pkg_bump_ns_ew_5_6
+	+ pkg_bump_ns_ew_5_7
+	+ pkg_bump_ns_ew_6_0
+	+ pkg_bump_ns_ew_6_1
+	+ pkg_bump_ns_ew_6_2
+	+ pkg_bump_ns_ew_6_3
+	+ pkg_bump_ns_ew_6_4
+	+ pkg_bump_ns_ew_6_5
+	+ pkg_bump_ns_ew_6_6
+	+ pkg_bump_ns_ew_6_7
+	+ pkg_bump_ns_ew_7_0
+	+ pkg_bump_ns_ew_7_1
+	+ pkg_bump_ns_ew_7_2
+	+ pkg_bump_ns_ew_7_3
+	+ pkg_bump_ns_ew_7_4
+	+ pkg_bump_ns_ew_7_5
+	+ pkg_bump_ns_ew_7_6
+	+ pkg_bump_ns_ew_7_7
+	+ pkg_bump_ns_ew_8_0
+	+ pkg_bump_ns_ew_8_1
+	+ pkg_bump_ns_ew_8_2
+	+ pkg_bump_ns_ew_8_3
+	+ pkg_bump_ns_ew_8_4
+	+ pkg_bump_ns_ew_8_5
+	+ pkg_bump_ns_ew_8_6
+	+ pkg_bump_ns_ew_8_7
+	+ pkg_bump_ns_ew_9_0
+	+ pkg_bump_ns_ew_9_1
+	+ pkg_bump_ns_ew_9_2
+	+ pkg_bump_ns_ew_9_3
+	+ pkg_bump_ns_ew_9_4
+	+ pkg_bump_ns_ew_9_5
+	+ pkg_bump_ns_ew_9_6
+	+ pkg_bump_ns_ew_9_7
+	+ pkg_bump_ns_ew_10_0
+	+ pkg_bump_ns_ew_10_1
+	+ pkg_bump_ns_ew_10_2
+	+ pkg_bump_ns_ew_10_3
+	+ pkg_bump_ns_ew_10_4
+	+ pkg_bump_ns_ew_10_5
+	+ pkg_bump_ns_ew_10_6
+	+ pkg_bump_ns_ew_10_7
+	+ pkg_bump_ns_ew_11_0
+	+ pkg_bump_ns_ew_11_1
+	+ pkg_bump_ns_ew_11_2
+	+ pkg_bump_ns_ew_11_3
+	+ pkg_bump_ns_ew_11_4
+	+ pkg_bump_ns_ew_11_5
+	+ pkg_bump_ns_ew_11_6
+	+ pkg_bump_ns_ew_11_7
+	+ pkg_bump_ns_ew_12_0
+	+ pkg_bump_ns_ew_12_1
+	+ pkg_bump_ns_ew_12_2
+	+ pkg_bump_ns_ew_12_3
+	+ pkg_bump_ns_ew_12_4
+	+ pkg_bump_ns_ew_12_5
+	+ pkg_bump_ns_ew_12_6
+	+ pkg_bump_ns_ew_12_7
+	+ pkg_bump_ns_ew_13_0
+	+ pkg_bump_ns_ew_13_1
+	+ pkg_bump_ns_ew_13_2
+	+ pkg_bump_ns_ew_13_3
+	+ pkg_bump_ns_ew_13_4
+	+ pkg_bump_ns_ew_13_5
+	+ pkg_bump_ns_ew_13_6
+	+ pkg_bump_ns_ew_13_7
+	+ pkg_bump_ns_ew_14_0
+	+ pkg_bump_ns_ew_14_1
+	+ pkg_bump_ns_ew_14_2
+	+ pkg_bump_ns_ew_14_3
+	+ pkg_bump_ns_ew_14_4
+	+ pkg_bump_ns_ew_14_5
+	+ pkg_bump_ns_ew_14_6
+	+ pkg_bump_ns_ew_14_7
+	+ pkg_bump_ns_ew_15_0
+	+ pkg_bump_ns_ew_15_1
+	+ pkg_bump_ns_ew_15_2
+	+ pkg_bump_ns_ew_15_3
+	+ pkg_bump_ns_ew_15_4
+	+ pkg_bump_ns_ew_15_5
+	+ pkg_bump_ns_ew_15_6
+	+ pkg_bump_ns_ew_15_7
+	+ pkg_bump_ns_ew_16_0
+	+ pkg_bump_ns_ew_16_1
+	+ pkg_bump_ns_ew_16_2
+	+ pkg_bump_ns_ew_16_3
+	+ pkg_bump_ns_ew_16_4
+	+ pkg_bump_ns_ew_16_5
+	+ pkg_bump_ns_ew_16_6
+	+ pkg_bump_ns_ew_16_7
+	+ pkg_bump_ns_ew_17_0
+	+ pkg_bump_ns_ew_17_1
+	+ pkg_bump_ns_ew_17_2
+	+ pkg_bump_ns_ew_17_3
+	+ pkg_bump_ns_ew_17_4
+	+ pkg_bump_ns_ew_17_5
+	+ pkg_bump_ns_ew_17_6
+	+ pkg_bump_ns_ew_17_7
+	+ pkg_bump_ns_ew_18_0
+	+ pkg_bump_ns_ew_18_1
+	+ pkg_bump_ns_ew_18_2
+	+ pkg_bump_ns_ew_18_3
+	+ pkg_bump_ns_ew_18_4
+	+ pkg_bump_ns_ew_18_5
+	+ pkg_bump_ns_ew_18_6
+	+ pkg_bump_ns_ew_18_7
+	+ pkg_bump_ns_ew_19_0
+	+ pkg_bump_ns_ew_19_1
+	+ pkg_bump_ns_ew_19_2
+	+ pkg_bump_ns_ew_19_3
+	+ pkg_bump_ns_ew_19_4
+	+ pkg_bump_ns_ew_19_5
+	+ pkg_bump_ns_ew_19_6
+	+ pkg_bump_ns_ew_19_7
+	+ pkg_bump_ns_ew_20_0
+	+ pkg_bump_ns_ew_20_1
+	+ pkg_bump_ns_ew_20_2
+	+ pkg_bump_ns_ew_20_3
+	+ pkg_bump_ns_ew_20_4
+	+ pkg_bump_ns_ew_20_5
+	+ pkg_bump_ns_ew_20_6
+	+ pkg_bump_ns_ew_20_7
+	+ pkg_bump_ns_ew_21_0
+	+ pkg_bump_ns_ew_21_1
+	+ pkg_bump_ns_ew_21_2
+	+ pkg_bump_ns_ew_21_3
+	+ pkg_bump_ns_ew_21_4
+	+ pkg_bump_ns_ew_21_5
+	+ pkg_bump_ns_ew_21_6
+	+ pkg_bump_ns_ew_21_7
+	+ pkg_bump_ns_ew_22_0
+	+ pkg_bump_ns_ew_22_1
+	+ pkg_bump_ns_ew_22_2
+	+ pkg_bump_ns_ew_22_3
+	+ pkg_bump_ns_ew_22_4
+	+ pkg_bump_ns_ew_22_5
+	+ pkg_bump_ns_ew_22_6
+	+ pkg_bump_ns_ew_22_7
+	+ pkg_bump_ns_ew_23_0
+	+ pkg_bump_ns_ew_23_1
+	+ pkg_bump_ns_ew_23_2
+	+ pkg_bump_ns_ew_23_3
+	+ pkg_bump_ns_ew_23_4
+	+ pkg_bump_ns_ew_23_5
+	+ pkg_bump_ns_ew_23_6
+	+ pkg_bump_ns_ew_23_7
+	+ bga_3_7
+	+ bga_2_7
+	+ bga_1_7
+	+ bga_0_7
+	+ bga_3_6
+	+ bga_2_6
+	+ bga_1_6
+	+ bga_0_6
+	+ bga_3_5
+	+ bga_2_5
+	+ bga_1_5
+	+ bga_0_5
+	+ bga_3_4
+	+ bga_2_4
+	+ bga_1_4
+	+ bga_0_4
+	+ bga_3_3
+	+ bga_2_3
+	+ bga_1_3
+	+ bga_0_3
+	+ bga_3_2
+	+ bga_2_2
+	+ bga_1_2
+	+ bga_0_2
+	+ bga_3_1
+	+ bga_2_1
+	+ bga_1_1
+	+ bga_0_1
+	+ bga_3_0
+	+ bga_2_0
+	+ bga_1_0
+	+ bga_0_0
+	+ bga_OUT_0_1
+	+ bga_OUT_0_2
+	+ bga_OUT_0_3
+	+ bga_OUT_0_4
+	+ bga_OUT_1_1
+	+ bga_OUT_1_2
+	+ bga_OUT_1_3
+	+ bga_OUT_1_4
+	+ pkge_Ecap1_2x2mm_1
+	+ pkge_Ecap1_2x2mm_2
+	+ pkge_Ecap2_2x2mm_1
+	+ pkge_Ecap2_2x2mm_2
+	+ pkge_Ecap3_2x2mm_1
+	+ pkge_Ecap3_2x2mm_2
+	+ pkge_Ecap4_2x2mm_1	***  
+	+ pkge_Ecap4_2x2mm_2	***  
+	+ pkge_Ecap5_2x2mm_1	***  
+	+ pkge_Ecap5_2x2mm_2	***  
+	+ ref_gnd
+	+ nne_only_mam_ecap_120624_1_2b_251127_odb_opt2B_IdEM
+
+	* Xblk_pkg		*** opt 1B w/ 4x Ecap 
+	* + pkg_bump_ns_ew_0_0
+	* + pkg_bump_ns_ew_0_1
+	* + pkg_bump_ns_ew_0_2
+	* + pkg_bump_ns_ew_0_3
+	* + pkg_bump_ns_ew_0_4
+	* + pkg_bump_ns_ew_0_5
+	* + pkg_bump_ns_ew_0_6
+	* + pkg_bump_ns_ew_0_7
+	* + pkg_bump_ns_ew_1_0
+	* + pkg_bump_ns_ew_1_1
+	* + pkg_bump_ns_ew_1_2
+	* + pkg_bump_ns_ew_1_3
+	* + pkg_bump_ns_ew_1_4
+	* + pkg_bump_ns_ew_1_5
+	* + pkg_bump_ns_ew_1_6
+	* + pkg_bump_ns_ew_1_7
+	* + pkg_bump_ns_ew_2_0
+	* + pkg_bump_ns_ew_2_1
+	* + pkg_bump_ns_ew_2_2
+	* + pkg_bump_ns_ew_2_3
+	* + pkg_bump_ns_ew_2_4
+	* + pkg_bump_ns_ew_2_5
+	* + pkg_bump_ns_ew_2_6
+	* + pkg_bump_ns_ew_2_7
+	* + pkg_bump_ns_ew_3_0
+	* + pkg_bump_ns_ew_3_1
+	* + pkg_bump_ns_ew_3_2
+	* + pkg_bump_ns_ew_3_3
+	* + pkg_bump_ns_ew_3_4
+	* + pkg_bump_ns_ew_3_5
+	* + pkg_bump_ns_ew_3_6
+	* + pkg_bump_ns_ew_3_7
+	* + pkg_bump_ns_ew_4_0
+	* + pkg_bump_ns_ew_4_1
+	* + pkg_bump_ns_ew_4_2
+	* + pkg_bump_ns_ew_4_3
+	* + pkg_bump_ns_ew_4_4
+	* + pkg_bump_ns_ew_4_5
+	* + pkg_bump_ns_ew_4_6
+	* + pkg_bump_ns_ew_4_7
+	* + pkg_bump_ns_ew_5_0
+	* + pkg_bump_ns_ew_5_1
+	* + pkg_bump_ns_ew_5_2
+	* + pkg_bump_ns_ew_5_3
+	* + pkg_bump_ns_ew_5_4
+	* + pkg_bump_ns_ew_5_5
+	* + pkg_bump_ns_ew_5_6
+	* + pkg_bump_ns_ew_5_7
+	* + pkg_bump_ns_ew_6_0
+	* + pkg_bump_ns_ew_6_1
+	* + pkg_bump_ns_ew_6_2
+	* + pkg_bump_ns_ew_6_3
+	* + pkg_bump_ns_ew_6_4
+	* + pkg_bump_ns_ew_6_5
+	* + pkg_bump_ns_ew_6_6
+	* + pkg_bump_ns_ew_6_7
+	* + pkg_bump_ns_ew_7_0
+	* + pkg_bump_ns_ew_7_1
+	* + pkg_bump_ns_ew_7_2
+	* + pkg_bump_ns_ew_7_3
+	* + pkg_bump_ns_ew_7_4
+	* + pkg_bump_ns_ew_7_5
+	* + pkg_bump_ns_ew_7_6
+	* + pkg_bump_ns_ew_7_7
+	* + pkg_bump_ns_ew_8_0
+	* + pkg_bump_ns_ew_8_1
+	* + pkg_bump_ns_ew_8_2
+	* + pkg_bump_ns_ew_8_3
+	* + pkg_bump_ns_ew_8_4
+	* + pkg_bump_ns_ew_8_5
+	* + pkg_bump_ns_ew_8_6
+	* + pkg_bump_ns_ew_8_7
+	* + pkg_bump_ns_ew_9_0
+	* + pkg_bump_ns_ew_9_1
+	* + pkg_bump_ns_ew_9_2
+	* + pkg_bump_ns_ew_9_3
+	* + pkg_bump_ns_ew_9_4
+	* + pkg_bump_ns_ew_9_5
+	* + pkg_bump_ns_ew_9_6
+	* + pkg_bump_ns_ew_9_7
+	* + pkg_bump_ns_ew_10_0
+	* + pkg_bump_ns_ew_10_1
+	* + pkg_bump_ns_ew_10_2
+	* + pkg_bump_ns_ew_10_3
+	* + pkg_bump_ns_ew_10_4
+	* + pkg_bump_ns_ew_10_5
+	* + pkg_bump_ns_ew_10_6
+	* + pkg_bump_ns_ew_10_7
+	* + pkg_bump_ns_ew_11_0
+	* + pkg_bump_ns_ew_11_1
+	* + pkg_bump_ns_ew_11_2
+	* + pkg_bump_ns_ew_11_3
+	* + pkg_bump_ns_ew_11_4
+	* + pkg_bump_ns_ew_11_5
+	* + pkg_bump_ns_ew_11_6
+	* + pkg_bump_ns_ew_11_7
+	* + pkg_bump_ns_ew_12_0
+	* + pkg_bump_ns_ew_12_1
+	* + pkg_bump_ns_ew_12_2
+	* + pkg_bump_ns_ew_12_3
+	* + pkg_bump_ns_ew_12_4
+	* + pkg_bump_ns_ew_12_5
+	* + pkg_bump_ns_ew_12_6
+	* + pkg_bump_ns_ew_12_7
+	* + pkg_bump_ns_ew_13_0
+	* + pkg_bump_ns_ew_13_1
+	* + pkg_bump_ns_ew_13_2
+	* + pkg_bump_ns_ew_13_3
+	* + pkg_bump_ns_ew_13_4
+	* + pkg_bump_ns_ew_13_5
+	* + pkg_bump_ns_ew_13_6
+	* + pkg_bump_ns_ew_13_7
+	* + pkg_bump_ns_ew_14_0
+	* + pkg_bump_ns_ew_14_1
+	* + pkg_bump_ns_ew_14_2
+	* + pkg_bump_ns_ew_14_3
+	* + pkg_bump_ns_ew_14_4
+	* + pkg_bump_ns_ew_14_5
+	* + pkg_bump_ns_ew_14_6
+	* + pkg_bump_ns_ew_14_7
+	* + pkg_bump_ns_ew_15_0
+	* + pkg_bump_ns_ew_15_1
+	* + pkg_bump_ns_ew_15_2
+	* + pkg_bump_ns_ew_15_3
+	* + pkg_bump_ns_ew_15_4
+	* + pkg_bump_ns_ew_15_5
+	* + pkg_bump_ns_ew_15_6
+	* + pkg_bump_ns_ew_15_7
+	* + pkg_bump_ns_ew_16_0
+	* + pkg_bump_ns_ew_16_1
+	* + pkg_bump_ns_ew_16_2
+	* + pkg_bump_ns_ew_16_3
+	* + pkg_bump_ns_ew_16_4
+	* + pkg_bump_ns_ew_16_5
+	* + pkg_bump_ns_ew_16_6
+	* + pkg_bump_ns_ew_16_7
+	* + pkg_bump_ns_ew_17_0
+	* + pkg_bump_ns_ew_17_1
+	* + pkg_bump_ns_ew_17_2
+	* + pkg_bump_ns_ew_17_3
+	* + pkg_bump_ns_ew_17_4
+	* + pkg_bump_ns_ew_17_5
+	* + pkg_bump_ns_ew_17_6
+	* + pkg_bump_ns_ew_17_7
+	* + pkg_bump_ns_ew_18_0
+	* + pkg_bump_ns_ew_18_1
+	* + pkg_bump_ns_ew_18_2
+	* + pkg_bump_ns_ew_18_3
+	* + pkg_bump_ns_ew_18_4
+	* + pkg_bump_ns_ew_18_5
+	* + pkg_bump_ns_ew_18_6
+	* + pkg_bump_ns_ew_18_7
+	* + pkg_bump_ns_ew_19_0
+	* + pkg_bump_ns_ew_19_1
+	* + pkg_bump_ns_ew_19_2
+	* + pkg_bump_ns_ew_19_3
+	* + pkg_bump_ns_ew_19_4
+	* + pkg_bump_ns_ew_19_5
+	* + pkg_bump_ns_ew_19_6
+	* + pkg_bump_ns_ew_19_7
+	* + pkg_bump_ns_ew_20_0
+	* + pkg_bump_ns_ew_20_1
+	* + pkg_bump_ns_ew_20_2
+	* + pkg_bump_ns_ew_20_3
+	* + pkg_bump_ns_ew_20_4
+	* + pkg_bump_ns_ew_20_5
+	* + pkg_bump_ns_ew_20_6
+	* + pkg_bump_ns_ew_20_7
+	* + pkg_bump_ns_ew_21_0
+	* + pkg_bump_ns_ew_21_1
+	* + pkg_bump_ns_ew_21_2
+	* + pkg_bump_ns_ew_21_3
+	* + pkg_bump_ns_ew_21_4
+	* + pkg_bump_ns_ew_21_5
+	* + pkg_bump_ns_ew_21_6
+	* + pkg_bump_ns_ew_21_7
+	* + pkg_bump_ns_ew_22_0
+	* + pkg_bump_ns_ew_22_1
+	* + pkg_bump_ns_ew_22_2
+	* + pkg_bump_ns_ew_22_3
+	* + pkg_bump_ns_ew_22_4
+	* + pkg_bump_ns_ew_22_5
+	* + pkg_bump_ns_ew_22_6
+	* + pkg_bump_ns_ew_22_7
+	* + pkg_bump_ns_ew_23_0
+	* + pkg_bump_ns_ew_23_1
+	* + pkg_bump_ns_ew_23_2
+	* + pkg_bump_ns_ew_23_3
+	* + pkg_bump_ns_ew_23_4
+	* + pkg_bump_ns_ew_23_5
+	* + pkg_bump_ns_ew_23_6
+	* + pkg_bump_ns_ew_23_7
+	* + bga_3_7
+	* + bga_2_7
+	* + bga_1_7
+	* + bga_0_7
+	* + bga_3_6
+	* + bga_2_6
+	* + bga_1_6
+	* + bga_0_6
+	* + bga_3_5
+	* + bga_2_5
+	* + bga_1_5
+	* + bga_0_5
+	* + bga_3_4
+	* + bga_2_4
+	* + bga_1_4
+	* + bga_0_4
+	* + bga_3_3
+	* + bga_2_3
+	* + bga_1_3
+	* + bga_0_3
+	* + bga_3_2
+	* + bga_2_2
+	* + bga_1_2
+	* + bga_0_2
+	* + bga_3_1
+	* + bga_2_1
+	* + bga_1_1
+	* + bga_0_1
+	* + bga_3_0
+	* + bga_2_0
+	* + bga_1_0
+	* + bga_0_0
+	* + bga_OUT_0_1
+	* + bga_OUT_0_2
+	* + bga_OUT_0_3
+	* + bga_OUT_0_4
+	* + bga_OUT_1_1
+	* + bga_OUT_1_2
+	* + bga_OUT_1_3
+	* + bga_OUT_1_4
+	* + pkge_Ecap1_2x2mm_1
+	* + pkge_Ecap1_2x2mm_2
+	* + pkge_Ecap2_2x2mm_1
+	* + pkge_Ecap2_2x2mm_2
+	* + pkge_Ecap3_2x2mm_1
+	* + pkge_Ecap3_2x2mm_2
+	* + pkge_Ecap4_2x2mm_1	*** 1x more Ecap 
+	* + pkge_Ecap4_2x2mm_2	*** 1x more Ecap 
+	* + ref_gnd
+	* + nne_only_mam_ecap_120624_1_1b_251123_odb_cut_NNE_bump24x8_BGA40part_IdEM	
+
+
 
 	* Xblk_pkg
 	* + pkg_bump_PA_ns_ew_0_7
@@ -827,6 +1326,9 @@ Xblk_pkg
 		xEcap_2005_inst1	pkge_Ecap1_2x2mm_1 pkge_Ecap1_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
 		xEcap_2005_inst2	pkge_Ecap2_2x2mm_1 pkge_Ecap2_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
 		xEcap_2005_inst3	pkge_Ecap3_2x2mm_1 pkge_Ecap3_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+		
+		xEcap_2005_inst4	pkge_Ecap4_2x2mm_1 pkge_Ecap4_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
+		xEcap_2005_inst5	pkge_Ecap5_2x2mm_1 pkge_Ecap5_2x2mm_2  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 
 	.endif 
 
 	
