@@ -16,6 +16,7 @@ import stat
 from stat import S_IREAD, S_IRGRP, S_IROTH
 
 is_export_to_simplis_csv = False 
+t_shift_output = 0.0
 
 class DataFftProcess:
     input_fileName = ''
@@ -81,6 +82,9 @@ class DataFftProcess:
     def read_data(self):
         stat_max = -1.e6
         stat_min = 1.e6
+
+        time_per_sample = 1./ self.sampleRate_per_s 
+
         with open(r'%s'%self.input_fileName, 'r') as fin:
             cln_str = fin.readline()
             time_ST = 0
@@ -112,6 +116,13 @@ class DataFftProcess:
                 if data_ < stat_min:
                     stat_min = data_
 
+                ### check if the sampling rate is higher than the data itself 
+                # if len(self.input_time) > 1:
+                #     time_gap = self.input_time[-1] - self.input_time[-2]
+                #     if time_gap < time_per_sample :
+                #         print('#ERROR: data Num: ' + str(len(self.input_time)) + ' time step SMALLER than preset data sampling rate of ' + str(time_per_sample))
+                #         exit(-1)
+
                 cln_str = fin.readline()              
             fin.close()
 
@@ -124,13 +135,13 @@ class DataFftProcess:
         stat_max = -1.e6
         stat_min = 1.e6
         fout = open(fileName, 'w')
-        fout.write('#Time(ns), filtered data\n')
+        fout.write('#Time(ns), filtered data\n') 
         # print("### debug: "+ str(len(self.output_time))+ "\t"+ str(len(self.output_data)) + "\t" + str(self.input_data_len_orig))
-        data_len_out = self.input_data_len_orig
-        if data_len_out > len(self.output_data):
-            data_len_out = len(self.output_data)
+        data_len_out = len(self.output_data)
+        # if data_len_out > len(self.output_data):
+        #     data_len_out = len(self.output_data)
 
-        for i in range(0, data_len_out):
+        for i in range(0, data_len_out): 
             fout.write(str( self.output_time[i]) + ', ' + str(self.output_data[i]) + '\n')  
 
             if self.output_data[i] > stat_max:
@@ -285,14 +296,17 @@ class DataFftProcess:
         dataAftProcess= ifft(DataSpectrum_process)        
         min_plot = min( min(self.input_data), min(np.real(dataAftProcess)))
         max_plot = max( max(self.input_data), max(np.real(dataAftProcess)))
-        self.output_time = time_samp
-        self.output_data = np.real(dataAftProcess[0:self.input_data_len_orig+1])
+
+        self.output_time = time_samp 
+        self.output_time = [x + t_shift_output for x in self.output_time]
+        # self.output_data = np.real(dataAftProcess[0:self.input_data_len_orig+1])  # bug 
+        self.output_data = np.real(dataAftProcess)  
 
         plt3 = plt.subplot(223)
         plt.plot(self.input_time, self.input_data, 'r', label = 'orig.')
         plt.plot(time_samp, np.real(dataAftProcess), 'b', label = 'processed')
         plt.xlabel('Time (s)')
-        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
+        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] ) 
         plt.ylabel('Amplitude')
         plt.grid()
         # plt.ylim(min_plot, max_plot)
@@ -302,7 +316,7 @@ class DataFftProcess:
         plt4 = plt.subplot(224)
         plt.plot(time_samp, np.real(dataAftProcess), 'b')
         plt.xlabel('Time (s)')
-        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )
+        plt.xlim(self.input_time[0], self.input_time[ self.input_data_len_orig - 1] )  
         plt.ylabel('Amplitude')
         plt.grid()
         # plt.ylim(min_plot, max_plot)
@@ -317,12 +331,12 @@ class DataFftProcess:
 
 # Main function 
 try:
-	opts,args = getopt.getopt(sys.argv[1:],'d:i:s')
+	opts,args = getopt.getopt(sys.argv[1:],'d:i:m:s')
 except getopt.GetoptError:
-	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV>')
+	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV> <-m output_shift_time_in_s>')
 	sys.exit(2)
 if (not opts) and args:
-	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV>')
+	print('\nUsage: fft_filter.py [-d file directory] [-i input.params] <-s to export to Simplis CSV> <-m output_shift_time_in_s>')
 	sys.exit(2)
 
 for o,a in opts:
@@ -334,6 +348,8 @@ for o,a in opts:
             file_dir = a.lstrip(' ').rstrip(' ') + '/'
     if o =='-i':
         file_in_para = a.lstrip(' ').rstrip(' ')
+    if o == "-m":
+        t_shift_output = float(a.lstrip(' ').rstrip(' '))
     if o =='-s':
         is_export_to_simplis_csv = True 
 

@@ -14,7 +14,8 @@
 *** current profile 
 .param pwl_file_quiet = str('./hspice_inc/curr_quiet_30us.txt.csv')
 * .param pwl_file_AO = str('./hspice_inc/curr_profile_NNE_AO_0p35A_dt100ns_0p03ARand.txt.csv')
-.param pwl_file_AO = str('./hspice_inc/curr_profile_AO_Andes_240912_0p24A_10ns.txt.csv')
+* .param pwl_file_AO = str('./hspice_inc/curr_profile_AO_Andes_240912_0p24A_10ns.txt.csv')
+.param pwl_file_AO = str('./hspice_inc/curr_ao_251203_100mA_40ns.txt.csv')
 
 *** filter for measurement
 .subckt meas_filter	

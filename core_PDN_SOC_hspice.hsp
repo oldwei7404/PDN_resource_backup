@@ -55,18 +55,19 @@ C_lf lf 		ref_gnd	160.p
 .inc ./hspice_inc/cpm_SOC_240612_modelOnly.spice
 
 *** define pkg model *****
-.inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
-.inc ./hspice_inc/Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM.cir
-.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM.cir		*** 240823 based on Andes sign off pkg model 
-.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM.cir	*** 241004 jgwei extracted model based on Andes SIW, jgwei pin
+* .inc ./hspice_inc/nne0415_SOC_cut_IdEM.cir
+* .inc ./hspice_inc/Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM.cir
+* .inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM.cir		*** 240823 based on Andes sign off pkg model 
+.inc ./hspice_inc/Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM.cir	*** 241004 jgwei extracted model based on Andes SIW, jgwei pingrp, "C:\SIM_folder\SIwave_data_Andes_signOff\bump_130um\SOC"
 
 *** define PCB model 
-.inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
-.inc ./hspice_inc/ACM3_05162024_SOC_PDN_4x100uF_IdEM.cir
-.inc ./hspice_inc/ACM3_SOC_PDN_240612_BGAx13_4x100uF_IdEM.cir
-.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM.cir
-.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM.cir
-.inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps
+* .inc ./hspice_inc/acm3_pcb_soc_240419_IdEM.cir
+* .inc ./hspice_inc/ACM3_05162024_SOC_PDN_4x100uF_IdEM.cir
+* .inc ./hspice_inc/ACM3_SOC_PDN_240612_BGAx13_4x100uF_IdEM.cir
+* .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM.cir
+* .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM.cir
+* .inc ./hspice_inc/ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM.cir		*** 240829 based on Andes PCB caps
+.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/ACM3_PT01349994_B0_SOC_251208_s15p.cir		*** 251208 ACM3 B0 
 
 
 *** cap models 
@@ -79,7 +80,7 @@ C_lf lf 		ref_gnd	160.p
 .param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
 .param is_MIM 			= 0
 
-.param die_model_sig = 0		*** value: 0 if multi grp model, 1 if single die grp model 
+* .param die_model_sig = 0		*** value: 0 if multi grp model, 1 if single die grp model 
 
 	*** not used when CPM is enabled 
 	.para Cdie_coeff = 1.0				*** ONLY multi grp controlling, use 1.0 if no Cdie scaling, use 3.62 for NNE if MIM cap is added,  
@@ -97,7 +98,7 @@ C_lf lf 		ref_gnd	160.p
 .param is_ac_run = 0		*** 1 if impedance, 0 if transient 
 
 .param tStep	= 10.p
-.param tStop	= 60.u     ** 35.u
+.param tStop	= 15.u     ** 35.u
 
 .param td_delay = 0.n
 	
@@ -142,173 +143,168 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 Rskt	bga_pcb		bga_pkg		1.u				*** can add socket model 
 
 *** PCB 
-		* Xblk_PCB 
-		* + bga_pcb
-		* + pmic_pwr
-		* + ref_gnd 
-		* + acm3_pcb_soc_240419_IdEM
+									* Xblk_PCB 
+									* + bga_pcb
+									* + pmic_pwr
+									* + ref_gnd 
+									* + acm3_pcb_soc_240419_IdEM
 
-		* Xblk_PCB 
-		* + pmic_pwr
-		* + bga_pcb
-		* + ref_gnd 
-		* + ACM3_05162024_SOC_PDN_4x100uF_IdEM
-		* * + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM
+									* Xblk_PCB 
+									* + pmic_pwr
+									* + bga_pcb
+									* + ref_gnd 
+									* + ACM3_05162024_SOC_PDN_4x100uF_IdEM
+									* * + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_1xBGA_IdEM
 
-		* Xblk_PCB 
-		* + pmic_pwr
-		* + bga_PAR_5_2
-		* + bga_PAR_4_2
-		* + bga_PAR_3_2
-		* + bga_PAR_2_2
-		* + bga_PAR_1_2
-		* + bga_PAR_0_2
-		* + bga_PAR_3_1
-		* + bga_PAR_5_0
-		* + bga_PAR_4_0
-		* + bga_PAR_3_0
-		* + bga_PAR_2_0
-		* + bga_PAR_1_0
-		* + bga_PAR_0_0
-		* + ref_gnd 
-		* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM
+									* Xblk_PCB 
+									* + pmic_pwr
+									* + bga_PAR_5_2
+									* + bga_PAR_4_2
+									* + bga_PAR_3_2
+									* + bga_PAR_2_2
+									* + bga_PAR_1_2
+									* + bga_PAR_0_2
+									* + bga_PAR_3_1
+									* + bga_PAR_5_0
+									* + bga_PAR_4_0
+									* + bga_PAR_3_0
+									* + bga_PAR_2_0
+									* + bga_PAR_1_0
+									* + bga_PAR_0_0
+									* + ref_gnd 
+									* + ACM3_SOC_PDN_240613_BGAx13_100uFx4_22uFx9_IdEM
 
 	Xblk_PCB 
-	+ pmic_pwr
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_2
-	+ bga_pkg_1
-	+ bga_pkg_1
-	+ bga_pkg_1
-	+ bga_pkg_0
-	+ bga_pkg_0
-	+ bga_pkg_0
+	+ bga_pkg_0_0
+	+ bga_pkg_0_0
+	+ bga_pkg_0_1
+	+ bga_pkg_0_2
+	+ bga_pkg_0_2
+	+ bga_pkg_0_2 
+	+ bga_pkg_1_1
+	+ bga_pkg_2_0
+	+ bga_pkg_2_0
+	+ bga_pkg_2_1
+	+ bga_pkg_2_2
+	+ bga_pkg_2_2
+	+ bga_pkg_2_2
+	+ pmic_pwr 
+	+ pmic_pwr 
 	+ ref_gnd 
-	+ ACM3_SOC_PDN_240613_BGAx13_220uFx4_22uFx9_47nFx6_10uF_IdEM		
-		
+	+ ACM3_PT01349994_B0_SOC_251208_s15p		
 
-*** pkg ***
-* Xblk_pkg
-* + pkg_bump
-* + bga_pkg
-* + ref_gnd
-* + nne0415_SOC_cut_IdEM
 
 	Xblk_pkg	*** 241004 130um jgwei extraction based on Andes SIW, jgwei pingrp 
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_3
-	+ bga_pkg_2
-	+ bga_pkg_1
-	+ bga_pkg_1
-	+ bga_pkg_0
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
-	+ pkg_bump
+	+ bga_pkg_0_0
+	+ bga_pkg_0_1
+	+ bga_pkg_0_2
+	+ bga_pkg_1_1
+	+ bga_pkg_2_0
+	+ bga_pkg_2_1
+	+ bga_pkg_2_2
+	+ bump_PAR_5_2
+	+ bump_PAR_4_2
+	+ bump_PAR_3_2
+	+ bump_PAR_2_2
+	+ bump_PAR_1_2
+	+ bump_PAR_0_2
+	+ bump_PAR_3_1
+	+ bump_PAR_5_0
+	+ bump_PAR_4_0
+	+ bump_PAR_3_0
+	+ bump_PAR_2_0
+	+ bump_PAR_1_0
+	+ bump_PAR_0_0
 	+ ref_gnd
 	+ Mam_MCM_L12_BH9_Ballv1p00_BPIv0090_20240930_35_senser40_SOC_jgwei_IdEM
 
-	* Xblk_pkg		*** 240823 sign off pkg based on Andes extraction 
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + pkg_bump
-	* + bga_pkg_0
-	* + bga_pkg_1
-	* + bga_pkg_2
-	* + bga_pkg_3
-	* + ref_gnd
-	* + Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM	
+									* Xblk_pkg		*** 240823 sign off pkg based on Andes extraction 
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + pkg_bump
+									* + bga_pkg_0
+									* + bga_pkg_1
+									* + bga_pkg_2
+									* + bga_pkg_3
+									* + ref_gnd
+									* + Mam_MCM_L12_BH9_Ballv0p88i_BPIv00841_20240726_CorePI_SOC_IdEM	
 
 
-		* Xblk_pkg
-		* + bump_PAR_0_0
-		* + bump_PAR_1_0
-		* + bump_PAR_2_0
-		* + bump_PAR_3_0
-		* + bump_PAR_4_0
-		* + bump_PAR_5_0
-		* + bump_PAR_3_1
-		* + bump_PAR_0_2
-		* + bump_PAR_1_2
-		* + bump_PAR_2_2
-		* + bump_PAR_3_2
-		* + bump_PAR_4_2
-		* + bump_PAR_5_2
-		* + bga_PAR_0_0
-		* + bga_PAR_1_0
-		* + bga_PAR_2_0
-		* + bga_PAR_3_0
-		* + bga_PAR_4_0
-		* + bga_PAR_5_0
-		* + bga_PAR_3_1
-		* + bga_PAR_0_2
-		* + bga_PAR_1_2
-		* + bga_PAR_2_2
-		* + bga_PAR_3_2
-		* + bga_PAR_4_2
-		* + bga_PAR_5_2
-		* + ref_gnd
-		* + Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM
+										* Xblk_pkg
+										* + bump_PAR_0_0
+										* + bump_PAR_1_0
+										* + bump_PAR_2_0
+										* + bump_PAR_3_0
+										* + bump_PAR_4_0
+										* + bump_PAR_5_0
+										* + bump_PAR_3_1
+										* + bump_PAR_0_2
+										* + bump_PAR_1_2
+										* + bump_PAR_2_2
+										* + bump_PAR_3_2
+										* + bump_PAR_4_2
+										* + bump_PAR_5_2
+										* + bga_PAR_0_0
+										* + bga_PAR_1_0
+										* + bga_PAR_2_0
+										* + bga_PAR_3_0
+										* + bga_PAR_4_0
+										* + bga_PAR_5_0
+										* + bga_PAR_3_1
+										* + bga_PAR_0_2
+										* + bga_PAR_1_2
+										* + bga_PAR_2_2
+										* + bga_PAR_3_2
+										* + bga_PAR_4_2
+										* + bga_PAR_5_2
+										* + ref_gnd
+										* + Mam_MCM_L12_20240528ate_a_capmod20_SOC_ploc_psi_Andes_IdEM
 
 *** Die 
 *** approach 1: multi grp modeling or CPM 
-.if (die_model_sig != 1 )
-Xblk_die 
-+ pkg_bump
-+ ref_gnd
-+ adsPowerModel_SOC
-.endif 
+* .if (die_model_sig != 1 )
+* Xblk_die 
+* + pkg_bump
+* + ref_gnd
+* + adsPowerModel_SOC
+* .endif 
 
 *** current profile 
-IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
+* IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.   
 
 * .if (is_MIM == 1)
 	* C_SOC_MIM pkg_bump	ref_gnd	 ????n
 
 * .endif 
 
-		* Xblk_die
-		* + bump_PAR_0_0  ref_gnd
-		* + bump_PAR_1_0  ref_gnd
-		* + bump_PAR_2_0  ref_gnd
-		* + bump_PAR_3_0  ref_gnd
-		* + bump_PAR_4_0  ref_gnd
-		* + bump_PAR_5_0  ref_gnd
-		* + bump_PAR_3_1  ref_gnd
-		* + bump_PAR_0_2  ref_gnd
-		* + bump_PAR_1_2  ref_gnd
-		* + bump_PAR_2_2  ref_gnd
-		* + bump_PAR_3_2  ref_gnd
-		* + bump_PAR_4_2  ref_gnd
-		* + bump_PAR_5_2  ref_gnd	
-		* + adsPowerModel_SOC_240612	
+		Xblk_die
+		+ bump_PAR_0_0  ref_gnd
+		+ bump_PAR_1_0  ref_gnd
+		+ bump_PAR_2_0  ref_gnd
+		+ bump_PAR_3_0  ref_gnd
+		+ bump_PAR_4_0  ref_gnd
+		+ bump_PAR_5_0  ref_gnd
+		+ bump_PAR_3_1  ref_gnd
+		+ bump_PAR_0_2  ref_gnd
+		+ bump_PAR_1_2  ref_gnd
+		+ bump_PAR_2_2  ref_gnd
+		+ bump_PAR_3_2  ref_gnd
+		+ bump_PAR_4_2  ref_gnd
+		+ bump_PAR_5_2  ref_gnd	
+		+ adsPowerModel_SOC_240612	
 		
-		* *** current src 
+		*** current src 
+		*** section A:
 		* IcurrSrc_SOC_PAR_0_0	bump_PAR_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_0_0)     R * td= 0.  
 		* IcurrSrc_SOC_PAR_1_0    bump_PAR_1_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)   R * td= 0.
 		* IcurrSrc_SOC_PAR_2_0    bump_PAR_2_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)   R * td= 0.
@@ -322,6 +318,26 @@ IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.
 		* IcurrSrc_SOC_PAR_3_2    bump_PAR_3_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
 		* IcurrSrc_SOC_PAR_4_2    bump_PAR_4_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
 		* IcurrSrc_SOC_PAR_5_2    bump_PAR_5_2	ref_gnd	PWL  pwlfile = str(pwl_file_SOC_PAR_1Of11)  R * td= 0.
+		*** section A end 
+		
+		*** section B: short all bumps and enforce 1 current profile 
+		r_bump_short_1_0        bump_PAR_1_0	bump_PAR_0_0	1.f
+		r_bump_short_2_0        bump_PAR_2_0    bump_PAR_0_0    1.f
+		r_bump_short_3_0        bump_PAR_3_0    bump_PAR_0_0    1.f
+		r_bump_short_4_0        bump_PAR_4_0    bump_PAR_0_0    1.f
+		r_bump_short_5_0        bump_PAR_5_0    bump_PAR_0_0    1.f
+		r_bump_short_3_1        bump_PAR_3_1    bump_PAR_0_0    1.f
+		r_bump_short_0_2        bump_PAR_0_2    bump_PAR_0_0    1.f
+		r_bump_short_1_2        bump_PAR_1_2    bump_PAR_0_0    1.f
+		r_bump_short_2_2        bump_PAR_2_2    bump_PAR_0_0    1.f
+		r_bump_short_3_2        bump_PAR_3_2    bump_PAR_0_0    1.f
+		r_bump_short_4_2        bump_PAR_4_2    bump_PAR_0_0    1.f
+		r_bump_short_5_2        bump_PAR_5_2    bump_PAR_0_0    1.f
+		
+		IcurrSrc_SOC	bump_PAR_0_0	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.  		
+		*** section B end 
+			
+		
 		
 	
 
@@ -371,12 +387,23 @@ IcurrSrc_SOC	pkg_bump	ref_gnd	PWL  pwlfile = str(pwl_file_SOC)  R * td= 0.
 .if ( is_ac_run == 1 )
 	.if ( 1 )
 		*** NOTE: DO not include port def if tran analysis later
-		P1 pkg_bump	ref_gnd	port=1	z0 = 0.1
-
+		P1   bump_PAR_5_2	ref_gnd	port=1	z0 = 0.1
+		P2   bump_PAR_4_2   ref_gnd	port=2 	z0 = 0.1
+		P3   bump_PAR_3_2   ref_gnd	port=3 	z0 = 0.1
+		P4   bump_PAR_2_2   ref_gnd	port=4 	z0 = 0.1
+		P5   bump_PAR_1_2   ref_gnd	port=5 	z0 = 0.1
+		P6   bump_PAR_0_2   ref_gnd	port=6 	z0 = 0.1
+		P7   bump_PAR_3_1   ref_gnd	port=7 	z0 = 0.1
+		P8   bump_PAR_5_0   ref_gnd	port=8 	z0 = 0.1
+		P9   bump_PAR_4_0   ref_gnd	port=9 	z0 = 0.1
+		P10  bump_PAR_3_0   ref_gnd	port=10	z0 = 0.1
+		P11  bump_PAR_2_0   ref_gnd	port=11	z0 = 0.1
+		P12  bump_PAR_1_0   ref_gnd	port=12	z0 = 0.1
+		P13  bump_PAR_0_0   ref_gnd	port=13	z0 = 0.1
 		
 		.lin 	sparcalc=1 	filename=impedance_plot	noisecalc=0 	gdcalc=0	format=touchstone 	dataformat=MA 
 		**.probe  ac s11(db) s11(p) s21(db) s21(p) 
-		.probe ac zin(1)(m) zin(1)(p) 
+		.probe ac zin(1)(m) zin(1)(p) zin(2)(m) zin(2)(p) zin(3)(m) zin(3)(p) zin(4)(m) zin(4)(p) zin(5)(m) zin(5)(p) zin(6)(m) zin(6)(p) zin(7)(m) zin(7)(p) zin(8)(m) zin(8)(p) zin(9)(m) zin(9)(p) zin(10)(m) zin(10)(p) zin(11)(m) zin(11)(p) zin(12)(m) zin(12)(p) zin(13)(m) zin(13)(p) 
 		
 		.ac 	dec 50 1. 1.G
 			

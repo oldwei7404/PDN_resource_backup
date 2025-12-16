@@ -23,33 +23,6 @@
 	*.inc ./hspice_inc/out_curr_profile_CPU_55ns_9A_1000ns_cnst_500ns_6_9_rand_55ns_rampDown_noClk.txt
 	
 	* .inc ./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.txt
-* .param pwl_file_cpu = str('./hspice_inc/out_curr_profile_CPU_55ns_17A_2000ns_cnst_1000ns_12_17_rand_55ns_rampDown_noClk.csv')		*** 9us
-
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v2.txt.csv') 			*** NOTE: 10/10 current profile 	, length 1us
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p5GHz_v3.txt.csv') 			*** NOTE: 10/10 current profile , length 7us
-*.param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v2p2.txt.csv') 			*** NOTE: 10/10 current profile , length 1us
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231010_2p0GHz_v3p2.txt.csv') 			*** NOTE: 10/10 current profile , length 8us
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_1us.txt.csv') 			*** NOTE: 10/18 current profile
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_cpu_20231018_2p5GHz_L3_6p5us.txt.csv') 			*** NOTE: 10/18 current profile
-
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_1027.txt.csv') 			*** NOTE: 10/27 current profile
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p5G_231106.txt.csv') 			*** NOTE: 11/06 current profile
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p0G_231108.txt.csv') 			*** NOTE: 11/08 current profile
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p5G_240105.txt.csv') 			*** NOTE: 24/01/04 current profile, 3us 
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p5G_240105_timeX10.txt.csv') 			*** NOTE: 24/01/04 current profile, time slow down by 10x, 14us
-* .param pwl_file_cpu = str('./hspice_inc/curr_profile_CPU_2p5G_dtX14_240105.txt.csv') 			*** NOTE: 24/01/04 current profile, time slow down by 14x, 14us
-
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x7.txt.csv') 			*** NOTE: 240131 current profile, time slow down by 7x for up/down only, 5us
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240105_0p822V_UpDown_x7_v2.txt.csv')			*** NOTE: 240131 current profile, time slow down by 7x for up/down only, extend mid 5 times, 8us
-
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x7_PwrX1p65.txt.csv')		*** NOTE: 240131 current profile, time slow down by 7x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x3p5_PwrX1p65.txt.csv')		*** NOTE: 240131 current profile, time slow down by 3.5x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x1p75_PwrX1p65.txt.csv')		*** NOTE: 240131 current profile, time slow down by 1.75x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_2p5G_240216_0p8V_UpDown_x1_PwrX1p65.txt.csv')			*** NOTE: 240131 current profile, time slow down by 1.x for up/down only, extend mid 5 times, 10us, pwr x 1.1x 1.5 (MAM-326)
-
-* .param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_Ting_8A_17ns_240314.txt.csv')	*** Ting, 4W * 150% / 0.75V, dt=17ns 
-
-.param pwl_file_cpugpuAll = str('./hspice_inc/curr_profile_CPU_FSDB240327_2CoreX7_magX1p36_5us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore ramp x 7
 
 *** CPU 25W
 * .param pwl_file_cpu2Core_x1p2  	= str('./hspice_inc/curr_profile_CPU_FSDB240327_SteadyStateX4_2Core_scale1p2_8us.txt.csv')	*** NOTE: 240327 Andes new profile, 2xcore only, scale by 1.2 to simulate pwr of 12 cores in 5 paritions
@@ -67,11 +40,6 @@
 
 
 	*** GPU profile
-* .inc ./hspice_inc/out_curr_profile_GPU_20ns_2p5A_5000ns_cnst_noClk.txt
-* .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP40Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-20%, need 4 to build whole gpu pwr   
-* .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_10W_Rt100ns_RandPP20Pct_8us.txt.csv')		*** NOTE: 240328, GPU 10W, rise time 100ns, rand switch +-10%, need 4 to build whole gpu pwr 
-* .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPU_1of4_12W_Rt100ns_RandPP30Pct_8us.txt.csv')		*** NOTE: 240328, GPU 12.3W, rise time 100ns, rand switch +-15%, need 4 to build whole gpu pwr 
-
 .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPGPU_1Of4_240603.txt.csv')		*** NOTE: 10W, 240603, GPGPU pwr profile from Verisilicon, steady state 10W, scaled to TT 105C by Adrian 
 * .param pwl_file_gpu_1Of4 		= str('./hspice_inc/curr_profile_GPGPU_1Of4_x1p4_240821.txt.csv')		*** NOTE: 14W, 240821, GPGPU pwr profile from Verisilicon, steady state 10W, scaled to TT 105C by Adrian, scale by 1.4
 
@@ -126,11 +94,6 @@ C_lf lf 		ref_gnd	160.p
 .ends meas_filter
 
 	***** define pkg model *****
-	*.inc ./hspice_inc/C_v1_forCPU_wBF_wDSU_wGPU_RmLF_1e4Hz_IdEM.cir
-	*.param pkg_model = str('C_v1_forCPU_wBF_wDSU_wGPU_RmLF_1e4Hz_IdEM')
-
-	* .inc ./hspice_inc/Mam_MCM_Andes_0724_cpugpu_cut3_run2_IdEM.cir
-	* .param pkg_model = str('Mam_MCM_Andes_0724_cpugpu_cut3_run2_IdEM')
 
 	.inc ./hspice_inc/Mam_MCM_L12_231215c_mod48_CPU_GPU_02_IdEM_s25p.cir
 	
@@ -142,37 +105,10 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/CPU_GPU_pkg_CPU_lsio_240522_BgaX4_reduModel_IdEM_s15p.cir
 	.inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_240821_IdEM.cir		*** 240821 jgwei reduced pkg model based on Andes sign off cir 
 	.inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM.cir	*** 241004, 130um reduced pkg model based on Andes SIW, jgwei pingrps
-		
+	.inc ./hspice_inc/Z_plot_CPUGPU_pkg_ReduceModel_130um_241118_NoMLCC_IdEM.cir	*** 241118, 130um reduced pkg model, w/o MLCC (for Ecap study to reduce BOM)
+	.inc ./hspice_inc/Z_plot_CPU_GPU_redu_Model_pkg_w_1xEcapPort_s17p_IdEM.cir		*** 250827, B0 sign off pkg w/ Ecap port 
+	
 	***** define PCB model *****
-	*.inc ./hspice_inc/ACM2_PT00547399_A_01_cut_CPU_PSI_RmLF_manip_IdEM0p5.cir 
-	*.param PCB_model = str('ACM2_PT00547399_A_01_cut_CPU_PSI_RmLF_manip_IdEM0p5')
-
-	*.inc ./hspice_inc/ACM2_PT00547399_A_01_Layout_Study_20230626_cut_CPU_RmDC_mani_IdEM_0p5.cir		*** 0626 Cadera improvement
-	*.param PCB_model = str('ACM2_PT00547399_A_01_Layout_Study_20230626_cut_CPU_RmDC_mani_IdEM_0p5')
-
-	*.inc ./hspice_inc/ACM2_PT00547399_A_01_Layout_Study_20230626_cut_CPU_RmL5L10_RmDC_mani_IdEM0p5.cir 	*** 0626, but remove L5, L10 pwr shape
-	*.param PCB_model = str('ACM2_PT00547399_A_01_Layout_Study_20230626_cut_CPU_RmL5L10_RmDC_mani_IdEM0p5')
-
-	*.inc ./hspice_inc/MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_IdEM_0p5.cir
-	*.param PCB_model = str('MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_IdEM_0p5')
-
-	*.inc ./hspice_inc/MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5.cir
-	*.param PCB_model = str('MAMMOTH_PCB_230721_CPU_GPU_merge_discrete_rmDC_manip_IdEM_0p5')
-
-	* .inc ./hspice_inc/MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM.cir			*** POR 
-	* .param PCB_model = str('MAMMOTH_PCB_230803_CPU_GPU_merge_discrt_DCrm_manip_IdEM')
-
-	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM.cir					***0927, CPU PMIC at south of SoC 
-	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_DCrm_manip_IdEM')
-
-	* .inc ./hspice_inc/MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM.cir		***0927, CPU PMIC at south of SoC, L4/9 pwr cut off
-	* .param PCB_model = str('MAMMOTH_PCB_230925_CPU_GPU_merge_0927_jgwei_RmPwrL4L9_DCrm_manip_IdEM')	
-
-	* .inc ./hspice_inc/MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM.cir					*** 1018, PMIC at south of SoC, PTH power vias 
-	* .param PCB_model = str('MAMMOTH_PCB_231013_CPU_GPU_merge_ORIG_cutL10L14_rmLF_manip_IdEM')
-	* .inc ./hspice_inc/MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_jgwei_rmLF_manip_IdEM.cir				*** 1025, PMIC at west of SoC, PTH power vias 
-	* .param PCB_model = str('MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_jgwei_rmLF_manip_IdEM')
-
 	.inc ./hspice_inc/MAMMOTH_PCB_231023_1_CPU_GPU_merge_stk1025_jgwei_rmLF_manip_IdEM.cir				*** 1025, PMIC at south of SoC, PTH power vias, 1025 new PCB stackup, 
 	.param PCB_model = str('MAMMOTH_PCB_231023_1_CPU_GPU_merge_stk1025_jgwei_rmLF_manip_IdEM')	
 	* .inc ./hspice_inc/MAMMOTH_PCB_231023_2_CPU_GPU_merge_pmic_left_stk1025_jgwei_rmLF_manip_IdEM.cir		*** 1025, PMIC at west of SoC, PTH power vias, 1025 new PCB stackup, 
@@ -187,16 +123,18 @@ C_lf lf 		ref_gnd	160.p
 	.inc ./hspice_inc/acm3_cpu_pcb_240402_105C_6x220uF_IdEM.cir				*** 240402, L9 added, L3/5/7/9 extended south of CPU, use 6x220uF bulk caps near PMIC
 	.inc ./hspice_inc/ACM3_05072024_CPU_PDN_BGAgrpX4_IdEM.cir			*** 240507, BGA break into 4 grps
 	.inc ./hspice_inc/ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC.cir	*** 240903, Andes generated PCB 
+	
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/ACM3_PT01349994_B0_CPU_251208_IdEM.cir	*** 251209, ACM3 B0, 11x 220uF, 19x1uF, no 10uFs 
 
+	
 			* .inc ./hspice_inc/ACM3_122323_nne_cut_reduce_v2_manip_s5p.cir				*** 231221 ACM3 PCB for NNE , reduced to 5 ports, just for test 
 	
 	
 *************************************** Input params **************************
 .param is_use_ecap_ebed = 0		*** value: 0 or 1
-.param is_MIM 			= 1
+.param is_MIM 			= 0
 
 .param die_model_sig = 0		*** value: 0 for CPM, or 1 for single die 
-.param single_bga_grp = 0		*** value: 0 if use multiple BGA grps, 1 if use single BGA grp
 
 .param r_MIM_per_par = 5.m 
 .param c_MIM_per_par = 128.n	
@@ -248,89 +186,71 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 Rskt	bga_pcb		bga_pkg		0.				*** can add socket model 
 
 *************************************** PCB ***********************************
-.if ( 1 )	*** ACM3 CPU PCB 
-	.if (single_bga_grp != 1)
-		* Xblk_PCB
-		* + pmic_pwr
-		* + pmic_pwr
-		* + bga_pcb_south_col0
-		* + bga_pcb_south_col1
-		* + bga_pcb_north_col0
-		* + bga_pcb_north_col1
-		* + ref_gnd
-		* + ACM3_05072024_CPU_PDN_BGAgrpX4_IdEM
-		
-		Xblk_PCB
-		+ bga_pcb_north_col1   *** cpu 
-		+ bga_pcb_north_col0   *** gpu 
-		+ bga_pcb_south_col1   *** out_0
-		+ bga_pcb_south_col0   *** out_1
-		+ pmic_pwr
-		+ pmic_pwr
-		+ ref_gnd
-		+ ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC
-		
-	.endif 
-	
-	.if (single_bga_grp == 1)
-		Xblk_PCB
-		+ pmic_pwr
-		+ pmic_pwr
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ bga_pcb
-		+ ref_gnd
-		+ ACM3_05072024_CPU_PDN_BGAgrpX4_IdEM
-	.endif 	
-	
-	
-		* Xblk_PCB
-		* + pmic_pwr
-		* + pmic_pwr
-		* + bga_pcb
-		* + ref_gnd
-		* * + ACM3_CPU_PDN_2_24_2024
-		* * + ACM3_CPU_PDN_3_11_2024_105C_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-		* * + acm3_cpu_pcb_240312_105C_100uF_IdEM		*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-		* * + acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v2_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-		* * + acm3_cpu_pcb_240312_105C_100uFx6_220uFx6_v3_IdEM	*** pmic port GND/pwr terminal flipped, hence need to use negative vdd
-		* + acm3_cpu_pcb_240402_105C_6x220uF_IdEM
+* Xblk_PCB
+* + pmic_pwr
+* + pmic_pwr
+* + bga_pcb_south_col0
+* + bga_pcb_south_col1
+* + bga_pcb_north_col0
+* + bga_pcb_north_col1
+* + ref_gnd
+* + ACM3_05072024_CPU_PDN_BGAgrpX4_IdEM
 
-
-		* Xblk_PCB
-		* + bga_pcb
-		* + pmic_pwr
-		* + pmic_pwr
-		* + ref_gnd	
-		* + ACM3_CPU_PDN_3_4_24_105C_Siwave_step1EnforceDCwt0p5_step2Direct
+* Xblk_PCB
+* + bga_pcb_north_col1   *** cpu 
+* + bga_pcb_north_col0   *** gpu 
+* + bga_pcb_south_col1   *** out_0
+* + bga_pcb_south_col0   *** out_1
+* + pmic_pwr
+* + pmic_pwr
+* + ref_gnd
+* + ACM3_HF_20240730c_ebd_PSI_CPU_wAll_Caps_RLC
 	
-.endif 		*** ACM3 CPU PCB fr Kavoos end 
+Xblk_PCB
++ bga_pcb_north_col1   *** cpu 
++ bga_pcb_north_col0   *** gpu 
++ bga_pcb_south_col1   *** out_0
++ bga_pcb_south_col0   *** out_1
++ pmic_pwr
++ pmic_pwr
++ pmic_pwr 
++ ref_gnd
++ ACM3_PT01349994_B0_CPU_251208_IdEM
+	
 
 
 *************************************** Pkg ***********************************
-.if ( 1 )	*** pkg model used in SIMPLIS, agree well with unreduced model 
-	* Xblk_pkg
-	* + pkg_bump_cpu_0_0 
-	* + pkg_bump_cpu_1_0
-	* + pkg_bump_cpu_2_0
-	* + pkg_bump_cpu_0_1
-	* + pkg_bump_cpu_1_1
-	* + pkg_bump_cpu_2_1 
-	* + pkg_bump_gpu_0_2
-	* + pkg_bump_gpu_1_2
-	* + pkg_bump_cpu_2_2
-	* + pkg_bump_gpu_0_3
-	* + pkg_bump_gpu_1_3	
-	* + bga_pcb_south_col0
-	* + bga_pcb_north_col0
-	* + bga_pcb_south_col1
-	* + bga_pcb_north_col1
-	* + ref_gnd
-	* + CPU_GPU_pkg_CPU_lsio_240522_BgaX4_reduModel_IdEM_s15p			
+.if (1)
+	Xblk_pkg
+	+ pkg_bump_cpu_0_0 
+	+ pkg_bump_cpu_1_0
+	+ pkg_bump_cpu_2_0
+	+ pkg_bump_cpu_0_1
+	+ pkg_bump_cpu_1_1
+	+ pkg_bump_cpu_2_1 
+	+ pkg_bump_gpu_0_2
+	+ pkg_bump_gpu_1_2
+	+ pkg_bump_cpu_2_2
+	+ pkg_bump_gpu_0_3
+	+ pkg_bump_gpu_1_3	
+	+ bga_pcb_north_col1   *** cpu 
+	+ bga_pcb_north_col0   *** gpu 
+	+ bga_pcb_south_col1   *** out_0
+	+ bga_pcb_south_col0   *** out_1
+	+ ecap_EC2005_half_0
+	+ ecap_EC2005_half_1
+	+ ref_gnd
+	+ Z_plot_CPU_GPU_redu_Model_pkg_w_1xEcapPort_s17p_IdEM
+	
+	.if (is_use_ecap_ebed == 1) 
+		xEcap_2005_inst1	ecap_EC2005_half_0 ecap_EC2005_half_1  ref_gnd	siCap_EC2005P  R_mt=1.f	L_mt=1.f 		
+	.endif 	
+
+.endif 
 
 
 
+.if ( 0 )	*** pkg model used in SIMPLIS, agree well with unreduced model 
 	Xblk_pkg
 	+ pkg_bump_cpu_0_0 
 	+ pkg_bump_cpu_1_0
@@ -350,30 +270,30 @@ Rskt	bga_pcb		bga_pkg		0.				*** can add socket model
 	+ ref_gnd
 	* + Z_plot_CPUGPU_pkg_ReduceModel_240821_IdEM
 	+ Z_plot_CPUGPU_pkg_ReduceModel_130um_241004_IdEM
+	* + Z_plot_CPUGPU_pkg_ReduceModel_130um_241118_NoMLCC_IdEM
 
 *** EC2005P
 	.if (is_use_ecap_ebed == 1) 
 		xEcap_2005_inst1	pkg_bump_cpu_0_0 pkg_bump_cpu_0_0  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
-		xEcap_2005_inst2	pkg_bump_cpu_0_1 pkg_bump_cpu_0_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
-				* xEcap_2005_inst3	pkg_bump_cpu_1_0 pkg_bump_cpu_1_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 
+		* xEcap_2005_inst2	pkg_bump_cpu_0_1 pkg_bump_cpu_1_1  ref_gnd	siCap_EC2005P  R_mt=15.5u	L_mt=8.6p 				
 	.endif 
 	
-		* Xblk_pkg
-		* + pkg_bump_cpu_0_0 
-		* + pkg_bump_cpu_1_0
-		* + pkg_bump_cpu_2_0
-		* + pkg_bump_cpu_0_1
-		* + pkg_bump_cpu_1_1
-		* + pkg_bump_cpu_2_1 
-		* + pkg_bump_gpu_0_2
-		* + pkg_bump_gpu_1_2
-		* + pkg_bump_cpu_2_2
-		* + pkg_bump_gpu_0_3
-		* + pkg_bump_gpu_1_3	
-		* + bga_pcb_south
-		* + bga_pcb_north
-		* + ref_gnd
-		* + CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p
+					* Xblk_pkg
+					* + pkg_bump_cpu_0_0 
+					* + pkg_bump_cpu_1_0
+					* + pkg_bump_cpu_2_0
+					* + pkg_bump_cpu_0_1
+					* + pkg_bump_cpu_1_1
+					* + pkg_bump_cpu_2_1 
+					* + pkg_bump_gpu_0_2
+					* + pkg_bump_gpu_1_2
+					* + pkg_bump_cpu_2_2
+					* + pkg_bump_gpu_0_3
+					* + pkg_bump_gpu_1_3	
+					* + bga_pcb_south
+					* + bga_pcb_north
+					* + ref_gnd
+					* + CPU_GPU_pkg_CPU_lsio_240502_reduModel_IdEM_s13p
 .endif 
 
 
@@ -746,9 +666,8 @@ X_probe_filter
 	
 	
 	.probe x(Xblk_die.pin_bump)		
-    .probe x(Xblk_pkg.a_3) 	x(Xblk_pkg.a_1) x(Xblk_pkg.a_2)  x(Xblk_pkg.a_12) x(Xblk_pkg.a_13) x(Xblk_pkg.a_14) x(Xblk_pkg.a_15) 				
-	.probe x(Xblk_PCB.a_3)  
-	.probe x(xblk_PCB.a_1)  	x(xblk_PCB.a_2) 
+    .probe x(Xblk_pkg.a_1)  x(Xblk_pkg.a_2) x(Xblk_pkg.a_3) 	x(Xblk_pkg.a_4) x(Xblk_pkg.a_5) x(Xblk_pkg.a_6)  x(Xblk_pkg.a_7) x(Xblk_pkg.a_8) x(Xblk_pkg.a_9) x(Xblk_pkg.a_10) x(Xblk_pkg.a_11)
+	.probe x(xblk_PCB.a_1)  x(xblk_PCB.a_2)  x(Xblk_PCB.a_3)  x(Xblk_PCB.a_4)  
 	.probe x(xblk_PMIC.pin_out)
 
 	* .param vdd_meas_start = 0.n
