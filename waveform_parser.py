@@ -4,6 +4,14 @@
 import os, sys, getopt
 import matplotlib.pyplot as plt 
 
+def is_numeric(string_tested):
+    try: 
+        float(string_tested)
+        return True 
+    except ValueError:
+        return False
+
+
 class Waveform:
     waveform_file_path = ''
     col_time = 0
@@ -25,6 +33,7 @@ class Waveform:
     def __init__(self, file_input_path):
         line_cnt = 0
         cnt_set = 0
+        self.waveform_file_path = file_input_path
         with open(r'%s'%file_input_path, 'r') as fin:
             cln_str = fin.readline()
             while cln_str:
@@ -38,10 +47,10 @@ class Waveform:
                     self.waveform_file_path = cln_str[1].lstrip('').rstrip('')
                     cnt_set = cnt_set + 1
                 if cln_str[0] == 'Col_Time':
-                    self.time = int(cln_str[1])
+                    self.col_time = int(cln_str[1])
                     cnt_set = cnt_set + 1
                 if cln_str[0] == 'Col_Waveform':
-                    self.waveform = int(cln_str[1])
+                    self.col_waveform = int(cln_str[1])
                     cnt_set = cnt_set + 1
                 if cln_str[0] == 'Waveform_Analysis_Bin_Flor':
                     self.bin_flor = float(cln_str[1])
@@ -69,13 +78,16 @@ class Waveform:
         for i in range (0, bin_amt ):
             self.bin_val_list.append( self.bin_flor + (i + 1) * self.bin_step)      ## upper bound of bin 
             self.bin_time_accu_list.append( 0. )     ## time accumulate, float value
-              
+
+    
+
 ### read in actual waveform 
     def read_parse_waveform_file(self):
         with open(r'%s'%self.waveform_file_path, 'r') as fin:
             time_st = 0.
             time_last = 0.
             time_this = 0.
+            data_this = 0.
             line_cnt = 0
             is_time_st_fnd = False  
             len_bin = len(self.bin_val_list)
@@ -86,8 +98,16 @@ class Waveform:
                 if cln_st_src == '' or cln_st_src[0] == '#':
                     cln_str = fin.readline()
                     continue 
+                
+                if ',' in cln_st_src:
+                    cln_str_split = cln_st_src.split(',')
+                else:
+                    cln_str_split = cln_st_src.split(' ')
 
-                cln_str_split = cln_st_src.split(' ')
+                if not is_numeric(cln_str_split[0]):
+                    cln_str = fin.readline()
+                    continue
+
                 line_info_cnt = 0
                 len_tmp = len(cln_str_split)
                 for i in range(0, len_tmp):

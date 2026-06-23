@@ -4,9 +4,9 @@ oDoc = oProject.GetActiveDesign()
 
 pins=[]
 nets=[]
-oDoc.ScrGetPinsOnPart('RefDesFix_4', 'DIE130_103124', pins, nets)
+# oDoc.ScrGetPinsOnPart('RefDesFix_4', 'DIE130_103124', pins, nets)
 # oDoc.ScrGetPinsOnPart('DIE130_103124', 'DIE130_103124', pins, nets)
-# oDoc.ScrGetPinsOnPart('DIEDIE', 'DIEDIE', pins, nets)
+oDoc.ScrGetPinsOnPart('RefDesFix_12', 'DIEDIE', pins, nets)
 
 pins_VDD=[]
 pins_VSS=[]
@@ -273,7 +273,7 @@ for idx1 in range (0, 8):
 
        ### create ports for BGA outside NNE die shadow 
 for idx1 in range (0, 2):
-    for idx2 in range (1, 5):
+    for idx2 in range (1, 4):
         oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE_1', 1, 'BGA', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VSS_1' , 0., 0., 0.0, 0.1, 0., 0.)
 
 for idx1 in range (0, 2):
@@ -286,14 +286,47 @@ for idx1 in range (0, 2):
 ### PCB 
 for idx1 in range (1, 9):
     for idx2 in range (0, 4):
-        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2) , 'BGA_port', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_MAM_NNE_VDD', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND' , 0., 0., 0.0, 0.1, 0., 0.)
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2) , 'BGA_port', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD_NNE_A', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND' , 0., 0., 0.0, 0.1, 0., 0.)
+
+for idx1 in range (1, 9):
+    for idx2 in range (0, 4):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2) , 'BGA_port', 3, 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
+
 
 ### create ports for BGA outside NNE die shadow 
 
-for idx1 in range (0, 2):
-    for idx2 in range (1, 4):
-        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_MAM_NNE_VDD_1', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND_1' , 0., 0., 0.0, 0.1, 0., 0.)
+for idx1 in range (0, 1):
+    for idx2 in range (1, 5):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD_NNE_A', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND' , 0., 0., 0.0, 0.1, 0., 0.)
 
+for idx1 in range (1, 2):
+    for idx2 in range (1, 5):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD_NNE_A_1', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND_1' , 0., 0., 0.0, 0.1, 0., 0.)
+
+## only generate col 0
+for idx1 in range (0, 1):  
+    for idx2 in range (1, 5):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
+
+for idx1 in range (1, 2):
+    for idx2 in range (1, 4):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE_1', 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VSS_1' , 0., 0., 0.0, 0.1, 0., 0.)
+
+idx1= 1
+idx2= 4
+oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'RefDesFix_18', 'BGA', 'BGA_GRP_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
+
+
+
+
+
+for idx1 in range (1, 2):
+    for idx2 in range (4, 5):
+        oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_VDD_NNE_A', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND' , 0., 0., 0.0, 0.1, 0., 0.)
+
+
+
+###
 for idx1 in range (0, 2):
     for idx2 in range (4, 5):
         oDoc.ScrPlaceCircuitElement('BGA_port_'+str(idx1)+'_'+str(idx2)+'_Out' , 'BGA_port_Out', 3, 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_MAM_NNE_VDD', 1, 'BGA_RAP1', 'U14', 'U14_GRP_'+str(idx1)+'_'+str(idx2)+'_GND' , 0., 0., 0.0, 0.1, 0., 0.)
@@ -313,25 +346,46 @@ for idx1 in range (0, 24):
     for idx2 in range (0, 8):
         oDoc.ScrPlaceCircuitElement('bump_'+str(idx1)+'_'+str(idx2) , 'bump_ports', 3, 1, 'DIE130_103124', 'DIE130_103124', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'DIE130_103124', 'DIE130_103124', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
 
+for idx1 in range (0, 24):
+    for idx2 in range (0, 8):
+        oDoc.ScrPlaceCircuitElement('bump_'+str(idx1)+'_'+str(idx2) , 'bump_ports', 3, 1, 'DIEDIE', 'DIEDIE', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'DIEDIE', 'DIEDIE', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
+
+
 ### 24x8 pkg bump ploc and ports, ODB++ siw file base
 for idx1 in range (0, 24):
     for idx2 in range (0, 8):
-        oDoc.ScrPlaceCircuitElement('bump_'+str(idx1)+'_'+str(idx2) , 'bump_ports', 3, 1, 'RefDesFix_4', 'DIE130_103124', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'RefDesFix_5', 'DIE130_103124', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
+        oDoc.ScrPlaceCircuitElement('bump_'+str(idx1)+'_'+str(idx2) , 'bump_ports', 3, 1, 'RefDesFix_12', 'DIEDIE', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VDD075NNE', 1, 'RefDesFix_12', 'DIEDIE', 'PAR_'+str(idx1)+'_'+str(idx2)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
 
 
 ### pkg 0402 3T caps
 cap_3T_list = [722,723,728,729,730,731,732,733,734,735,736,737,739,740,752,753,754,755,756,757,760,761,762,763,765,766,767,768]
 cap_3T_refDes = 'RefDesFix_7'
 
+## opt1: manually build pin grp in GUI, automate port building
+for idx in range(0, len(cap_3T_list)):
+    capNo = cap_3T_list[idx]
+    print 'processing cap idx: '+ str(idx) + ': C'  + str(capNo) 
+    oDoc.ScrPlaceCircuitElement('VDD075NNE_C'+str(capNo) , 'pkgCap_ports', 3, 1, cap_3T_refDes, 'C'+str(capNo)+'_0', 'C'+str(capNo)+'_VDD075NNE_Group', 1, cap_3T_refDes, 'C'+str(capNo)+'_1', 'C'+str(capNo)+'_VSS_Group' , 0., 0., 0.0, 0.1, 0., 0.)
+
+## variant 
+for idx in range(1, 29):
+    capNo = cap_3T_list[idx]
+    print 'processing cap idx: '+ str(idx) + ': C'  + str(capNo) 
+    post_fix = '_' + str(idx) 
+    if idx == 1:
+        post_fix = ''
+    oDoc.ScrPlaceCircuitElement('VDD075NNE_C'+str(capNo) , 'pkgCap_ports', 3, 1, 'COMP1', 'U1', 'U1_VDD075NNE_Group'+post_fix, 1, 'COMP2', 'U2', 'U2_VSS_Group'+post_fix , 0., 0., 0.0, 0.1, 0., 0.)
+ 
+
+## opt2:pin grp and port built, ( pin group build not working if imported from ODB++ )
+## opt2:pin grp and port built, ( pin group build not working if imported from ODB++ )
 for idx in range(0, len(cap_3T_list)):
     capNo = cap_3T_list[idx]
     print 'processing cap idx: '+ str(idx) + ': C'  + str(capNo)
+    
     oDoc.ScrCreatePinGroups('RefDesFix_7', 'C'+str(capNo)+'_0', ['1', '2'], 'cap_3T_C'+str(capNo)+'_VDD075NNE', False)
     oDoc.ScrCreatePinGroups('RefDesFix_7', 'C'+str(capNo)+'_1', ['3', '4'], 'cap_3T_C'+str(capNo)+'_VSS', False) 
     oDoc.ScrPlaceCircuitElement('VDD075NNE_C'+str(capNo) , 'pkgCap_ports', 3, 1, cap_3T_refDes, 'C'+str(capNo)+'_0', 'cap_3T_C'+str(capNo)+'_VDD075NNE', 1, cap_3T_refDes, 'C'+str(capNo)+'_1', 'cap_3T_C'+str(capNo)+'_VSS' , 0., 0., 0.0, 0.1, 0., 0.)
-    
-    # oDoc.ScrPlaceCircuitElement('VDD075NNE_C'+str(capNo) , 'pkgCap_ports', 3, 1, cap_3T_refDes, 'C'+str(capNo)+'_0', 'C'+str(capNo)+'_VDD075NNE_Group', 1, cap_3T_refDes, 'C'+str(capNo)+'_1', 'C'+str(capNo)+'_VSS_Group' , 0., 0., 0.0, 0.1, 0., 0.)
-   
     
 # oDoc.ScrCreatePinGroups('RefDesFix_8', 'C722_0', ['1', '2'], 'cap_3T_C722_pos', False)
 # oDoc.ScrCreatePinGroups('RefDesFix_8', 'C722_1', ['3', '4'], 'cap_3T_C722_neg', False)

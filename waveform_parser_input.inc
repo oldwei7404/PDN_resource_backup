@@ -3,14 +3,22 @@
 #Waveform_File_Path         C:\Users\jiangongwei\Documents\Python_data\waveform_tr72603.txt
 #Col_Time                0
 #Col_Waveform            1
-#Waveform_Analysis_Bin_Flor  0.788
+#Waveform_Analysis_Bin_Flor  0.728
 #Waveform_Analysis_Bin_Step  0.005
 #Waveform_Analysis_Bin_Ceil  0.813
 
 
-Waveform_File_Path          C:\Users\jiangongwei\Documents\Python_data\waveform_tr72603.txt
+#Waveform_File_Path          C:\Users\jiangongwei\Documents\Python_data\waveform_tr72603.txt
+#Col_Time                    0
+#Col_Waveform                1 
+#Waveform_Analysis_Bin_Flor  0.728
+#Waveform_Analysis_Bin_Step  0.002
+#Waveform_Analysis_Bin_Ceil  0.813
+
+
+Waveform_File_Path          nne_240828_resnet_v_pkg_bump_ns_3.txt
 Col_Time                    0
 Col_Waveform                1 
-Waveform_Analysis_Bin_Flor  0.728
+Waveform_Analysis_Bin_Flor  0.6
 Waveform_Analysis_Bin_Step  0.005
-Waveform_Analysis_Bin_Ceil  0.813
+Waveform_Analysis_Bin_Ceil  0.9

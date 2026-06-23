@@ -1,4 +1,5 @@
 # This script is created to repeat input current waveforms.
+# 2023/9/10: now support .pwl format, on top of .tim format
 # run example: YOUR_PYTHON_EXE waveform_parser.py [-d: in/out file directory] [-i: input file name] [-s: time stamp repeat start idx] [-e: time stamp repeat end idx] [-l: total length in TIME(s) of finished waveform] [-p: ONLY if plot result waveform]
 # python .\waveform_repeater.py -d . -i cphy_ana_RX_FF_2T_3G5_vp_.pwl -s 2 -e 291660 -l 1.e-6  -p
 
@@ -45,6 +46,8 @@ class Waveform:
 
                 if ',' in cln_st_src:
                     cln_str_split = cln_st_src.split(',')
+                elif '\t' in cln_st_src:
+                    cln_str_split = cln_st_src.split('\t')
                 else:
                     cln_str_split = cln_st_src.split(' ')
                 line_info_cnt = 0
@@ -76,6 +79,10 @@ class Waveform:
 #####
     def waveform_repeat(self):
         len_time_list = len(self.list_time)
+        if self.rpt_time_ed_idx > len_time_list:
+            self.rpt_time_ed_idx = len_time_list
+            print('#INFO: repeat end time idx revised to ' + str(self.rpt_time_ed_idx) +'\n')
+
         print('#INFO: duplicating waveforms ...')
         while self.list_time[-1] < self.rpt_time_len:
             time_shift_block = self.list_time[-1]
@@ -166,12 +173,14 @@ if file_input_path.endswith('tim'):
     file_output_path    = file_input_path.rstrip('.tim') + '_out_stat.tim'
 elif file_input_path.endswith('pwl'):
     file_output_path    = file_input_path.rstrip('.pwl') + '_out_stat.pwl'
+else: ### txt file 
+    file_output_path    = file_input_path.rstrip('.tim') + '_out_stat.tim'
 
 if os.path.exists(file_input_path):
     print('#INFO: Input file path: ' + file_input_path)
     print('#INFO: Output file path: ' + file_output_path)
 else:
-    print('#ERROR: input file ' + file_input_path + 'does NOT exist !')
+    print('#ERROR: input file ' + file_input_path + ' does NOT exist !')
     sys.exit(-1)
 
 
@@ -185,4 +194,4 @@ waveformRepeatInst.output_waveform()
 if is_plot:
     waveformRepeatInst.PlotWaveform()
 
-print('#INFO: waveform repeater finished normally.')
+print('#INFO: waveform repeater finished normally. Please check time and waveform units against original waveform file ! ')
