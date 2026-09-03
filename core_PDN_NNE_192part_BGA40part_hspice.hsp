@@ -13,7 +13,7 @@
 *************************************** Input params **************************
 .param Vdd 	= 0.775
 
-.param is_use_ecap_ebed = 0		*** value: 0 or 1, note: this could be baked in pkg model 
+.param is_use_ecap_ebed = 1		*** value: 0 or 1, note: this could be baked in pkg model 
 .param ecap_choice = 0  *** 0:baseline; 1: Samsung SCRLLC106MG6EGNNWT 10.56uF; 2: Samsung SCRLLC885MG6EGNNWT 8.87uF ; -1: mockup connection to bump grp
 *** ecap config info, slide 8 of https://docs.google.com/presentation/d/1orH5VIG1UrYzCUIHZ60a6fJnd-Fa2yBdIXBZB8ctO6Q/edit?slide=id.g399c8a40ad7_4_0#slide=id.g399c8a40ad7_4_0
 
@@ -22,7 +22,7 @@
 .param is_bump_DTC      = 0     *** experiment bump level DTC 
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
-.param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
+.param PMIC_opt = 3				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
 *** NOTE: ONLY applicable if PMIC_opt == 3
 * .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250307_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", no stagger 
 * .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250309_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", 50ns stagger, use current profile accordingly !! 
@@ -35,6 +35,7 @@
 * .param volt_src = str('./hspice_inc/MPQ2946_MPQ86761_For_Rivian_Encrypted_VpmicOUT.csv') 	*** nne validation test2, all 4 paritions running, DC loadline mode, MPS 250711   
 * .param volt_src = str('./hspice_inc/MPQ2946_MPQ86761_For_Rivian_Enc_ACloadline.csv') 	*** nne validation test2, all 4 paritions running, AC loadline mode, MPS 250716
 
+.param volt_src = str('./hspice_inc/EP9501_EP7503_Rivian_TB_26062401.sxgpx_V_VR_StartFr_0_v2.csv') 	*** 260701 EMpwr IVR teset, 83us, corresponding to "core_PDN_NNE_192part_BGA40part_hspice.tr26043001 "  
 
 
 .param Vdd_shift_fr_pwl = -0.01
@@ -87,7 +88,7 @@
 .param curr_backgnd_MA_1_tile = 0.089167	
 
 .param tStep	= 10.p
-.param tStop	= 105.u  	
+.param tStop	= 105.u     ** 83.u  	
 
 .param is_curr_defined_external = 1 		*** 1: if current sources files defined externally; 
 											*** 0: if define current sources within in this file 
@@ -116,8 +117,11 @@
 	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile_260108.scp	*** 260108, fixed mapping for active partition, 45us, idle same as  'curr_profile_NNE_24x8part_260107_idle_perTile' 
 	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5ActivePwrVirus_PerTile_OthersIdle_PerTile_260213.scp	*** 260213, 7us, active parition runs POWER VIRUS, others idle 
 	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row18_23Active_PerTile_OthersIdle_PerTile_260108.scp    *** 260316, innermost partition active, others idle 
-	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile_B0_260326.scp	*** 260326, B0 Attention waveform, beachfront active, other partitions idle (B0 version), 105us
-	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_23Active_PerTile_B0_260326.scp						*** 260326 version, all partitions active 
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile_B0_260326.scp	*** (path outdated) 260326, B0 Attention waveform, beachfront active, other partitions idle (B0 version), 105us
+	
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_5Active_PerTile_OthersIdle_PerTile_B0_260903.scp	*** 260903, B0 Attention waveform, beachfront active, other partitions idle (B0 version), 105us
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row18_23Active_PerTile_OthersIdle_PerTile_B0_260903.scp  *** 260903, B0 Attention waveform, innermost active, other partitions idle (B0 version), 105us
+	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_23Active_PerTile_B0_260903.scp						*** 260903, all partitions active 
 	
 	* .inc /data/home/jiangongwei/work/PDN_core/hspice_inc/curr_profile_NNE_24x8part_Row0_11Active_PerTile_OthersIdle_PerTile_260108.scp		 *** 260322, Row0-5, 6-11, i.e., 2 partitions active w/ 260108 current, other two idel 
 	
@@ -475,6 +479,8 @@ C_lf lf 		ref_gnd	160.p
 	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/NNE_only_MAM_ECAP_120624_1_1C_251205_2025R1_redu_DSC_Opt1_IdEM.cir					*** 260129, pkg DSC opt1, 20x 47nF removed 
 	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/NNE_only_MAM_ECAP_120624_1_1C_251205_2025R1_redu_DSC_Opt4_IdEM.cir					*** 260129, pkg DSC opt4, 20x 47nF + 5x 10uF removed 
 	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/mam_mcm_l12_bh9_ballv1p00_260604_1_v7_12x1mm_Ecap_redu_modif_IdEM.cir				*** 260606, mockup pkg w/ 12x 1x1mm Ecap 
+	
+	.inc /data/home/jiangongwei/work/PDN_core/hspice_inc/sip_op2_ferric_072525_2_cut_NNE_die24x8_redu_IdEM.cir								*** 260701, 4x IVR at pkg back side, 3x Ecaps 
 	
 	***** define PCB model *****
 		* .inc ./hspice_inc/MAMMOTH_PCB_231031_3_NNE_LFmanip_IdEM.cir					*** 1101, version, SoC bulk caps added vias
@@ -1093,7 +1099,7 @@ r_pmic_l_eqv pmic_pwr_raw pmic_pwr induct_eqvlnt_r
 * * + ACM3_250223_8phases_BGAx6_discrt_IdEM
 * + NNE_SiVal_revC_250808_6xBGA_8phases_s14p_IdEM
 
-Xblk_PCB 
+Xblk_PCB 	*** POR 
 + pmic_pwr
 + pmic_pwr
 + pmic_pwr
@@ -1143,8 +1149,8 @@ Xblk_PCB
 + bga_OUT_1_3
 + bga_OUT_1_4
 + ref_gnd 
-+ NNE_SiVal_revC_251028_BGA8x8_modif_IdEM_s48p
-* + NNE_ACM3_C0_260108_redu_IdEM
+* + NNE_SiVal_revC_251028_BGA8x8_modif_IdEM_s48p
++ NNE_ACM3_C0_260108_redu_IdEM 	*** POR 
 
 
 	
@@ -1196,6 +1202,220 @@ Xblk_PCB
 				* + mname = pcb_spara_model
 				* *** 
 				
+*** IVR experiment 
+* Xblk_pkg		*** 4x IVR at pkg back side, 3x Ecap, *** NEED to Disconnect board *** 
+* + pkg_bump_ns_ew_0_0_pkgPad
+* + pkg_bump_ns_ew_0_1_pkgPad
+* + pkg_bump_ns_ew_0_2_pkgPad
+* + pkg_bump_ns_ew_0_3_pkgPad
+* + pkg_bump_ns_ew_0_4_pkgPad
+* + pkg_bump_ns_ew_0_5_pkgPad
+* + pkg_bump_ns_ew_0_6_pkgPad
+* + pkg_bump_ns_ew_0_7_pkgPad
+* + pkg_bump_ns_ew_1_0_pkgPad
+* + pkg_bump_ns_ew_1_1_pkgPad
+* + pkg_bump_ns_ew_1_2_pkgPad
+* + pkg_bump_ns_ew_1_3_pkgPad
+* + pkg_bump_ns_ew_1_4_pkgPad
+* + pkg_bump_ns_ew_1_5_pkgPad
+* + pkg_bump_ns_ew_1_6_pkgPad
+* + pkg_bump_ns_ew_1_7_pkgPad
+* + pkg_bump_ns_ew_2_0_pkgPad
+* + pkg_bump_ns_ew_2_1_pkgPad
+* + pkg_bump_ns_ew_2_2_pkgPad
+* + pkg_bump_ns_ew_2_3_pkgPad
+* + pkg_bump_ns_ew_2_4_pkgPad
+* + pkg_bump_ns_ew_2_5_pkgPad
+* + pkg_bump_ns_ew_2_6_pkgPad
+* + pkg_bump_ns_ew_2_7_pkgPad
+* + pkg_bump_ns_ew_3_0_pkgPad
+* + pkg_bump_ns_ew_3_1_pkgPad
+* + pkg_bump_ns_ew_3_2_pkgPad
+* + pkg_bump_ns_ew_3_3_pkgPad
+* + pkg_bump_ns_ew_3_4_pkgPad
+* + pkg_bump_ns_ew_3_5_pkgPad
+* + pkg_bump_ns_ew_3_6_pkgPad
+* + pkg_bump_ns_ew_3_7_pkgPad
+* + pkg_bump_ns_ew_4_0_pkgPad
+* + pkg_bump_ns_ew_4_1_pkgPad
+* + pkg_bump_ns_ew_4_2_pkgPad
+* + pkg_bump_ns_ew_4_3_pkgPad
+* + pkg_bump_ns_ew_4_4_pkgPad
+* + pkg_bump_ns_ew_4_5_pkgPad
+* + pkg_bump_ns_ew_4_6_pkgPad
+* + pkg_bump_ns_ew_4_7_pkgPad
+* + pkg_bump_ns_ew_5_0_pkgPad
+* + pkg_bump_ns_ew_5_1_pkgPad
+* + pkg_bump_ns_ew_5_2_pkgPad
+* + pkg_bump_ns_ew_5_3_pkgPad
+* + pkg_bump_ns_ew_5_4_pkgPad
+* + pkg_bump_ns_ew_5_5_pkgPad
+* + pkg_bump_ns_ew_5_6_pkgPad
+* + pkg_bump_ns_ew_5_7_pkgPad
+* + pkg_bump_ns_ew_6_0_pkgPad
+* + pkg_bump_ns_ew_6_1_pkgPad
+* + pkg_bump_ns_ew_6_2_pkgPad
+* + pkg_bump_ns_ew_6_3_pkgPad
+* + pkg_bump_ns_ew_6_4_pkgPad
+* + pkg_bump_ns_ew_6_5_pkgPad
+* + pkg_bump_ns_ew_6_6_pkgPad
+* + pkg_bump_ns_ew_6_7_pkgPad
+* + pkg_bump_ns_ew_7_0_pkgPad
+* + pkg_bump_ns_ew_7_1_pkgPad
+* + pkg_bump_ns_ew_7_2_pkgPad
+* + pkg_bump_ns_ew_7_3_pkgPad
+* + pkg_bump_ns_ew_7_4_pkgPad
+* + pkg_bump_ns_ew_7_5_pkgPad
+* + pkg_bump_ns_ew_7_6_pkgPad
+* + pkg_bump_ns_ew_7_7_pkgPad
+* + pkg_bump_ns_ew_8_0_pkgPad
+* + pkg_bump_ns_ew_8_1_pkgPad
+* + pkg_bump_ns_ew_8_2_pkgPad
+* + pkg_bump_ns_ew_8_3_pkgPad
+* + pkg_bump_ns_ew_8_4_pkgPad
+* + pkg_bump_ns_ew_8_5_pkgPad
+* + pkg_bump_ns_ew_8_6_pkgPad
+* + pkg_bump_ns_ew_8_7_pkgPad
+* + pkg_bump_ns_ew_9_0_pkgPad
+* + pkg_bump_ns_ew_9_1_pkgPad
+* + pkg_bump_ns_ew_9_2_pkgPad
+* + pkg_bump_ns_ew_9_3_pkgPad
+* + pkg_bump_ns_ew_9_4_pkgPad
+* + pkg_bump_ns_ew_9_5_pkgPad
+* + pkg_bump_ns_ew_9_6_pkgPad
+* + pkg_bump_ns_ew_9_7_pkgPad
+* + pkg_bump_ns_ew_10_0_pkgPad
+* + pkg_bump_ns_ew_10_1_pkgPad
+* + pkg_bump_ns_ew_10_2_pkgPad
+* + pkg_bump_ns_ew_10_3_pkgPad
+* + pkg_bump_ns_ew_10_4_pkgPad
+* + pkg_bump_ns_ew_10_5_pkgPad
+* + pkg_bump_ns_ew_10_6_pkgPad
+* + pkg_bump_ns_ew_10_7_pkgPad
+* + pkg_bump_ns_ew_11_0_pkgPad
+* + pkg_bump_ns_ew_11_1_pkgPad
+* + pkg_bump_ns_ew_11_2_pkgPad
+* + pkg_bump_ns_ew_11_3_pkgPad
+* + pkg_bump_ns_ew_11_4_pkgPad
+* + pkg_bump_ns_ew_11_5_pkgPad
+* + pkg_bump_ns_ew_11_6_pkgPad
+* + pkg_bump_ns_ew_11_7_pkgPad
+* + pkg_bump_ns_ew_12_0_pkgPad
+* + pkg_bump_ns_ew_12_1_pkgPad
+* + pkg_bump_ns_ew_12_2_pkgPad
+* + pkg_bump_ns_ew_12_3_pkgPad
+* + pkg_bump_ns_ew_12_4_pkgPad
+* + pkg_bump_ns_ew_12_5_pkgPad
+* + pkg_bump_ns_ew_12_6_pkgPad
+* + pkg_bump_ns_ew_12_7_pkgPad
+* + pkg_bump_ns_ew_13_0_pkgPad
+* + pkg_bump_ns_ew_13_1_pkgPad
+* + pkg_bump_ns_ew_13_2_pkgPad
+* + pkg_bump_ns_ew_13_3_pkgPad
+* + pkg_bump_ns_ew_13_4_pkgPad
+* + pkg_bump_ns_ew_13_5_pkgPad
+* + pkg_bump_ns_ew_13_6_pkgPad
+* + pkg_bump_ns_ew_13_7_pkgPad
+* + pkg_bump_ns_ew_14_0_pkgPad
+* + pkg_bump_ns_ew_14_1_pkgPad
+* + pkg_bump_ns_ew_14_2_pkgPad
+* + pkg_bump_ns_ew_14_3_pkgPad
+* + pkg_bump_ns_ew_14_4_pkgPad
+* + pkg_bump_ns_ew_14_5_pkgPad
+* + pkg_bump_ns_ew_14_6_pkgPad
+* + pkg_bump_ns_ew_14_7_pkgPad
+* + pkg_bump_ns_ew_15_0_pkgPad
+* + pkg_bump_ns_ew_15_1_pkgPad
+* + pkg_bump_ns_ew_15_2_pkgPad
+* + pkg_bump_ns_ew_15_3_pkgPad
+* + pkg_bump_ns_ew_15_4_pkgPad
+* + pkg_bump_ns_ew_15_5_pkgPad
+* + pkg_bump_ns_ew_15_6_pkgPad
+* + pkg_bump_ns_ew_15_7_pkgPad
+* + pkg_bump_ns_ew_16_0_pkgPad
+* + pkg_bump_ns_ew_16_1_pkgPad
+* + pkg_bump_ns_ew_16_2_pkgPad
+* + pkg_bump_ns_ew_16_3_pkgPad
+* + pkg_bump_ns_ew_16_4_pkgPad
+* + pkg_bump_ns_ew_16_5_pkgPad
+* + pkg_bump_ns_ew_16_6_pkgPad
+* + pkg_bump_ns_ew_16_7_pkgPad
+* + pkg_bump_ns_ew_17_0_pkgPad
+* + pkg_bump_ns_ew_17_1_pkgPad
+* + pkg_bump_ns_ew_17_2_pkgPad
+* + pkg_bump_ns_ew_17_3_pkgPad
+* + pkg_bump_ns_ew_17_4_pkgPad
+* + pkg_bump_ns_ew_17_5_pkgPad
+* + pkg_bump_ns_ew_17_6_pkgPad
+* + pkg_bump_ns_ew_17_7_pkgPad
+* + pkg_bump_ns_ew_18_0_pkgPad
+* + pkg_bump_ns_ew_18_1_pkgPad
+* + pkg_bump_ns_ew_18_2_pkgPad
+* + pkg_bump_ns_ew_18_3_pkgPad
+* + pkg_bump_ns_ew_18_4_pkgPad
+* + pkg_bump_ns_ew_18_5_pkgPad
+* + pkg_bump_ns_ew_18_6_pkgPad
+* + pkg_bump_ns_ew_18_7_pkgPad
+* + pkg_bump_ns_ew_19_0_pkgPad
+* + pkg_bump_ns_ew_19_1_pkgPad
+* + pkg_bump_ns_ew_19_2_pkgPad
+* + pkg_bump_ns_ew_19_3_pkgPad
+* + pkg_bump_ns_ew_19_4_pkgPad
+* + pkg_bump_ns_ew_19_5_pkgPad
+* + pkg_bump_ns_ew_19_6_pkgPad
+* + pkg_bump_ns_ew_19_7_pkgPad
+* + pkg_bump_ns_ew_20_0_pkgPad
+* + pkg_bump_ns_ew_20_1_pkgPad
+* + pkg_bump_ns_ew_20_2_pkgPad
+* + pkg_bump_ns_ew_20_3_pkgPad
+* + pkg_bump_ns_ew_20_4_pkgPad
+* + pkg_bump_ns_ew_20_5_pkgPad
+* + pkg_bump_ns_ew_20_6_pkgPad
+* + pkg_bump_ns_ew_20_7_pkgPad
+* + pkg_bump_ns_ew_21_0_pkgPad
+* + pkg_bump_ns_ew_21_1_pkgPad
+* + pkg_bump_ns_ew_21_2_pkgPad
+* + pkg_bump_ns_ew_21_3_pkgPad
+* + pkg_bump_ns_ew_21_4_pkgPad
+* + pkg_bump_ns_ew_21_5_pkgPad
+* + pkg_bump_ns_ew_21_6_pkgPad
+* + pkg_bump_ns_ew_21_7_pkgPad
+* + pkg_bump_ns_ew_22_0_pkgPad
+* + pkg_bump_ns_ew_22_1_pkgPad
+* + pkg_bump_ns_ew_22_2_pkgPad
+* + pkg_bump_ns_ew_22_3_pkgPad
+* + pkg_bump_ns_ew_22_4_pkgPad
+* + pkg_bump_ns_ew_22_5_pkgPad
+* + pkg_bump_ns_ew_22_6_pkgPad
+* + pkg_bump_ns_ew_22_7_pkgPad
+* + pkg_bump_ns_ew_23_0_pkgPad
+* + pkg_bump_ns_ew_23_1_pkgPad
+* + pkg_bump_ns_ew_23_2_pkgPad
+* + pkg_bump_ns_ew_23_3_pkgPad
+* + pkg_bump_ns_ew_23_4_pkgPad
+* + pkg_bump_ns_ew_23_5_pkgPad
+* + pkg_bump_ns_ew_23_6_pkgPad
+* + pkg_bump_ns_ew_23_7_pkgPad
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pmic_pwr
+* + pkge_Ecap1_2x2mm_1
+* + pkge_Ecap1_2x2mm_2
+* + pkge_Ecap2_2x2mm_1
+* + pkge_Ecap2_2x2mm_2
+* + pkge_Ecap3_2x2mm_1
+* + pkge_Ecap3_2x2mm_2
+* + dummy_IVR0_0
+* + dummy_IVR0_1
+* + dummy_IVR1_0
+* + dummy_IVR1_1
+* + dummy_IVR2_0
+* + dummy_IVR2_1
+* + dummy_IVR3_0
+* + dummy_IVR3_1
+* + ref_gnd
+* + sip_op2_ferric_072525_2_cut_NNE_die24x8_redu_IdEM
 
 *************************************** Pkg ***********************************
 
@@ -2591,6 +2811,8 @@ Xblk_pkg		*** opt 1B, or 1C,  w/ 4x Ecap (not fully compatible with 5x Ecap layo
                 * + pkge_Ecap4_2x2mm_1	
                 * + pkge_Ecap4_2x2mm_2	
 			    * + mname = pkg_spara_debug_model
+
+
 
 				
 .if (is_use_ecap_ebed == 1)
