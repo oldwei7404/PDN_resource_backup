@@ -22,7 +22,7 @@
 .param is_bump_DTC      = 0     *** experiment bump level DTC 
 
 .param induct_eqvlnt_r =  0.m   *** DCR of inductor of ALL phases, use 0.0m if PMIC_opt ==3, use 0.07m if run ideal voltage src
-.param PMIC_opt = 3				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
+.param PMIC_opt = 1				*** 1: ideal voltage src; 2:ideal voltage src w/ VCVS feedback; 3: voltage src using pwl 
 *** NOTE: ONLY applicable if PMIC_opt == 3
 * .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250307_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", no stagger 
 * .param volt_src = str('./hspice_inc/MAX20420_40_Top_schem_DL_6phase_ENC8_LL_241209_25MHz_simplify_250309_V_PMIC_out.csv')	*** derived from B0 current "NNE_0p25_PA_resnet_noReLU_250304", 50ns stagger, use current profile accordingly !! 
